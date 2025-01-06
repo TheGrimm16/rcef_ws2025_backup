@@ -1,0 +1,2 @@
+RewriteEngine on
+RewriteRule (.*) https://rcef-seed.philrice.gov.ph/rcef_sms [R=301,L]

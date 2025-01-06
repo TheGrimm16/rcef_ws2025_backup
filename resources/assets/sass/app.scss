@@ -1,0 +1,54 @@
+// @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
+
+.shape-con{
+    text-align: center;
+}
+.shape-circle{
+    position: absolute;
+    width: 70px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dbdbdb;
+    border-color: aquamarine;
+    line-height: 30px;
+    text-align: center;
+    color: white;
+}
+.shape-line{
+    position: absolute;
+    height: 3px;
+    width: 130px;
+    background-color: #dbdbdb;
+    margin-top: 19px;
+    margin-left: 70px;
+}
+.shape-line-short{
+    position: absolute;
+    height: 3px;
+    width: 15px;
+    background-color: #dbdbdb;
+    margin-top: 19px;
+    margin-left: -10px;
+}
+.date-text-top{
+    position: absolute;
+    text-align: center;
+    margin-left: 75px;
+    margin-top: 0px;
+    font-size: 12px;
+}
+.date-text-bottom{
+    position: absolute;
+    text-align: center;
+    margin-left: 75px;
+    margin-top: 25px;
+    font-size: 12px;
+}
+.unit-text{
+    position: absolute;
+    font-size: 10px;
+    line-height: 0px;
+    margin-top: 0px;
+    width: 100%;
+    text-align: center;
+}

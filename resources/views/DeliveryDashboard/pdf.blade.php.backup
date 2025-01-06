@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+      @include('DeliveryDAshboard.includes.header')
+      @include('DeliveryDAshboard.includes.body')
+      <div style="page-break-before: always;"></div>
+      @include('DeliveryDAshboard.delivery_pdf')
+    <!-- <table class="table table-bordered">
+      <tr>
+        <img src="{{ asset('public/images/logo.svg') }}" alt="" prod_size>
+      </tr>
+      <tr>
+        <td>
+         data
+        </td>
+        <td>
+         data
+        </td>
+      </tr>
+    </table> -->
+  </body>
+</html>

@@ -1,0 +1,4 @@
+INFO:root:Starting script
+ERROR:root:Error: name 'getpass' is not defined
+INFO:root:Starting script
+ERROR:root:Error: name 'getpass' is not defined

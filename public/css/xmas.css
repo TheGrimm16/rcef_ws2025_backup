@@ -1,0 +1,10 @@
+.xmas{
+    position: static;
+    pointer-events: none;
+    background-color: rgba(177, 174, 255, 0.107);
+    top: 0;
+    right: 0;
+    left: 0;
+    height: 100%;
+    z-index: 9999;
+}

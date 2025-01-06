@@ -1,0 +1,717 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+
+use App\Http\Requests;
+use App\Http\Controllers\Controller;
+
+use Yajra\Datatables\Datatables;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Filesystem\Filesystem;
+
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+
+use App\SeedCooperatives;
+use App\SeedGrowers;
+use Config;
+use DB;
+use Excel;
+use Session;
+use Auth;
+
+class reportExportController extends Controller
+{
+    public function createTable($database_name, $table_name, $fields = [], $primary_key){	
+		
+		\Config::set('database.connections.reports_db.database', $database_name);
+        DB::purge('reports_db');
+		
+        // echo $primary_key;die();
+        $Pkey = $primary_key;
+        // check if table is not already exists
+        if (!Schema::connection('reports_db')->hasTable($table_name)) {
+            Schema::connection('reports_db')->create($table_name, function (Blueprint $table) use ($fields, $table_name, $primary_key) {
+                $table->charset = 'utf8';
+                $table->collation = 'utf8_general_ci';
+                $table->increments($primary_key);
+                //$table->integer($primary_key)->primary();
+                if (count($fields) > 0) {
+                    foreach ($fields as $field) {
+                        if($field['type'] == 'integer'){
+                            $table->{$field['type']}($field['name'])->unsigned();
+                        }elseif($field['type'] == 'timestamp'){
+                            $table->{$field['type']}($field['name'])->useCurrent();
+                        }elseif(isset($field['limit'])){
+                            $table->{$field['type']}($field['name'], $field['limit']);
+                        }else{
+                            $table->{$field['type']}($field['name']);
+                        }
+                    }
+                }
+            });
+ 
+            return response()->json(['message' => 'Given table has been successfully created!'], 200);
+        }
+ 
+        return response()->json(['message' => 'Given table is already existis.'], 400);
+    }
+
+    public function process_municipalities($prv_database, $province_database, $municipality_database, $municipality_name, $province_name){
+        //echo "<strong>accessing table: `".$province_database.".".$municipality_database."`  PRV Database: ".$prv_database."</strong><br>";
+        $prv_municipality = DB::table($prv_database.".released")->groupBy('municipality')->get();
+
+        //echo "Detected municipality of: ".$row->municipality.", in the province of: ".$row->province." (".$row->prv_dropoff_id.")<br>";
+        $farmer_list = DB::table($prv_database.".released")
+            ->select('released.province', 'released.municipality', 'released.seed_variety', 
+                    'released.bags', 'released.date_released', 'released.farmer_id', 'released.rsbsa_control_no',
+                    'released.farmer_id', 'released.released_by', 'released.release_id')
+            ->where('released.bags', '!=', '0')
+            ->where('released.province', '=', $province_name)
+            ->where('released.municipality', '=', $municipality_name)
+            ->where('released.is_processed', 1)
+            ->orderBy('released.prv_dropoff_id')
+            //->limit(1)
+            ->get();
+
+        //echo "[".$row->prv_dropoff_id."] Province (".$row->province."): ".$row->municipality." total farmers: (".count($farmer_list).")<br>";
+        /**
+         * START PROCESSING
+         */
+		$daily_farmers = 0;
+        $daily_bags = 0;
+        $daily_area = 0;
+        $daily_male = 0;
+        $daily_female = 0;
+		$yield = 0;
+        foreach ($farmer_list as  $row) {
+
+            //check other_info table
+            $other_info_data = DB::table($prv_database.".other_info")
+                ->where('farmer_id', $row->farmer_id)
+                ->where('rsbsa_control_no', $row->rsbsa_control_no)
+                ->first();
+
+            if(count($other_info_data) > 0){
+                $birthdate = $other_info_data->birthdate;
+                $mother_fname = $other_info_data->mother_fname;
+                $mother_mname = $other_info_data->mother_mname;
+                $mother_lname = $other_info_data->mother_lname;
+                $mother_suffix = $other_info_data->mother_suffix;
+
+                if($other_info_data->phone == "" || $other_info_data->phone == "0000-000-0000"){
+                    $phone_number = "";
+                }else{
+                    $phone_number = $other_info_data->phone;
+                }
+            }else{
+                $birthdate = '';
+                $mother_fname = '';
+                $mother_mname = '';
+                $mother_lname = '';
+                $mother_suffix = '';
+                $phone_number = '';
+            }
+
+            //get farmer_profile
+            $farmer_profile = DB::table($prv_database.".farmer_profile")
+                ->where('rsbsa_control_no', $row->rsbsa_control_no)
+                ->where('lastName', '!=', '')
+                ->where('firstName', '!=', '')
+                ->where('distributionID', 'like', 'R%')
+				->orderBy('farmerID', 'DESC')
+                ->first();
+
+            if(count($farmer_profile) > 0){
+                $qr_code = $farmer_profile->distributionID;
+                $farmer_fname = $farmer_profile->firstName;
+                $farmer_mname = $farmer_profile->midName;
+                $farmer_lname = $farmer_profile->lastName;
+                $farmer_extname = $farmer_profile->extName;
+                $dist_area = $farmer_profile->area;
+                $actual_area = $farmer_profile->actual_area;
+				$sex = '';
+                if($farmer_profile->sex == 'Male'){
+                    $sex = 'Male';
+                    $daily_male += 1;
+					$yield = $farmer_profile->yield;					
+                }else if($farmer_profile->sex == 'Femal'){
+                    $sex = 'Female';
+                    $daily_female += 1; 
+					$yield = $farmer_profile->yield;
+                }
+            }else{
+				$farmer_profile = DB::table($prv_database.".farmer_profile")
+					->where('rsbsa_control_no', $row->rsbsa_control_no)
+					->where('lastName', '!=', '')
+					->where('firstName', '!=', '')
+					->orderBy('farmerID', 'DESC')
+					->first();
+					
+				if(count($farmer_profile) > 0){
+					$qr_code = $farmer_profile->distributionID;
+					$farmer_fname = $farmer_profile->firstName;
+					$farmer_mname = $farmer_profile->midName;
+					$farmer_lname = $farmer_profile->lastName;
+					$farmer_extname = $farmer_profile->extName;
+					$dist_area = $farmer_profile->area;
+					$actual_area = $farmer_profile->actual_area;
+					$sex = '';
+					if($farmer_profile->sex == 'Male'){
+						$sex = 'Male';
+						$daily_male += 1;
+						$yield = $farmer_profile->yield;					
+					}else if($farmer_profile->sex == 'Femal'){
+						$sex = 'Female';
+						$daily_female += 1; 
+						$yield = $farmer_profile->yield;
+					}
+				}else{
+					$qr_code = "N/A";
+					$farmer_fname = "N/A";
+					$farmer_mname = "N/A";
+					$farmer_lname = "N/A";
+					$farmer_extname = "N/A";
+					$dist_area = 0;
+					$actual_area = 0;
+					$sex = "N/A";
+					
+					$daily_male += 0;
+					$daily_female += 0;
+					$yield += 0;
+				}
+            }
+
+            //get name of encoder using released.by in sdms_db_dev
+            $encoder_name = DB::connection('mysql')->table('users')->where('username', $row->released_by)->first();
+            if(count($encoder_name) > 0){
+                if($encoder_name->middleName == ''){
+                    $encoder_name = $encoder_name->firstName." ".$encoder_name->lastName." ".$encoder_name->extName;
+                }else{
+                    $encoder_name = $encoder_name->firstName." ".$encoder_name->middleName." ".$encoder_name->lastName." ".$encoder_name->extName;
+                }
+            }else{
+                $encoder_name = '';
+            }
+
+			$daily_farmers += 1;
+            $daily_bags += $row->bags;
+            $daily_area += $actual_area;
+
+            $data = [
+                'rsbsa_control_number' => $row->rsbsa_control_no,
+                'qr_code' => $qr_code,
+                "farmer_fname" => $farmer_fname,
+                "farmer_mname" => $farmer_mname,
+                "farmer_lname" => $farmer_lname,
+                "farmer_ext" => $farmer_extname,
+                'sex' => $sex,
+                'birthdate' => $birthdate,
+                'tel_number' => $phone_number,
+                'province' => $row->province,
+                'municipality' => $row->municipality,
+                "mother_fname" => $mother_fname,
+                "mother_mname" => $mother_mname,
+                "mother_lname" => $mother_lname,
+                "mother_ext" => $mother_suffix,
+                'dist_area' => $dist_area,
+                'actual_area' => $actual_area,
+                'bags' => $row->bags,
+                'seed_variety' => $row->seed_variety,
+                'date_released' => $row->date_released,
+                'farmer_id' => $row->farmer_id,
+				'yield' => $yield,
+                'released_by' => $encoder_name
+            ];
+            DB::table("$province_database.$municipality_database")->insert($data);
+            //echo "[".$province_database.".".$municipality_database."] Province (".$row->province."): ".$row->municipality.": MYSQL_INSERT RSBSA # - ($row->rsbsa_control_no), Name - ($farmer_fname $farmer_mname $farmer_lname)<br>";
+
+            //after processing to seed beneficiary list DB update is_processed flag to 0
+            DB::table($prv_database.'.released')->where('release_id', $row->release_id)->update([
+                'is_processed' => 0
+            ]);
+            DB::commit();
+        }
+        /**
+         * END PROCESSING
+         */
+        //echo "<strong>End of access table: `".$province_database.".".$municipality_database."`  PRV Database: ".$prv_database."</strong><br><br>";
+    
+		//return total bags, area, farmers, male, female'
+        $region = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')->where('province', $province_name)->groupBy('province')->value('region');
+        $week_municipal_data = [
+            'current_month' => "N/A",
+            'current_week' => "N/A",
+            "region" => $region,
+            "province" => $province_name,
+            "municipality" => $municipality_name,
+            "total_farmers" => $daily_farmers,
+            'total_bags' => $daily_bags,
+            'total_dist_area' => 0,
+            'total_actual_area' => $daily_area,
+            'total_male' => $daily_male,
+            'total_female' => $daily_female,
+            'date_generated' => date("Y-m-d")
+            //'date_generated' => "2020-10-23"
+        ];
+        DB::table($GLOBALS['season_prefix']."rcep_google_sheets.lib_weekly_municipal")->insert($week_municipal_data);
+	}
+
+
+    public function scheduled_list(){
+		//dd("execute new reports");
+        ini_set('memory_limit', '-1');
+        DB::beginTransaction();
+    
+        try{
+            $province_list = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')->groupBy('province')->orderBy('region_sort')->get();
+			
+			 \Config::set('database.connections.reports_db.host', 'localhost');
+            \Config::set('database.connections.reports_db.port', '4409');
+            \Config::set('database.connections.reports_db.database', null);
+            \Config::set('database.connections.reports_db.username', 'rcef_web');
+            \Config::set('database.connections.reports_db.password', 'SKF9wzFtKmNMfwy');
+			DB::purge('reports_db');
+			
+        //    dd($province_list);
+			foreach($province_list as $row){
+                // dd($row->prv);
+                $database_name = "rpt_".substr($row->prv, 0, 4);
+                $prv_database = $GLOBALS['season_prefix']."prv_".substr($row->prv, 0, 4);
+
+                $query = "CREATE DATABASE IF NOT EXISTS $database_name";
+                DB::connection('reports_db')->statement($query);
+                //dd($query);
+                $municipalities = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')
+                    ->where('region', $row->region)
+                    ->where('province', $row->province)
+                    ->groupBy('province', 'municipality')
+                    ->orderBy('region_sort')
+                    ->get();
+
+                //loop to all municipalities and generate their respective tables
+                foreach($municipalities as $m_row)  {
+                    \Config::set('database.connections.reports_db.database', $database_name);
+                    DB::purge('reports_db');
+					//dd($database_name);
+					//dd(DB::connection('mysql')->getPdo());
+
+                    $table_name = "tbl_".$m_row->prv;
+                    $primary_key = 'id';
+                    $fields = [
+                        ['name' => 'rsbsa_control_number', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'qr_code', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'farmer_fname', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'farmer_mname', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'farmer_lname', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'farmer_ext', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'sex', 'type' => 'string', 'limit' => '6'],
+                        ['name' => 'birthdate', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'tel_number', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'province', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'municipality', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'mother_fname', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'mother_mname', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'mother_lname', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'mother_ext', 'type' => 'string', 'limit' => '255'],
+                        ['name' => 'dist_area', 'type' => 'float', 'limit' => '10'],
+                        ['name' => 'actual_area', 'type' => 'float', 'limit' => '10'],
+                        ['name' => 'bags', 'type' => 'integer', 'limit' => '10'],
+                        ['name' => 'seed_variety', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'date_released', 'type' => 'string', 'limit' => '100'],  
+                        ['name' => 'farmer_id', 'type' => 'string', 'limit' => '100'],
+                        ['name' => 'released_by', 'type' => 'text'],
+						['name' => 'yield', 'type' => 'float', 'limit' => '10'],
+                        ['name' => 'date_generated', 'type' => 'timestamp'],   
+                    ];
+                    $this->createTable($database_name, $table_name, $fields, $primary_key);
+                    //DB::table($database_name.".".$table_name)->truncate();
+                
+                    //call function to save to tbl_XXXX inside the rpt_prv databases
+                    $this->process_municipalities($prv_database, $database_name, $table_name, $m_row->municipality, $m_row->province);
+                }
+
+                DB::commit();
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            dd($e);
+        }
+    }
+
+    public function export_province_noUPdate($province){
+        ini_set('memory_limit', '-1');
+        DB::beginTransaction();
+        try {
+
+            $prv_details = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')->where('province', $province)->first();
+
+            $prv_database = $GLOBALS['season_prefix']."prv_".substr($prv_details->prv, 0, 4);
+            $database_name = "rpt_".substr($prv_details->prv, 0, 4);
+			$prv_name      = $GLOBALS['season_prefix']."prv_".substr($prv_details->prv, 0, 4);
+
+            /**  (USER_LEVTEL != PMO ACCOUNT)
+             * STEPS: 1. get all municipalities within the province
+             *        2. loop through all the municipalities 
+             *        3. get data from `rcep_excel` for each municipality
+             *        4. convert to excel file
+             */
+
+            /*$municipalities = DB::table($prv_database.".released")
+                ->groupBy('municipality')
+                ->get();*/
+				
+			 $municipalities = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')
+                ->where('province', $province)
+                ->groupBy('municipality')
+                ->get();
+
+            $list_arr = array();  //put all the data collections to a single array
+            foreach($municipalities as $row){
+                $table_name = "tbl_".substr($row->prv_dropoff_id, 0, 6);
+                
+                //$municipal_table_data = DB::table($database_name.".".$table_name)->get();
+                
+				$municipal_table_data = DB::table($database_name.".".$table_name)
+                    ->select('id', 'rsbsa_control_number', 'qr_code', 'farmer_fname', 'farmer_mname', 'farmer_lname',
+                             'farmer_ext', 'sex', 'birthdate', 'tel_number', 'province', 'municipality', 'mother_fname',
+                             'mother_mname', 'mother_lname', 'mother_ext', 'dist_area', 'actual_area', 'bags', 'seed_variety', 'yield',
+                             'date_released', 'farmer_id', 'released_by')
+                    ->get();
+				
+				if(count($municipal_table_data) > 0){
+                    //array_push($list_arr, $municipal_table_data);
+					$municipal_data = array();
+                    foreach($municipal_table_data as $row){
+                        $yield = 0;
+                        if($row->yield <= 5 && $row->yield != 0){
+                            $yield = $row->yield * 20;
+                        }else{
+                            $yield = $row->yield;
+                        }
+                        
+                        if($yield > 0){
+                            if($yield < 50 || $yield > 120){
+                                $yield = $yield / $row->actual_area;
+                            }else{
+                                $yield = $yield;
+                            }
+                            
+                        }else{
+                            $yield = $row->yield;
+                        }
+
+                        array_push($municipal_data, array(
+                            "RSBSA #" => $row->rsbsa_control_number,
+                            "QR Code" => $row->qr_code,
+                            "Farmer's First Name" => $row->farmer_fname,
+                            "Farmer's Middle Name" => $row->farmer_mname,
+                            "Farmer's Last Name" => $row->farmer_lname,
+                            "Farmer's Extension Name" => $row->farmer_ext,
+                            "Sex" => $row->sex,
+                            "Birth Date" => $row->birthdate,
+                            "Telephone Number" => $row->tel_number,
+                            "Province" => $row->province,
+                            "Municipality" => $row->municipality,
+                            "Mother's First Name" => $row->mother_fname,
+                            "Mother's Middle Name" => $row->mother_mname,
+                            "Mother's Last Name" => $row->mother_lname,
+                            "Mother's Suffix" => $row->mother_ext,
+                            "Actual Area" => $row->actual_area,
+                            "Bags" => $row->bags,
+                            "Seed Variety" => $row->seed_variety,
+                            "Yield / ha" => number_format($yield,2,".",","),
+                            "Date Released" => $row->date_released,
+                            "Farmer ID" => $row->farmer_id,
+                            "Released By" => $row->released_by
+                        ));
+                    }
+                    array_push($list_arr, $municipal_data);
+                }
+            }
+
+            $new_collection = collect(); //loop trough all the data collections and merge it into 1 collection variable
+            foreach($list_arr as $list_collection_row){
+                $new_collection = $new_collection->merge($list_collection_row);
+            }
+			
+			//get nrp daTa
+            $nrp_data = DB::table($prv_name.".nrp_profile")
+                ->select('rsbsa', 'fname', 'mname', 'lname', 'extname', 'sex', 'birthdate', 'phonenumber', 'claimed_seed', 'num_of_bag', 'package_weight')
+                ->get();
+
+            $excel_data = json_decode(json_encode($new_collection), true); //convert collection to associative array to be converted to excel
+            $nrp_data = json_decode(json_encode($nrp_data), true); //convert collection to associative array to be converted to excel
+			return Excel::create("$province"."_".date("Y-m-d g:i A"), function($excel) use ($excel_data) {
+                $excel->sheet("BENEFICIARY LIST", function($sheet) use ($excel_data) {
+                    /*$sheet->fromArray($excel_data, null, 'A1', false, false);
+                    $sheet->prependRow(1, array(
+                        '#', 'RSBSA #', 'QR Code', "Farmer's First Name", "Farmer's Middle Name", 
+                        "Farmer's Last Name", "Farmer's Extension Name", 'Sex', 'Birth Date',
+                        'Telephone Number', 'Province', 'Municipality', "Mother's First Name",
+                        "Mother's Middle Name", "Mother's Last Name", "Mother's Suffix", 'Distribution Area',
+                        'Actual Area', 'Bags', 'Seed Variety', 'Yield', 'Date Released', 'Farmer ID', 'Released By'
+                    ));
+                    $sheet->freezeFirstRow();
+                    $sheet->getColumnDimension('A')->setVisible(false);*/
+					$sheet->fromArray($excel_data);
+                    $sheet->freezeFirstRow();
+					
+					$sheet->setHeight(1, 30);
+					$sheet->cells('A1:V1', function ($cells) {
+						$cells->setBackground('#92D050');
+						$cells->setAlignment('center');
+						$cells->setValignment('center');
+					});
+					$sheet->setBorder('A1:V1', 'thin');
+                });
+            })->download('xlsx');
+
+            DB::commit();
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e;
+        }
+    }
+
+    public function export_province_withUPdate($province){
+        ini_set('memory_limit', '-1');
+        DB::beginTransaction();
+        try {
+            $prv_details = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')->where('province', $province)->first();
+            $prv_database = $GLOBALS['season_prefix']."prv_".substr($prv_details->prv, 0, 4);
+            $database_name = "rpt_".substr($prv_details->prv, 0, 4);
+
+            $municipalities = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point') //get all municipalities of the selected province
+                    ->where('region', $prv_details->region)
+                    ->where('province', $prv_details->province)
+                    ->groupBy('municipality')
+                    ->orderBy('region_sort')
+                    ->get();
+
+            //loop to all municipalities and generate their respective tables
+            $new_collection = collect();
+            foreach($municipalities as $m_row)  {
+                //call function to save to tbl_XXXX inside the rpt_prv databases
+                $table_name = "tbl_".$m_row->prv;
+                $this->process_municipalities($prv_database, $database_name, $table_name, $m_row->municipality, $m_row->province);
+
+                //$list_collection_row = DB::table($database_name.".".$table_name)->get();
+                $list_collection_row = DB::table($database_name.".".$table_name)
+                    ->select('id', 'rsbsa_control_number', 'qr_code', 'farmer_fname', 'farmer_mname', 'farmer_lname',
+                             'farmer_ext', 'sex', 'birthdate', 'tel_number', 'province', 'municipality', 'mother_fname',
+                             'mother_mname', 'mother_lname', 'mother_ext', 'dist_area', 'actual_area', 'bags', 'seed_variety', 'yield',
+                             'date_released', 'farmer_id', 'released_by')
+                    ->get();
+				$new_collection = $new_collection->merge($list_collection_row);
+            }
+
+            //after update is finished call function to export to excel
+            $excel_data = json_decode(json_encode($new_collection), true); //convert collection to associative array to be converted to excel
+            return Excel::create("$province"."_".date("Y-m-d g:i A"), function($excel) use ($excel_data) {
+                $excel->sheet("BENEFICIARY LIST", function($sheet) use ($excel_data) {
+                    $sheet->fromArray($excel_data, null, 'A1', false, false);
+                    $sheet->prependRow(1, array(
+                        '#', 'RSBSA #', 'QR Code', "Farmer's First Name", "Farmer's Middle Name", 
+                        "Farmer's Last Name", "Farmer's Extension Name", 'Sex', 'Birth Date',
+                        'Telephone Number', 'Province', 'Municipality', "Mother's First Name",
+                        "Mother's Middle Name", "Mother's Last Name", "Mother's Suffix", 'Distribution Area',
+                        'Actual Area', 'Bags', 'Seed Variety', 'Yield','Date Released', 'Farmer ID', 'Released By'
+                    ));
+                    $sheet->freezeFirstRow();
+                    $sheet->getColumnDimension('A')->setVisible(false);
+                });
+            })->download('xlsx');
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e;
+        }
+        //dd("update & export of data completed...");
+    }
+
+
+    public function export_municipality_noUPdate($province, $municipality){
+        ini_set('memory_limit', '-1');
+        DB::beginTransaction();
+        try {
+
+            $prv_details = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')
+                ->where('province', $province)
+                ->where('municipality', $municipality)
+                ->first();
+
+            $database_name = "rpt_".substr($prv_details->prv, 0, 4);
+            $table_name    = "tbl_".$prv_details->prv;
+
+            /**  (USER_LEVTEL != PMO ACCOUNT)
+             * STEPS: 1. get municipality
+             *        2. get data from `rpt_province` (e.g. tbl_012901)
+             *        3. convert to excel file
+             */
+
+            //$municipal_table_data = DB::table($database_name.".".$table_name)->get();
+            $municipal_table_data = DB::table($database_name.".".$table_name)
+                ->select('id', 'rsbsa_control_number', 'qr_code', 'farmer_fname', 'farmer_mname', 'farmer_lname',
+                             'farmer_ext', 'sex', 'birthdate', 'tel_number', 'province', 'municipality', 'mother_fname',
+                             'mother_mname', 'mother_lname', 'mother_ext', 'dist_area', 'actual_area', 'bags', 'seed_variety', 'yield',
+                             'date_released', 'farmer_id', 'released_by')
+                ->get();
+			
+			$excel_data = array();
+            foreach($municipal_table_data as $row){
+                $yield = 0;
+                if($row->yield <= 5 && $row->yield != 0){
+                    $yield = $row->yield * 20;
+                }else{
+                    $yield = $row->yield;
+                }
+                
+                if($yield > 0 && $row->actual_area > 0){
+                    if($yield < 50 || $yield > 120){
+                        $yield = $yield / $row->actual_area;
+                    }else{
+                        $yield = $yield;
+                    }
+                    
+                }else{
+                    $yield = $row->yield;
+                }
+
+                array_push($excel_data, array(
+                    "RSBSA #" => $row->rsbsa_control_number,
+                    "QR Code" => $row->qr_code,
+                    "Farmer's First Name" => $row->farmer_fname,
+                    "Farmer's Middle Name" => $row->farmer_mname,
+                    "Farmer's Last Name" => $row->farmer_lname,
+                    "Farmer's Extension Name" => $row->farmer_ext,
+                    "Sex" => $row->sex,
+                    "Birth Date" => $row->birthdate,
+                    "Telephone Number" => $row->tel_number,
+                    "Province" => $row->province,
+                    "Municipality" => $row->municipality,
+                    "Mother's First Name" => $row->mother_fname,
+                    "Mother's Middle Name" => $row->mother_mname,
+                    "Mother's Last Name" => $row->mother_lname,
+                    "Mother's Suffix" => $row->mother_ext,
+                    "Actual Area" => $row->actual_area,
+                    "Bags" => $row->bags,
+                    "Seed Variety" => $row->seed_variety,
+                    "Yield / ha" => number_format($yield,2,".",","),
+                    "Date Released" => $row->date_released,
+                    "Farmer ID" => $row->farmer_id,
+                    "Released By" => $row->released_by
+                ));
+            }
+            
+            $excel_data = json_decode(json_encode($excel_data), true); //convert collection to associative array to be converted to excel
+			
+            return Excel::create("$province"."_".$municipality."_".date("Y-m-d g:i A"), function($excel) use ($excel_data) {
+                $excel->sheet("BENEFICIARY LIST", function($sheet) use ($excel_data) {
+                    /*$sheet->fromArray($excel_data, null, 'A1', false, false);
+                    $sheet->prependRow(1, array(
+                        '#', 'RSBSA #', 'QR Code', "Farmer's First Name", "Farmer's Middle Name", 
+                        "Farmer's Last Name", "Farmer's Extension Name", 'Sex', 'Birth Date',
+                        'Telephone Number', 'Province', 'Municipality', "Mother's First Name",
+                        "Mother's Middle Name", "Mother's Last Name", "Mother's Suffix", 'Distribution Area',
+                        'Actual Area', 'Bags', 'Seed Variety', 'Yield', 'Date Released', 'Farmer ID', 'Released By'
+                    ));
+                    $sheet->freezeFirstRow();
+                    $sheet->getColumnDimension('A')->setVisible(false);*/
+					$sheet->fromArray($excel_data);
+                    $sheet->freezeFirstRow();
+					
+					$sheet->setHeight(1, 30);
+					$sheet->cells('A1:V1', function ($cells) {
+						$cells->setBackground('#92D050');
+						$cells->setAlignment('center');
+						$cells->setValignment('center');
+					});
+					$sheet->setBorder('A1:V1', 'thin');
+                });
+            })->download('xlsx');
+
+            DB::commit();
+        
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e;
+        }
+    }
+
+    public function export_municipality_withUPdate($province, $municipality){
+        ini_set('memory_limit', '-1');
+        DB::beginTransaction();
+        try {
+            $prv_details = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_dropoff_point')
+                ->where('province', $province)
+                ->where('municipality', $municipality)
+                ->first();
+
+            $prv_database = $GLOBALS['season_prefix']."prv_".substr($prv_details->prv, 0, 4);
+            $database_name = "rpt_".substr($prv_details->prv, 0, 4);
+
+            $table_name = "tbl_".$prv_details->prv;
+            $this->process_municipalities($prv_database, $database_name, $table_name, $prv_details->municipality, $prv_details->province);
+            
+			//$municipal_data = DB::table($database_name.".".$table_name)->get();
+			$municipal_data = DB::table($database_name.".".$table_name)
+                ->select('id', 'rsbsa_control_number', 'qr_code', 'farmer_fname', 'farmer_mname', 'farmer_lname',
+                             'farmer_ext', 'sex', 'birthdate', 'tel_number', 'province', 'municipality', 'mother_fname',
+                             'mother_mname', 'mother_lname', 'mother_ext', 'dist_area', 'actual_area', 'bags', 'seed_variety', 'yield',
+                             'date_released', 'farmer_id', 'released_by')
+                ->get();
+
+            //after update is finished call function to export to excel
+            $excel_data = json_decode(json_encode($municipal_data), true); //convert collection to associative array to be converted to excel
+            return Excel::create("$province"."_".$municipality."_".date("Y-m-d g:i A"), function($excel) use ($excel_data) {
+                $excel->sheet("BENEFICIARY LIST", function($sheet) use ($excel_data) {
+                    $sheet->fromArray($excel_data, null, 'A1', false, false);
+                    $sheet->prependRow(1, array(
+                        '#', 'RSBSA #', 'QR Code', "Farmer's First Name", "Farmer's Middle Name", 
+                        "Farmer's Last Name", "Farmer's Extension Name", 'Sex', 'Birth Date',
+                        'Telephone Number', 'Province', 'Municipality', "Mother's First Name",
+                        "Mother's Middle Name", "Mother's Last Name", "Mother's Suffix", 'Distribution Area',
+                        'Actual Area', 'Bags', 'Seed Variety', 'Yield', 'Date Released', 'Farmer ID', 'Released By'
+                    ));
+                    $sheet->freezeFirstRow();
+                    $sheet->getColumnDimension('A')->setVisible(false);
+                });
+            })->download('xlsx');
+
+            DB::commit();
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            return $e;
+        }
+    }
+	
+	/**
+     * NRP EXPORT
+     */
+    public function export_nrp_function($prv_name){
+        //get nrp daTa
+        $nrp_data = DB::table($prv_name.".nrp_profile")
+            ->select('rsbsa', 'fname', 'mname', 'lname', 'extname', 'sex', 'birthdate', 'phonenumber', 'claimed_seed', 'num_of_bag', 'package_weight')
+            ->get();
+
+        $nrp_data = json_decode(json_encode($nrp_data), true); //convert collection to associative array to be converted to excel
+        return Excel::create("NRP_PROFILE"."_".date("Y-m-d g:i A"), function($excel) use ($nrp_data) {
+            $excel->sheet("NRP PROFILES", function($sheet) use ($nrp_data) {
+                $sheet->fromArray($nrp_data, null, 'A1', false, false);
+                $sheet->prependRow(1, array(
+                    'RSBSA #', "Farmer's First Name", "Farmer's Middle Name", 
+                    "Farmer's Last Name", "Farmer's Extension Name", 'Sex', 'Birth Date',
+                    'Telephone Number', 'Claimed Seeds', 'Number of Bags', 'Package Weight'
+                ));
+                $sheet->freezeFirstRow();
+            });
+        })->download('xlsx');
+    }
+}
