@@ -2137,6 +2137,13 @@ class DeliveryDashboardController extends Controller
                     ->where('seedTag', $batch_row->seedTag)
                     ->where("qrValStart", "=", "")
                     ->sum('totalBagCount');
+
+                    $inspected_remarks = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+                    ->where('batchTicketNumber', $batch_row->batchTicketNumber)
+                    ->where('seedVariety', $batch_row->seedVariety)
+                    ->where('seedTag', $batch_row->seedTag)
+                    ->where("qrValStart", "=", "")
+                    ->first();
                 
 
                 $inspected_bags = $inspected_bags;
@@ -2162,6 +2169,12 @@ class DeliveryDashboardController extends Controller
             }else{
                 $inspected_bags = 0;
                 $batch_status = "N/A";
+                $inspected_remarks = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+                    ->where('batchTicketNumber', $batch_row->batchTicketNumber)
+                    ->where('seedVariety', $batch_row->seedVariety)
+                    ->where('seedTag', $batch_row->seedTag)
+                    ->where("qrValStart", "=", "")
+                    ->first();
             }
             
             //get IAR number based on batch ticket number
@@ -2300,6 +2313,13 @@ class DeliveryDashboardController extends Controller
                     }
              }  //WHOLE COUNT 
              else{
+                if($inspected_bags < 1)
+                {
+                    if($inspected_remarks)
+                    {
+                        $batch_status = $inspected_remarks->remarks;
+                    }
+                }
             $batch_data = array(
                 'batchTicketNumber' => $batch_row->batchTicketNumber,
                 'province' => $batch_row->province,
@@ -3292,7 +3312,13 @@ class DeliveryDashboardController extends Controller
                     ->where('seedTag', $batch_row->seedTag)
                     ->where("qrValStart", "=", "")
                     ->sum('totalBagCount');
-                
+            
+                $inspected_remarks = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+                ->where('batchTicketNumber', $batch_row->batchTicketNumber)
+                ->where('seedVariety', $batch_row->seedVariety)
+                ->where('seedTag', $batch_row->seedTag)
+                ->where("qrValStart", "=", "")
+                ->first();
 
                 $inspected_bags = $inspected_bags;
 
@@ -3317,6 +3343,13 @@ class DeliveryDashboardController extends Controller
             }else{
                 $inspected_bags = 0;
                 $batch_status = "N/A";
+                $inspected_remarks = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+                    ->where('batchTicketNumber', $batch_row->batchTicketNumber)
+                    ->where('seedVariety', $batch_row->seedVariety)
+                    ->where('seedTag', $batch_row->seedTag)
+                    ->where("qrValStart", "=", "")
+                    ->first();
+                
             }
             
             //get IAR number based on batch ticket number
@@ -3452,6 +3485,14 @@ class DeliveryDashboardController extends Controller
                     }
              }  //WHOLE COUNT 
              else{
+
+                if($inspected_bags < 1)
+                {
+                    if($inspected_remarks)
+                    {
+                        $batch_status = $inspected_remarks->remarks;
+                    }
+                }
             $batch_data = array(
                 'iar_number' => $iar_number_str,
                 'batchTicketNumber' => $batch_row->batchTicketNumber,

@@ -9398,7 +9398,15 @@ public function generateLiveMunicipalReportDataPy(Request $request){
                 $distributed_text = "<strong> Total: ".number_format($data['ebinhi_distri']+$data['bags_claimed'])." bag(s)"."</strong>";//$data['distributed']
                 $distributed_text .= "<br> Regular: ". number_format($data['bags_claimed']);
                 $distributed_text .= "<br> BeP: " .number_format($data['ebinhi_distri']);
-                
+
+                if($data['home_dist']>0){
+                    $distributed_text .= "<br> <strong>Note:</strong> Claimed in home DOP: ". number_format($data['home_dist']);
+                }
+
+                if($data['parcel_dist']>0){
+                    $distributed_text .= "<br> <strong>Note:</strong> Claimed intended for parcel DOP: ". number_format($data['parcel_dist']);
+                }
+
                 $beneficiaries_text = "<strong> Total: ".number_format($data['regular_bene']+$data['ebinhi_bene'])."</strong>";//$data['beneficiaries']
                 $beneficiaries_text .= "<br> Regular: ". number_format($data['regular_bene']);
                 $beneficiaries_text .= "<br> BeP: " .number_format($data['ebinhi_bene']);
