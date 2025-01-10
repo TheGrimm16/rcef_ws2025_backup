@@ -20,10 +20,10 @@ cursor = connection.cursor()
 uri = "mysql://json:%s@192.168.10.44:3306/information_schema" % quote('Zeijan@13')
 
 # Load JSON data from the file (path passed as an argument)
-file_path = "C:\\xampp\\htdocs\\rcef_ds2025\\storage\\data.json"
+file_path = "C:\\xampp\\htdocs\\rcef_ws2025\\storage\\data.json"
 
 # Uncomment for live
-# file_path = "C:\\Apache24\\htdocs\\rcef_ds2025\\storage\\data.json"
+# file_path = "C:\\Apache24\\htdocs\\rcef_ws2025\\storage\\data.json"
 
 file_path = sys.argv[1]
 season = sys.argv[2]

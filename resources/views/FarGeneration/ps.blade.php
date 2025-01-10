@@ -746,7 +746,7 @@ function generateFLSAR_A3(){
         if(pre_reg == 0){
             $.ajax({
                 method: 'GET',
-                url: "https://rcef-checker.philrice.gov.ph/public/rcef_id_generator/gen_far_ds2025/trustTheSyst3m" + "/" +prefix_db + "/"+provName+"/" + municipalName,
+                url: "https://rcef-checker.philrice.gov.ph/public/rcef_id_generator/gen_far_ws2025/trustTheSyst3m" + "/" +prefix_db + "/"+provName+"/" + municipalName,
                 data: {
                     _token: _token,
                     province: provName,

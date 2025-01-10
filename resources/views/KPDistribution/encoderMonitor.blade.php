@@ -423,7 +423,7 @@
             if(season != 'default' && encoder != 'default')
             {
                 $('#download_modal').modal('hide');
-                window.open(`https://rcef-seed.philrice.gov.ph/rcef_ds2025/KPEncoderMonitoring/exportStatistics/${season}/${encoder}/${date1}/${date2}`);
+                window.open(`https://rcef-seed.philrice.gov.ph/rcef_ws2025/KPEncoderMonitoring/exportStatistics/${season}/${encoder}/${date1}/${date2}`);
    
             }
             else if(season == 'default' )

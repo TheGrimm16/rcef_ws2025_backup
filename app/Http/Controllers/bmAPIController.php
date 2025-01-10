@@ -32,7 +32,7 @@ class bmAPIController extends Controller
         $files = ["ms_2024-03-01_2024-05-22.xlsx","ms_2024-03-01_2024-05-26.xlsx","ms_2024-03-01_2024-05-31.xlsx"];
         foreach($files as $file)
         {
-            $filePath = $documentRoot . '/rcef_ws2024/public/reports/excel_export/'.$file;
+            $filePath = $documentRoot . '/rcef_ws2025/public/reports/excel_export/'.$file;
             
             if (file_exists($filePath)) {
                 unlink($filePath);

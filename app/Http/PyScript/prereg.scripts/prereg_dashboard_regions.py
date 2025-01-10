@@ -5,7 +5,7 @@ from urllib.parse import quote
 
 uri = "mysql://json:%s@192.168.10.44:3306/information_schema" % quote('Zeijan@13')
 
-season = sys.argv[1] if len(sys.argv) > 1 else "ds2025_"
+season = sys.argv[1] if len(sys.argv) > 1 else "ws2025_"
 station = sys.argv[2] if len(sys.argv) > 2 else "%"
 
 

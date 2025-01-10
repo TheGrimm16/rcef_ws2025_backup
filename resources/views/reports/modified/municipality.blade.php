@@ -472,15 +472,15 @@
         });
 
         $("#noUpdate_export_btn_ebinhi").on("click", function(e){
-            var url = 'https://rcef-seed.philrice.gov.ph/rcef_ds2025/report/excel_ebinhi/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/no_update';
+            var url = 'https://rcef-seed.philrice.gov.ph/rcef_ws2025/report/excel_ebinhi/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/no_update';
             var redirectWindow = window.open(url, '_blank');
             redirectWindow.location;
         });
         
 
 /*         $("#noUpdate_export_btn").on("click", function(e){
-            var url = 'https://rcef-seed.philrice.gov.ph/rcef_ds2025/report/excel/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/no_update';
-            // var url = 'http://localhost/rcef_ds2025/report/excel/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/no_update';
+            var url = 'https://rcef-seed.philrice.gov.ph/rcef_ws2025/report/excel/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/no_update';
+            // var url = 'http://localhost/rcef_ws2025/report/excel/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/no_update';
             var redirectWindow = window.open(url, '_blank');
             redirectWindow.location;
         }); */
@@ -530,7 +530,7 @@
         });
 
         $("#update_export_btn").on("click", function(e){
-            var url = 'https://rcef-seed.philrice.gov.ph/rcef_ds2025/report/excel/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/with_update';
+            var url = 'https://rcef-seed.philrice.gov.ph/rcef_ws2025/report/excel/'+$("#munReport_province").val()+'/'+$("#munReport_municipality").val()+'/with_update';
             var redirectWindow = window.open(url, '_blank');
             redirectWindow.location;
         });

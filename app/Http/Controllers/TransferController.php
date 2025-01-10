@@ -167,7 +167,7 @@ class TransferController extends Controller {
            // }else{
                 $btn_class = "btn btn-success btn-round btn-sm";
                 $btn_dis = "";
-                $link = "https://rcef-seed.philrice.gov.ph/rcef_ds2025/transfers/pstocs/".$row['batchTicketNumber']."/".$acre; 
+                $link = "https://rcef-seed.philrice.gov.ph/rcef_ws2025/transfers/pstocs/".$row['batchTicketNumber']."/".$acre; 
            // }
 
             
@@ -177,7 +177,7 @@ class TransferController extends Controller {
                 $partial_arr =explode(";", $row['partialTicket']);
                     foreach ($partial_arr as $key_partial => $value_partial) {
                         $btch = explode("|", $value_partial);
-                 $btn .= "<br><a type='button' class='btn btn-warning btn-round btn-sm' href='https://rcef-seed.philrice.gov.ph/rcef_ds2025/transfers/pstocs/".$btch[0]."/".$acre."'><i class='fa fa-arrow-circle-right'></i> PARTIAL TRANSFERRED TO ".$btch[1]."</a>";
+                 $btn .= "<br><a type='button' class='btn btn-warning btn-round btn-sm' href='https://rcef-seed.philrice.gov.ph/rcef_ws2025/transfers/pstocs/".$btch[0]."/".$acre."'><i class='fa fa-arrow-circle-right'></i> PARTIAL TRANSFERRED TO ".$btch[1]."</a>";
                     }
 
 

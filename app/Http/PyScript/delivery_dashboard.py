@@ -21,7 +21,7 @@ uri = "mysql://json:%s@192.168.10.44:3306/information_schema" % quote('Zeijan@13
 
 _last_s = "ds2024" # change to last season in production
 _season = sys.argv[1] if len(sys.argv) > 1 else None
-_next_s = "ds2025" # change to next season in production
+_next_s = "ws2025" # change to next season in production
 _coop_a = sys.argv[2] if len(sys.argv) > 1 else None
 
 # globals 

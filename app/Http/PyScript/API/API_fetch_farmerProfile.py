@@ -9,7 +9,7 @@ database = sys.argv[1]
 rsbsa = sys.argv[2]
 start_index = sys.argv[3]
 area_cap = 10.00
-# database = 'ds2025_prv_0231'
+# database = 'ws2025_prv_0231'
 # rsbsa = '02-31-01'
 # start_index = 1
 

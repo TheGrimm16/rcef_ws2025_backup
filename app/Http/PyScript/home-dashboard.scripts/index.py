@@ -4,7 +4,7 @@ import sys
 import json
 import time
 
-season = sys.argv[1] if len(sys.argv) > 1 else "ds2025_"
+season = sys.argv[1] if len(sys.argv) > 1 else "ws2025_"
 
 uri = "mysql://json:%s@192.168.10.44:3306/information_schema" % quote('Zeijan@13')
 

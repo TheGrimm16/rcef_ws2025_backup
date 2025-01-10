@@ -157,20 +157,20 @@ class SeedReportController extends Controller
         }
 
 //old code
-        //ds2025_rcep_reports
+        //ws2025_rcep_reports
 /*         $overall_seed_data = DB::connection('rcep_reports_db')
             ->table('lib_variety_report')
             ->select(DB::raw('SUM(total_volume) as seed_total_volume'),'seed_variety')
             ->groupBy('seed_variety')
             ->orderBy('seed_total_volume', 'DESC')
             ->get();
-        //ds2025_rcep_reports
+        //ws2025_rcep_reports
         $total_seed_variety = DB::connection('rcep_reports_db')
             ->table('lib_variety_report')
             ->select('seed_variety')
             ->groupBy('seed_variety')
             ->get();
-        //ds2025_rcep_reports
+        //ws2025_rcep_reports
         $total_seed_data = DB::connection('rcep_reports_db')
             ->table('lib_variety_report')
             ->select(DB::raw('SUM(total_volume) as seed_total_volume'))

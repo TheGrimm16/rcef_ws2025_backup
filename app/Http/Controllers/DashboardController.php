@@ -57,7 +57,7 @@ class DashboardController extends Controller {
     public function index() {
         // dd($GLOBALS['season_prefix']);
 
-        // $GLOBALS['season_prefix'] = 'ds2025_';
+        // $GLOBALS['season_prefix'] = 'ws2025_';
 		// if(Auth::user()->roles->first()->name == "da-icts"){
         //     $regions = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection_mirror.tbl_delivery")
         //         ->where('region', '!=', '')

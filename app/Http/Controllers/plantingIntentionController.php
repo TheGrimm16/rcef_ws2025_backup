@@ -18,7 +18,7 @@ use Symfony\Component\Process\Exception\ProcessFailedException;
 class plantingIntentionController extends Controller
 {
 	public function getStatistics($prv){
-		// $GLOBALS['season_prefix'] = "ds2025_";
+		// $GLOBALS['season_prefix'] = "ws2025_";
 		// dd($GLOBALS['season_prefix']);
 		$season = $GLOBALS['season_prefix'];
 

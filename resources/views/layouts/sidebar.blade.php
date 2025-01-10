@@ -434,7 +434,7 @@
 				RCEF {{$currentSeason}}
                 </div>
                 <div class="col-md-6" style="    margin: 0;    padding: 0;">
-                    <img src="{{ asset('public/images/rcef_LOGO_DS2025.PNG') }}" alt="..." class="img-circle profile_img" style="width: 4vw !important;    border-radius: 7%;    text-align: center;margin-right: 2vw;    margin-top: .2vw;">
+                    <img src="{{ asset('public/images/rcef_LOGO_ws2025.PNG') }}" alt="..." class="img-circle profile_img" style="width: 4vw !important;    border-radius: 7%;    text-align: center;margin-right: 2vw;    margin-top: .2vw;">
                 </div>
             </a>
         </div>
@@ -2042,6 +2042,6 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 	});
 
 	$("#extractDeletedIARs").on("click", function () {
-		window.open(`https://rcef-seed.philrice.gov.ph/rcef_ds2025/extractDeletedIARs`);
+		window.open(`https://rcef-seed.philrice.gov.ph/rcef_ws2025/extractDeletedIARs`);
 	});
 </script>

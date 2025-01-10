@@ -4,7 +4,7 @@
 
 # uri ="mysql://root:%s@192.168.10.44:3306/" % quote('Zeijan@13')
 
-# ssn = sys.argv[1] if len(sys.argv) > 1 else 'DS2025_'#None 
+# ssn = sys.argv[1] if len(sys.argv) > 1 else 'ws2025_'#None 
 # prov = sys.argv[2] if len(sys.argv) > 1 else 'pampanga'#None
 # prv = sys.argv[3] if len(sys.argv) > 1 else '0354'#None
 
@@ -158,7 +158,7 @@ from urllib.parse import quote
 import re
 uri ="mysql://root:%s@192.168.10.44:3306/" % quote('Zeijan@13')
 
-ssn = sys.argv[1] if len(sys.argv) > 1 else 'WS2024_'#None 
+ssn = sys.argv[1] if len(sys.argv) > 1 else 'ws2025_'#None 
 prov = sys.argv[2] if len(sys.argv) > 1 else None
 prv = sys.argv[3] if len(sys.argv) > 1 else None
 
