@@ -431,7 +431,7 @@
 
 					 
 ?>
-				RCEFS {{$currentSeason}}
+				RCEF {{$currentSeason}}
                 </div>
                 <div class="col-md-6" style="    margin: 0;    padding: 0;">
                     <img src="{{ asset('public/images/rcef_LOGO_ws2025.PNG') }}" alt="..." class="img-circle profile_img" style="width: 4vw !important;    border-radius: 7%;    text-align: center;margin-right: 2vw;    margin-top: .2vw;">
