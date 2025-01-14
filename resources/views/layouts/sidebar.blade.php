@@ -709,7 +709,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									<li><a href="{{route('encoding_vs')}}">Online Encoding (from Verifier)</a></li>
 									<li><a href="{{route('encoding_vs_fca')}}">Online Encoding (FCA Member)</a></li>
 									<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
-									<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
+									<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li> -->
 									{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
 									
 								@endif
@@ -1195,7 +1195,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('encoding_vs')}}">Online Encoding (from Verifier)</a></li>
 								<li><a href="{{route('encoding_vs_fca')}}">Online Encoding (FCA Member)</a></li>
 								<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
-								<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
+								<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li> -->
 								{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
 								<!-- <li><a href="{{route('farmerVerification')}}">Farmer KYC</a></li> -->
 								<!-- <li><a href="{{route('FarmerKYCMonitoring_index')}}">Farmer KYC Monitoring</a></li> -->
@@ -1350,7 +1350,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('encoding_vs')}}">Online Encoding (from Verifier)</a></li>
 								<li><a href="{{route('encoding_vs_fca')}}">Online Encoding (FCA Member)</a></li>
 								<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
-								<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
+								<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li> -->
 								<!-- <li><a href="{{route('onlineEncodingNew')}}">Online Encoding for New Farmers</a></li> -->
 								{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
 							@endif
@@ -1360,7 +1360,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 										<li><a href="{{route('encoding_vs')}}">From Verifier</a></li>
 										<li><a href="{{route('encoding_vs_fca')}}">FCA Member</a></li>
 										<li><a href="{{route('encoding_vs_lowland')}}">Small Landholding</a></li>
-										<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Home Address Claims</a></li>
+										<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Home Address Claims</a></li> -->
 										<!-- <li><a href="{{route('onlineEncodingNew')}}">New Farmers</a></li> -->
 										{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
 									</ul>

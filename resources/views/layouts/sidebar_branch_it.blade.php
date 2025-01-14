@@ -153,7 +153,7 @@
 									<li><a href="{{route('encoding_vs')}}">Online Encoding For Synced Farmers From Verifier</a></li>
 									<li><a href="{{route('encoding_vs_fca')}}">Online Encoding For Endorsed FCA Member</a></li>
 									<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding For Small Landholding Farmers</a></li>
-									<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding For Home Address Claims</a></li>
+									<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding For Home Address Claims</a></li> -->
 									<!-- <li><a href="{{route('onlineEncodingNew')}}">Online Encoding For New Farmers</a></li> -->
 								  
 									
