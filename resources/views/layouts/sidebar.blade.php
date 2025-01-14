@@ -1197,8 +1197,8 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
 								<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
 								{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
-								<li><a href="{{route('farmerVerification')}}">Farmer KYC</a></li>
-								<li><a href="{{route('FarmerKYCMonitoring_index')}}">Farmer KYC Monitoring</a></li>
+								<!-- <li><a href="{{route('farmerVerification')}}">Farmer KYC</a></li> -->
+								<!-- <li><a href="{{route('FarmerKYCMonitoring_index')}}">Farmer KYC Monitoring</a></li> -->
 
 								
 
@@ -1367,8 +1367,8 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								</li>
 
 								@if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->roles->first()->name == "administrator" || Auth::user()->roles->first()->name == "seed-inspector" || Auth::user()->roles->first()->name == "system-encoder")
-								<li><a href="{{route('farmerVerification')}}">Farmer KYC</a></li>
-								<li><a href="{{route('FarmerKYCMonitoring_index')}}">Farmer KYC Monitoring</a></li>
+								<!-- <li><a href="{{route('farmerVerification')}}">Farmer KYC</a></li> -->
+								<!-- <li><a href="{{route('FarmerKYCMonitoring_index')}}">Farmer KYC Monitoring</a></li> -->
 								@endif
 
 								<li><a href="{{route('distribution.app.stocks_home')}}">Release Stocks</a></li>
