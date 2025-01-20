@@ -42,6 +42,29 @@ class bmAPIController extends Controller
         }
     }
 
+    public function updateKPdata($season){
+        $season = $season.'_';
+
+		$pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+
+		$scriptPath = base_path('app//Http//PyScript//bm//updateKPdata.py');
+
+		$escapedSeason = escapeshellarg($season);
+		$command = "$pythonPath \"$scriptPath\" $escapedSeason";
+		
+		$process = new Process($command);
+
+		try {
+			$process->mustRun();
+			$data = $process->getOutput();
+            return $data;
+		} catch (ProcessFailedException $exception) {
+			echo $exception->getMessage();
+		}
+
+    }
+
     public function updateMoa(){
         $season = $GLOBALS['season_prefix'];
 

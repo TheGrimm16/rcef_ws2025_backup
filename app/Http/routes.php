@@ -2268,6 +2268,7 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     
     Route::get('/api/bm/unlinkExcelExport', ['as' => 'unlinkExcelExport', 'uses' => 'bmAPIController@unlinkExcelExport']);
     Route::get('/api/bm/updateMoa', ['as' => 'bm.updateMoa', 'uses' => 'bmAPIController@updateMoa']);
+    Route::get('/api/bm/updateKPdata/{season}', ['as' => 'bm.updateKPdata', 'uses' => 'bmAPIController@updateKPdata']);
 
     //coopApp
     Route::get('/api/bm/coopAppLogin/{login_id}/{password}', ['as' => 'bm.coopAppLogin', 'uses' => 'bmAPIController@coopAppLogin']);
