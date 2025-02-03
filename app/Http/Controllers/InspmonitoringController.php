@@ -21,7 +21,7 @@ class InspmonitoringController extends Controller {
 
         $model = new Inspmonitoring();
         
-        if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rm.capiroso" || Auth::user()->username == "kruz" || Auth::user()->username == "jc.tizon"|| Auth::user()->username == "ddc.espiritu" || Auth::user()->username == "renaida_pascual"){
+        if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rm.capiroso" || Auth::user()->username == "kruz" || Auth::user()->username == "jc.tizon"|| Auth::user()->username == "ddc.espiritu" || Auth::user()->username == "renaida_pascual" || Auth::user()->username == "arfulgencio"){
             $inspected_provinces = $model->_inspected_provinces();
         }else{
             $inspected_provinces = $model->_inspected_provinces_filtered();
