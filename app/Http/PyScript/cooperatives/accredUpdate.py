@@ -26,7 +26,7 @@ for index,data in getAllCoop_df.iterrows():
     coopId = data['coopId']
     accred = data['accreditation_no']
     
-    updateCommitment_query = f'UPDATE {season}rcep_seed_cooperatives.tbl_commitment_regional SET accreditation_no = "{newAccred}" WHERE coopID = "{coopId}"'
+    updateCommitment_query = f'UPDATE {season}rcep_seed_cooperatives.tbl_commitment_regional SET accreditation_no = "{newAccred}" WHERE coop_id = "{coopId}"'
     cursor.execute(updateCommitment_query)
     
     updateTblClaim_query = f'UPDATE {season}rcep_paymaya.tbl_claim SET coopAccreditation = "{newAccred}" WHERE coopAccreditation = "{accred}"'
@@ -59,7 +59,7 @@ for index,data in getAllCoop_df.iterrows():
     updateSeedGrower_query = f'UPDATE {season}rcep_delivery_inspection.tbl_seed_grower SET coop_accred = "{newAccred}" WHERE coop_accred = "{accred}"'
     cursor.execute(updateSeedGrower_query)
 
-    updateCooperative_query = f'UPDATE {season}rcep_seed_cooperatives.tbl_cooperatives SET accreditation_no = "{newAccred}" WHERE coopID = "{coopId}"'
+    updateCooperative_query = f'UPDATE {season}rcep_seed_cooperatives.tbl_cooperatives SET accreditation_no = "{newAccred}" WHERE coopId = "{coopId}"'
     cursor.execute(updateCooperative_query)
 
     connection.commit()
