@@ -383,6 +383,7 @@ Route::group(['middleware' => ['auth','logMw']], function() {
     
 
 	Route::post('cooperatives/commitment/moa', ['as' => 'coop.commitment.moa', 'uses'=>'CoopController@updateCoopMOA']);
+	Route::post('cooperatives/commitment/accred', ['as' => 'coop.commitment.accred', 'uses'=>'CoopController@updateCoopAccred']);
 	Route::post('cooperatives/getStations', ['as' => 'coop.getStations', 'uses'=>'CoopController@getStations']);
     // new as of 03-11-2021 #newroute
     Route::post('cooperatives/commitment/efficiency', ['as' => 'coop.commitment.efficiency', 'uses'=>'CoopController@updateCoopTargetEfficiency']);

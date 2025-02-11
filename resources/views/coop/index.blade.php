@@ -107,6 +107,28 @@
                 <!-- /delivery details -->
             </div>
 
+            <!-- UPDATE COOP ACCRED -->
+            <div id="accred_number_modal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">
+                                UPDATE ACCREDITATION NUMBER
+                            </h4>
+                        </div>
+                        <div class="modal-body">
+                            <input type="hidden" id="coop_id_accred" name="coop_id_accred" value="">
+                            <input type="text" id="coop_accred_number" name="coop_accred_number" class="form-control" placeholder="ACCREDITATION NUMBER" value="">
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger"><i class="fa fa-times-circle"></i> Cancel</button>
+                            <button type="button" class="btn btn-info" id="update_accred_btn"><i class="fa fa-file"></i> SAVE AS CURRENT ACCREDITATION NUMBER</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- UPDATE COOP ACCRED -->
+
             <!-- UPDATE MOA NUMBER -->
             <div id="moa_number_modal" class="modal fade" role="dialog">
                 <div class="modal-dialog">
@@ -663,12 +685,37 @@
             ]
         });
 
+        $('#accred_number_modal').on('show.bs.modal', function (e) {
+            var coopID = $(e.relatedTarget).data('id');
+            var accred_number = $(e.relatedTarget).data('accred');
+
+            $("#coop_accred_number").val(accred_number);
+            $("#coop_id_accred").val(coopID);
+        });
         $('#moa_number_modal').on('show.bs.modal', function (e) {
             var coopID = $(e.relatedTarget).data('id');
             var moa_number = $(e.relatedTarget).data('moa');
 
             $("#coop_moa_number").val(moa_number);
             $("#coop_id_moa").val(coopID);
+        });
+
+        $("#update_accred_btn").on("click", function(e){
+            var accred_number = $("#coop_accred_number").val();
+            var coop_id = $("#coop_id_accred").val();
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('coop.commitment.accred') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    coop_id: coop_id,
+                    accred_number: accred_number
+                },
+                success: function(data){
+                    window.location = data;
+                }
+            });
         });
 
         $("#update_moa_btn").on("click", function(e){

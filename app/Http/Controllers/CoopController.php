@@ -237,6 +237,7 @@ class CoopController extends Controller
                         $bags.
                         '" data-acn="'.$row->accreditation_no.
                         '" data-moa="'.$row->current_moa.'" class="btn btn-warning btn-sm"><i class="fa fa-eye"></i></a>
+                        <a href="#" data-toggle="modal" data-target="#accred_number_modal" data-id="'.$row->coopId.'" data-acn="'.$row->accreditation_no.'" class="btn btn-info btn-sm"><i class="fa fa-users"></i></a>
                         <a href="#" data-toggle="modal" data-target="#moa_number_modal" data-id="'.$row->coopId.'" data-moa="'.$row->current_moa.'" class="btn btn-info btn-sm"><i class="fa fa-file"></i></a>
                         <a href="#" data-toggle="modal" data-target="#target_efficiency_modal" data-eff="'.$row->target_efficiency.'" data-id="'.$row->coopId.'" class="btn btn-dark btn-sm"><i class="fa fa-percent" aria-hidden="true"></i></a>
 						<a href="" data-toggle="modal" data-target="#commitmentAdjustmentModal" class="btn btn-warning btn-sm" data-balance="'.$available_balance.'" data-id="'.$row->coopId.'" data-name="'.$row->coopName.'" data-acn="'.$row->accreditation_no.'" data-moa="'.$row->current_moa.'" data-toggle="modal" data-target="#commitmentAdjustmentModal"><i class="fa fa-exchange"></i></a>
@@ -877,6 +878,35 @@ class CoopController extends Controller
         return route('coop.commitment');
     }
 
+    public function updateCoopAccred(Request $request){
+
+        $coop_id = $request->coop_id;
+        $accred_number = $request->accred_number;
+
+        $season = $GLOBALS['season_prefix'];
+        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+
+        $scriptPath = base_path('app//Http//PyScript//cooperatives//accredUpdate.py');
+
+        $escapedCoopId = escapeshellarg($coop_id);
+        $escapedAccred = escapeshellarg($accred_number);
+        $escapedSeason = escapeshellarg($season);
+        $command = "$pythonPath \"$scriptPath\" $escapedCoopId $escapedSeason $escapedAccred";
+        
+        $process = new Process($command);
+
+        try {
+            $process->mustRun();
+            $output = $process->getOutput();
+            dd($output);
+            return route('coop.commitment');
+            // return $output;
+        } catch (ProcessFailedException $exception) {
+            echo $exception->getMessage();
+        }
+
+    }
     public function updateCoopMOA(Request $request){
 
         DB::connection('seed_coop_db')->table('tbl_cooperatives')
