@@ -899,7 +899,7 @@ class CoopController extends Controller
         try {
             $process->mustRun();
             $output = $process->getOutput();
-            dd($output);
+            // dd($output);
             return route('coop.commitment');
             // return $output;
         } catch (ProcessFailedException $exception) {
