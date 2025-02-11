@@ -1528,8 +1528,21 @@ class virtual_encodingController extends Controller
 
                     if($prv_dropoff_id == '')
                     {
-                        $prv_code_released = str_replace("-", "", substr($rsbsa_control_no, 0,5));
-                        $code_released = str_replace("-", "", substr($rsbsa_control_no, 0,5));
+                        $checkRsbsa = explode("-",$rsbsa_control_no);
+                        if(strlen($checkRsbsa[1]) == 3)
+                        {
+                               $tempPrv = str_replace("-", "", substr($rsbsa_control_no, 0,6));
+                               $getPrv = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.geo_map")
+                               ->where("geo_code","LIKE",$tempPrv."%")
+                               ->first();
+                               $prv_code_released = substr($getPrv->geo_code1,0,4);
+                               $code_released = substr($getPrv->geo_code1,0,4);
+                        }
+                        else
+                        {
+                            $prv_code_released = str_replace("-", "", substr($rsbsa_control_no, 0,5));
+                            $code_released = str_replace("-", "", substr($rsbsa_control_no, 0,5));
+                        }
                     }
                     
                     // dd($prv_code_parcel,$prv_code_released, $code_parcel, $code_released);
