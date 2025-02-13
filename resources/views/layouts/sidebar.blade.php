@@ -1102,6 +1102,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							 <li><a href="{{route('rcef.extension.home')}}">Data-Entry / Updating</a></li>
 							 <li><a href="{{route('KPEncoderMonitoring_index')}}">Encoder Monitoring</a></li>
 							 <li><a href="{{route('KPDistribution_index')}}">KP-IEC Distribution Dashboard</a></li>
+							 <li><a href="{{route('dashboard.gad.view')}}">GAD Dashboard</a></li>
 							 
 						 <!-- <li><a href="{{route('rcef.inspection.buffer.designation')}}">Reports</a></li> -->
 						</ul>
