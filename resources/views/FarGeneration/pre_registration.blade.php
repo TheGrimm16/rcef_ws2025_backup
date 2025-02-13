@@ -106,7 +106,7 @@
 	<script type="text/javascript">
         <?php 
 
-        if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
+        if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
 
 
         }else{

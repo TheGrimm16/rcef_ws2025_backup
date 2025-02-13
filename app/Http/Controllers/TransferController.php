@@ -19,7 +19,7 @@ class TransferController extends Controller {
 
 	public function index() {
             /*
-            if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedictos" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
+            if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
 
             }else{
 
@@ -46,7 +46,7 @@ class TransferController extends Controller {
         }
 
         /*
-        if(Auth::user()->username == "r.benedicto"){
+        if(Auth::user()->roles->first()->name == "rcef-programmer"){
         
                 return view('transfer.pstocs.index')
                                 ->with(compact('dropoff'))
@@ -608,7 +608,7 @@ class TransferController extends Controller {
 	
 	public function ws_index(){
         /*
-        if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedictos" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
+        if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
 
             }else{
 

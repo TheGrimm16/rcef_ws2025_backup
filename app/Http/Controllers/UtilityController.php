@@ -1556,7 +1556,7 @@ $db = $GLOBALS['season_prefix'].'prv_'.$request->prv;
 										"seed_variety" => $seedVariety,
 										"bags" => $totalBag,
 										"date_created" => date('Y-m-d h:m:s'),
-										"transferred_by" => "r.benedicto"
+										"transferred_by" => ""
 									]); 
 
 						

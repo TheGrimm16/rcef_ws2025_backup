@@ -88,7 +88,7 @@ class calendarController extends Controller
         $province = "No Province";
    }
 
-   if(Auth::user()->username == "r.benedicto"){
+   if(Auth::user()->roles->first()->name == "rcef-programmer"){
         $province = "%";
    }
 

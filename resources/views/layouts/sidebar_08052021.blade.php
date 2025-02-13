@@ -100,7 +100,7 @@
 								<li><a href="{{route('payment_dashboard.home')}}">Payment Dashboard</a></li>
 								<li><a href="{{route('dashboard.gad.view')}}">GAD Dashboard</a></li>
 
-								@if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->username == "r.benedicto" )
+								@if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->roles->first()->name == "rcef-programmer" )
 								<li><a href="{{route('analytics.home')}}"> Analytics Page</a></li>
 
 								@endif
@@ -126,7 +126,7 @@
 							<ul class="nav child_menu">
 							  <li><a href="#" data-toggle="modal" data-target="#flsar_modal">Locate FLSAR</a></li>
 							  <li><a href="{{route('FarGenerationPs.index')}}"><i class="fa fa-list"></i> Generate FLSAR</a></li>
-							   @if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga")
+							   @if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga")
 									 <li><a href="{{route('FarGeneration.index')}}"><i class="fa fa-list"></i> Generate Current Season FLSAR</a></li>
 								 @endif
 
@@ -138,7 +138,7 @@
 
 						<li><a><i class="fa fa-globe"></i> Distribution Monitoring<span class="fa fa-chevron-down"></span></a>
 							<ul class="nav child_menu">
-							  @if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->username == "r.benedicto" || Auth::user()->username == "racariaga" || Auth::user()->username == "19-0922" || Auth::user()->username == "kjgdeleon")
+							  @if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "racariaga" || Auth::user()->username == "19-0922" || Auth::user()->username == "kjgdeleon")
 								<li><a href="{{route('distribution.app.stocks_home')}}">Release Stocks</a></li>
 								<li><a href="{{route('distribution.app.stocks_seedType')}}">Change Seed Type</a></li>
 							
@@ -151,7 +151,7 @@
 							</ul>
 						</li>
 						
-						@if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->userId == 2618 || Auth::user()->roles->first()->name == "data-officer" || Auth::user()->roles->first()->name == "rcef-pmo" || Auth::user()->username == "kjgdeleon" || Auth::user()->username == "r.benedicto" )
+						@if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->userId == 2618 || Auth::user()->roles->first()->name == "data-officer" || Auth::user()->roles->first()->name == "rcef-pmo" || Auth::user()->username == "kjgdeleon" || Auth::user()->roles->first()->name == "rcef-programmer" )
 						<li><a><i class="fa fa-google"></i> RCEF Google Sheet<span class="fa fa-chevron-down"></span></a>
 							<ul class="nav child_menu">
 							  <li class="sub_menu"><a href="{{route('rcep.google_sheet.summary')}}">Summary</a></li>
@@ -172,7 +172,7 @@
 							  <li class="sub_menu"><a href="{{route('paymaya.beneficiary_report')}}">Beneficiary Reports</a></li>
 							   <li><a href="{{route('paymaya.beneficiary.codes')}}"><i class="fa fa-barcode"></i> Beneficiary List with Codes</a></li>
 
-							   @if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon" )
+							   @if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon" )
 									<li><a href="{{route('far.ebinhi.ui')}}"><i class="fa fa-list"></i> Generate e-Binhi FLSAR</a></li>
 									<li class="sub_menu"><a href="{{route('upload.paymaya.process.index')}}" onclick="return confirm('Proceed Processing Paymaya Codes?')">Process Paymaya Code</a></li> 
                             
@@ -234,11 +234,11 @@
 						  </li>
 
 						 
-						 @if(Auth::user()->roles->first()->name == "kjgdeleon" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "19-0922")
+						 @if(Auth::user()->roles->first()->name == "kjgdeleon" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "19-0922")
 						  <li><a href="{{route('palaysikatan.farmers')}}"><i class="fa fa-list-alt"></i>Palaysikatan</a></li>
 						  @endif
 
-						  @if(Auth::user()->roles->first()->name == "encoder_yield" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso")
+						  @if(Auth::user()->roles->first()->name == "encoder_yield" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso")
 							  	 <li><a href="{{route('encoder.yield.home')}}"><i class="fa fa-pencil-square-o"></i>Yield Updating</a></li>
 							  @endif
 
@@ -275,7 +275,7 @@
 									</ul>
 								  </li>
 								  
-								 @if(Auth::user()->username == "jpalileo"  || Auth::user()->username == "19-0922" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso") 
+								 @if(Auth::user()->username == "jpalileo"  || Auth::user()->username == "19-0922" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso") 
 									 <li><a>Allocation vs Delivery<span class="fa fa-chevron-down"></span></a>
 											<ul class="nav child_menu">
 											  <li class="sub_menu"><a href="{{route('delivery.allocation.view', 'regional')}}">Regional</a></li>
@@ -303,7 +303,7 @@
 								@endif
 								
 								
-								@if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso" )
+								@if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso" )
 								 	
 							 
 
@@ -406,7 +406,7 @@
 								<li><a href="#" data-toggle="modal" data-target="#utilDel_modal">Cancel Delivery</a></li>
 								@endif	
 								
-								@if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon")
+								@if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon")
 								<li><a href="{{route('delivery_web.cancel.home')}}"> Cancel Confirmed Deliveries</a></li>	
 
 								@endif
@@ -417,12 +417,12 @@
 							</li>
 							<li><a href="{{route('HistoryMonitoring.index')}}"> Transfer Data List </a></li>
 
-							@if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon"  || Auth::user()->roles->first()->name == "data-officer")
+							@if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon"  || Auth::user()->roles->first()->name == "data-officer")
 							<li><a href="#" data-toggle="modal" data-target="#iar_print_log">Reset printed IAR</a></li>
 							@endif
 
 
-							 @if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon")
+							 @if(Auth::user()->username == "19-0922" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" ||  Auth::user()->username == "kjgdeleon")
                              
                            	
 
@@ -451,7 +451,7 @@
                             
 							@endif
 
-							@if(Auth::user()->username == "r.benedicto")
+							@if(Auth::user()->roles->first()->name == "rcef-programmer")
 					
 							@endif
 

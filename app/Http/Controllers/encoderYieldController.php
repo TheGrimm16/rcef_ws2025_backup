@@ -50,7 +50,7 @@ class encoderYieldController extends Controller
         }
 
 
-         if(Auth::user()->roles->first()->name == "encoder_yield" || Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso"){
+         if(Auth::user()->roles->first()->name == "encoder_yield" || Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga" || Auth::user()->username == "rm.capiroso"){
             return view("yieldview.index")
             ->with("province", $province_list);
          }else{

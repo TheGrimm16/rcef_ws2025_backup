@@ -33,7 +33,7 @@ class dataYieldController extends Controller
         }
 
 
-         if(Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
+         if(Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rd.rimandojr" || Auth::user()->username == "racariaga"){
             return view("yieldview.data_index")
             ->with("region", $region_list);
          }else{

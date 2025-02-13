@@ -85,7 +85,7 @@
                                 {{-- <th>Date Printed</th> --}}
                             </thead>
                         </table>
-                        @if(Auth::user()->username == "r.benedicto_2" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva" ||  Auth::user()->username == "jt.rivera" ||  Auth::user()->username == "reggie_dioses")
+                        @if(Auth::user()->roles->first()->name == "rcef-programmer" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva" ||  Auth::user()->username == "jt.rivera" ||  Auth::user()->username == "reggie_dioses")
                             <div id = "dl1" style="display: none">
                                 <a href="#" target="_blank" data-toggle='modal' data-target='#download_modal_dbp' class="btn btn-success btn-sm" ><i class="fa fa-download"></i> Download Payment Form</a>
                                 {{-- <a href="" target="_blank" data-toggle='modal' class="btn btn-success btn-sm" ><i class="fa fa-download"></i> Download Payment Report</a> --}}

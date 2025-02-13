@@ -30,7 +30,7 @@ class opsPlanningController extends Controller
             ->groupBy("regionName")
             ->get();
 
-        if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->username == "r.benedicto" || Auth::user()->username == "racariaga" || Auth::user()->username == "19-0922" || Auth::user()->username == "kjgdeleon"){
+        if(Auth::user()->userId == 28 || Auth::user()->userId == 370 || Auth::user()->userId == 2 || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "racariaga" || Auth::user()->username == "19-0922" || Auth::user()->username == "kjgdeleon"){
             return view("opsPlanning.index")
             ->with("regionList", $regionList);
         }else{

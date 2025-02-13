@@ -936,7 +936,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 										@if(Auth::user()->roles->first()->name == "rcef-programmer")
 											<li><a href="{{route('encoder.yield.home')}}">Yield Updating</a></li>
 										@endif
-										@if(Auth::user()->username == "r.benedicto_2")
+										@if(Auth::user()->roles->first()->name == "rcef-programmer")
 											<li><a href="{{route('dopMaker.replacement')}}">Open for Replacement</a></li>
 										@endif
 							</ul>
@@ -1419,7 +1419,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 	
 						<li><a><i class="fa fa-binoculars"></i> BeP Monitoring<span class="fa fa-chevron-down"></span></a>
 							<ul class="nav child_menu">
-								@if(Auth::user()->username == "	m.padilla" || Auth::user()->username == "r.benedicto_2")
+								@if(Auth::user()->username == "	m.padilla" || Auth::user()->roles->first()->name == "rcef-programmer")
 									  <li><a href="{{route('accountant.home')}}">e binhi Accountant</a></li>
 								@endif
 								<li><a href="{{route('BePDashboard_index')}}">BeP Dashboard</a></li>
@@ -1438,7 +1438,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									<li class="sub_menu"><a href="{{route('paymaya.municipalities.list')}}">Municipalities</a></li>
 									@endif
 								 @endif
-								  @if(Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto_2" || Auth::user()->username == "reggie_dioses" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva"||  Auth::user()->username == "e.lopez"||  Auth::user()->username == "jt.rivera" || Auth::user()->username == "renaida_pascual" || Auth::user()->username == "processor_jbl" || Auth::user()->username == "ar.aromin"|| Auth::user()->username == "ar.aromin1"|| Auth::user()->username == "danrio"|| Auth::user()->username == "bm.delossantos" || Auth::user()->username == "v.villadon" ||  Auth::user()->username == "tine" || Auth::user()->username == "ddc.espiritu")
+								  @if(Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "reggie_dioses" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva"||  Auth::user()->username == "e.lopez"||  Auth::user()->username == "jt.rivera" || Auth::user()->username == "renaida_pascual" || Auth::user()->username == "processor_jbl" || Auth::user()->username == "ar.aromin"|| Auth::user()->username == "ar.aromin1"|| Auth::user()->username == "danrio"|| Auth::user()->username == "bm.delossantos" || Auth::user()->username == "v.villadon" ||  Auth::user()->username == "tine" || Auth::user()->username == "ddc.espiritu")
 							
 								  <li><a>Payments<span class="fa fa-chevron-down"></span></a>
 								 
@@ -1451,7 +1451,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								  </ul>
 								</li>
 							   @endif
-							   @if(Auth::user()->username == "r.benedicto_2")
+							   @if(Auth::user()->roles->first()->name == "rcef-programmer")
 							   <li><a href="{{route('ebinhi.utility')}}">e-Binhi Tools</a></li>
 								@endif
 
@@ -1582,7 +1582,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 						  @if(Auth::user()->roles->first()->name == "rcef-programmer")
 							  	 <li><a href="{{route('encoder.yield.home')}}"><i class="fa fa-pencil-square-o"></i>Yield Updating</a></li>
 							  @endif
-						@if(Auth::user()->username == "r.benedicto_2")
+						@if(Auth::user()->roles->first()->name == "rcef-programmer")
 							  <li><a href="{{route('dopMaker.replacement')}}"><i class="fa fa-openid"></i>Open for Replacement</a></li>
 						 @endif
 

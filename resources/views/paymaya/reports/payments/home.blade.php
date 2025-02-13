@@ -94,7 +94,7 @@
                             {{-- <a href="" target="_blank" data-toggle='modal' class="btn btn-success btn-sm" ><i class="fa fa-download"></i> Download Payment Report</a> --}}
                             <button class="btn btn-success btn-sm" id="btn_report_dl"><i class="fa fa-download"></i> Download Payment Report</button>
                         </div>
-                        @if(Auth::user()->username == "r.benedicto_2" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jt.rivera" ||  Auth::user()->username == "reggie_dioses" ||  Auth::user()->username == "renaida_pascual" || Auth::user()->username == "processor_jbl" || Auth::user()->username == "ar.aromin")
+                        @if(Auth::user()->roles->first()->name == "rcef-programmer" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jt.rivera" ||  Auth::user()->username == "reggie_dioses" ||  Auth::user()->username == "renaida_pascual" || Auth::user()->username == "processor_jbl" || Auth::user()->username == "ar.aromin")
                         @endif
                 </div>
             </div>

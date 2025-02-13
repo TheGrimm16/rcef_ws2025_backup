@@ -177,7 +177,7 @@ class HistoryMonitoringController extends Controller
                 $origin_details = $dop->retrieveDOP($row->origin_dop_id);
                 $origin_id = $row->origin_dop_id;
 
-                if(Auth::user()->username == $row->transferred_by || Auth::user()->username == "r.benedicto" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bryan0629"){
+                if(Auth::user()->username == $row->transferred_by ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos"){
                 return "<a class='btn btn-warning btn-xs' data-rowid='$row->transfer_id' data-dest='$dest_details' data-origin='$origin_details' data-batch='$row->batch_number' data-bcount='$row->bags' data-doporigin='$origin_id' data-ttype='cstocs_all' data-toggle='modal' data-target='#deleteHistoryData'><i class='fa fa-trash'></i> CANCEL</a>";
                 }else{
                 return $row->transferred_by;
@@ -244,10 +244,10 @@ class HistoryMonitoringController extends Controller
                         
                       $transferlogid = $dop->getTransferLogInfo('transfer_id',$batch_number,$row->prv_dropoff_id);
                       $transferBY = $dop->getTransferLogInfo('transferred_by',$batch_number,$row->prv_dropoff_id);
-                if(Auth::user()->username == $transferBY || Auth::user()->username == "r.benedicto" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bryan0629"){
+                if(Auth::user()->username == $transferBY ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos"){
                 return "<a class='btn btn-warning btn-xs' data-rowid='$row->actualDeliveryId' data-dest='$dest_details' data-origin='$origin_details' data-batch='$batch_number' data-bcount='$row->totalBagCount' data-doporigin='$origin_id' data-ttype='cstocs_partial' data-seedtag='$row->seedTag' data-transferlogid='$transferlogid'  data-toggle='modal' data-target='#deleteHistoryData'><i class='fa fa-trash'></i> CANCEL</a>";
                 }else{
-                    if(Auth::user()->username=="r.benedicto" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bryan0629"){
+                    if(Auth::user()->roles->first()->name == "rcef-programmer" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos"){
                         return "<a class='btn btn-warning btn-xs' data-rowid='$row->actualDeliveryId' data-dest='$dest_details' data-origin='$origin_details' data-batch='$batch_number' data-bcount='$row->totalBagCount' data-doporigin='$origin_id' data-ttype='cstocs_partial' data-seedtag='$row->seedTag' data-transferlogid='$transferlogid'  data-toggle='modal' data-target='#deleteHistoryData'><i class='fa fa-trash'></i> CANCEL</a>";
                     }else{
                         return $transferBY;
@@ -506,7 +506,7 @@ class HistoryMonitoringController extends Controller
                             $coop_accre = "TRANSFER";
                     }
 
-                     if(Auth::user()->username == $transferBY || Auth::user()->username == "r.benedicto" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bryan0629"){
+                     if(Auth::user()->username == $transferBY ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos"){
                         return "<a class='btn btn-warning btn-xs' data-rowid='$row->actualDeliveryId' data-dest='$dest_details' data-origin='$origin_details' data-batch='$coop_accre' data-bcount='$row->totalBagCount' data-doporigin='$origin_id' data-ttype='pstocs' data-seedtag='$transferBY' data-transferlogid='$transferlogid'  data-toggle='modal' data-target='#deleteHistoryData'><i class='fa fa-trash'></i> CANCEL </a> <br>";
                      }else{
                             return $transferBY;
