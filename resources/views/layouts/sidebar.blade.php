@@ -1098,6 +1098,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
                 <ul class="nav side-menu">
                     <li><a><i class="fa fa-puzzle-piece"></i> RCEF Extension<span class="fa fa-chevron-down"></span></a>
 						<ul class="nav child_menu">
+							 <li><a href="{{route('FarGenerationPs.index')}}">Generate Municipal FAR</a></li>
 							 <li><a href="{{route('rcef.extension.home')}}">Data-Entry / Updating</a></li>
 							 <li><a href="{{route('KPEncoderMonitoring_index')}}">Encoder Monitoring</a></li>
 							 <li><a href="{{route('KPDistribution_index')}}">KP-IEC Distribution Dashboard</a></li>
