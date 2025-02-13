@@ -1886,16 +1886,18 @@ class CoopController extends Controller
                 if(count($sg_check) > 0){
                     $sg_id = $sg_check->sg_id;
                 }else{
-                    $sg_id = DB::connection('delivery_inspection_db')->table('tbl_seed_grower')->insertGetId([
-                        'coop_accred' => $request->coop,
-                        'is_active' => 1,
-                        'is_block' => 0,
-                        'fname' => '',
-                        'mname' => '',
-                        'lname' => '',
-                        'extension' => '',
-                        'full_name' => $request->sg_name
-                    ]);
+                    Session::flash("error_msg", "Invalid Seed Grower Name");
+                    return redirect()->route('coop.rla.bpi');
+                    // $sg_id = DB::connection('delivery_inspection_db')->table('tbl_seed_grower')->insertGetId([
+                    //     'coop_accred' => $request->coop,
+                    //     'is_active' => 1,
+                    //     'is_block' => 0,
+                    //     'fname' => '',
+                    //     'mname' => '',
+                    //     'lname' => '',
+                    //     'extension' => '',
+                    //     'full_name' => $request->sg_name
+                    // ]);
                 }
 
                 //$request_details = DB::connection('delivery_inspection_db')->table('rla_requests')->where('id', $request_id)->first();

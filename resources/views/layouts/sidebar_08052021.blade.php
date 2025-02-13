@@ -479,7 +479,6 @@
 	$userManagement = array();
 	$userManagement["19-0922"] = "19-0922";
 	$userManagement["jpalileo"] = "jpalileo";
-	$userManagement["r.benedicto"] = "r.benedicto";
 	$userManagement["rd.rimandojr"] = "rd.rimandojr";
 	$userManagement["racariaga"] = "racariaga";
 	$userManagement["kjgdeleon"] = "kjgdeleon";

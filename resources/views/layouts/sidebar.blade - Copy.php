@@ -404,7 +404,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 	
 						<li><a><i class="fa fa-binoculars"></i> e-Binhi Monitoring<span class="fa fa-chevron-down"></span></a>
 							<ul class="nav child_menu">
-								@if(Auth::user()->username == "	m.padilla" || Auth::user()->username == "r.benedicto_2")
+								@if(Auth::user()->username == "	m.padilla" || Auth::user()->roles->first()->name == "rcef-programmer")
 									  <li><a href="{{route('accountant.home')}}">e binhi Accountant</a></li>
 								@endif
 							  <li><a href="{{route('paymaya.seed_distribution')}}">Beneficiary List</a></li>
@@ -423,7 +423,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									<li class="sub_menu"><a href="{{route('paymaya.municipalities.list')}}">Municipalities</a></li>
 									@endif
 								 @endif
-								  @if(Auth::user()->username == "jpalileo" || Auth::user()->username == "r.benedicto_2" || Auth::user()->username == "eb.cabanisas" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva"||  Auth::user()->username == "e.lopez"||  Auth::user()->username == "jt.rivera")
+								  @if(Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "eb.cabanisas" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva"||  Auth::user()->username == "e.lopez"||  Auth::user()->username == "jt.rivera")
 								 
 								  
 							
