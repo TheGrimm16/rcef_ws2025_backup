@@ -154,14 +154,13 @@
 
         document.getElementById("rlaForm").addEventListener("submit", function(event) {
             let submitBtn = document.getElementById("submitBtn");
-            submitBtn.disabled = true; // Disable submit button
-            HoldOn.open({theme: "sk-circle"}); // Show loading animation
+            submitBtn.disabled = true; 
+            HoldOn.open({theme: "sk-circle"});
 
-            // Optional: Set timeout to enable the button again in case of an issue
             setTimeout(() => {
                 submitBtn.disabled = false;
                 HoldOn.close();
-            }, 15000); // Adjust timeout as needed
+            }, 15000); 
         });
     </script>
 @endpush
