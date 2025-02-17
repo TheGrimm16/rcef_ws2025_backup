@@ -50,7 +50,7 @@
                 <div class="clearfix"></div>
             </div>
             <div class="x_content form-horizontal form-label-left">
-                <form enctype="multipart/form-data" method="post" action="{{route('coop.rla.bpi_save_request')}}">
+                <form enctype="multipart/form-data" method="post" action="{{route('coop.rla.bpi_save_request')}}" id="rlaForm">
                 {{ csrf_field() }}
                     <div class="form-horizontal form-label-left">
                         <div class="form-group">
@@ -109,7 +109,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-2"></label>
                             <div class="col-md-10 col-sm-10 col-xs-10">
-                                <input class="btn btn-success pull-right" type="submit" value="Send Request for RLA Upload">
+                                <input class="btn btn-success pull-right" type="submit" value="Send Request for RLA Upload" id="submitBtn">
                             </div>
                         </div>
                     </div>
@@ -152,6 +152,16 @@
             });
         });
 
-        
+        document.getElementById("rlaForm").addEventListener("submit", function(event) {
+            let submitBtn = document.getElementById("submitBtn");
+            submitBtn.disabled = true; // Disable submit button
+            HoldOn.open({theme: "sk-circle"}); // Show loading animation
+
+            // Optional: Set timeout to enable the button again in case of an issue
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                HoldOn.close();
+            }, 15000); // Adjust timeout as needed
+        });
     </script>
 @endpush
