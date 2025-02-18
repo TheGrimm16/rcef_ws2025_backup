@@ -510,4 +510,62 @@ class bmAPIController extends Controller
 
 
     }
+
+
+    public function addSeedGrower_index()
+    {
+        $season = $GLOBALS['season_prefix'];
+
+        $getCoops = DB::table($season.'rcep_seed_cooperatives.tbl_cooperatives')
+        ->where('isActive',1)
+        ->orderBy('coopName', 'ASC')
+        ->get();
+        
+        return view('seed_grower.index', compact('getCoops'));
+
+    }
+
+    public function saveSeedGrower(Request $request)
+    {
+        $season = $GLOBALS['season_prefix'];
+
+        $name1 = $request->firstName.'%'.$request->lastName;
+        $name2 = $request->lastName.'%'.$request->firstName.'%';
+        $coop = $request->coop;
+        $timestamp = Carbon::now()->format('Y-m-d H:i:s');
+
+        $checkIfExists = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
+        ->where(function ($query) use ($name1, $coop) {
+            $query->where('full_name', 'LIKE', $name1)
+                  ->where('coop_accred', 'LIKE', $coop);
+        })
+        ->orWhere(function ($query) use ($name2, $coop) {
+            $query->where('full_name', 'LIKE', $name2)
+                  ->where('coop_accred', 'LIKE', $coop);
+        })
+        ->get();
+
+        if($checkIfExists)
+        {
+            return 1;
+        }
+        else
+        {
+            $fullname = $request->firstName.' '.$request->middleName.' '.$request->lastName.' '.$request->extName;
+            $fullname = str_replace('  ', ' ', $fullname);
+            $saveSeedGrower = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
+            ->insert([
+                'coop_accred' => $request->coop,
+                'is_active' => 1,
+                'is_block' => 0,
+                'fname' => $request->firstName,
+                'mname' => $request->middleName,
+                'lname' => $request->lastName,
+                'extension' => $request->extName,
+                'full_name' => rtrim($fullname),
+                'sync_date' => $timestamp
+            ]);
+            return 0;
+        }
+    }
 }

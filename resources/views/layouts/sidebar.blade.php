@@ -1802,9 +1802,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li class="sub_menu"><a href="{{route('icts-farmer-finder-rsbsa')}}">Farmer Verifier</a></li> 
 								<li class="sub_menu"><a href="{{route('replacements')}}">Replacement Seeds Tagging</a></li> 
 								<li class="sub_menu"><a href="{{route('fcaTagging')}}">Farmer Profile Tagging</a></li> 
-								<li class="sub_menu"><a href="{{route('farmerInfo')}}">Farmer Info Viewing</a></li> 
-								<li class="sub_menu"><a href="{{route('releaseInfo')}}">Release Info Viewing</a></li> 
-								<li class="sub_menu"><a href="{{route('bepCoopChecker')}}">BeP Claims Cooperative Checker</a></li> 
+								<li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li> 
 								
 
 
