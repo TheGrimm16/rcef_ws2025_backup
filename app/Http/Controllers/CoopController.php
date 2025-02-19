@@ -1822,8 +1822,8 @@ class CoopController extends Controller
         
         //check volume in rla data
         $seed_labno_rla = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_rla_details')
-            ->where('labNo', $request->lab_number)
-			->where('lotNo', $request->lot_number)
+            ->where(DB::RAW("REPLACE(labNo,' ','')"), str_replace(" ", "", $request->lab_number))
+            ->where(DB::RAW("REPLACE(lotNo,' ','')"), str_replace(" ", "", $request->lot_number))
 			->where('coopAccreditation', $request->coop)
             ->get();
         
@@ -1833,8 +1833,8 @@ class CoopController extends Controller
 
         //check if seed tag exists in rla database
         $check_rla = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_rla_details')
-            ->where('labNo', $request->lab_number)
-            ->where('lotNo', $request->lot_number)
+            ->where(DB::RAW("REPLACE(labNo,' ','')"), str_replace(" ", "", $request->lab_number))
+            ->where(DB::RAW("REPLACE(lotNo,' ','')"), str_replace(" ", "", $request->lot_number))
             ->where('coopAccreditation', $request->coop)
             ->get();
 
