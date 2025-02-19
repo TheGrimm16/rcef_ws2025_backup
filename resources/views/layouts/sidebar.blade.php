@@ -1419,7 +1419,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 	
 						<li><a><i class="fa fa-binoculars"></i> BeP Monitoring<span class="fa fa-chevron-down"></span></a>
 							<ul class="nav child_menu">
-								@if(Auth::user()->username == "	m.padilla" || Auth::user()->roles->first()->name == "rcef-programmer")
+								@if(Auth::user()->username == "	m.padilla" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc")
 									  <li><a href="{{route('accountant.home')}}">e binhi Accountant</a></li>
 								@endif
 								<li><a href="{{route('BePDashboard_index')}}">BeP Dashboard</a></li>
@@ -1430,7 +1430,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							  <li class="sub_menu"><a href="{{route('paymaya.beneficiary_report')}}">Beneficiary Reports</a></li>
 							   
 
-							   @if(Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc" || Auth::user()->username == "NUEVAECIJA_Jhoemar" || Auth::user()->username == "e.lopez" || Auth::user()->roles->first()->name == "rcef-programmer" )
+							   @if(Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc" || Auth::user()->username == "NUEVAECIJA_Jhoemar" || Auth::user()->username == "e.lopez" || Auth::user()->roles->first()->name == "rcef-programmer" )
 							   		@if(Auth::user()->roles->first()->name == "rcef-programmer")
 									{{-- <li class="sub_menu"><a href="{{route('upload.paymaya.process.index')}}" onclick="return confirm('Proceed Processing Paymaya Codes?')">Process Paymaya Codes</a></li>  --}}
 									<li><a href="{{route('paymaya.beneficiary.codes')}}">Beneficiary List with Codes</a></li>
@@ -1438,7 +1438,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									<li class="sub_menu"><a href="{{route('paymaya.municipalities.list')}}">Municipalities</a></li>
 									@endif
 								 @endif
-								  @if(Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "reggie_dioses" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva"||  Auth::user()->username == "e.lopez"||  Auth::user()->username == "jt.rivera" || Auth::user()->username == "renaida_pascual" || Auth::user()->username == "processor_jbl" || Auth::user()->username == "ar.aromin"|| Auth::user()->username == "ar.aromin1"|| Auth::user()->username == "danrio"|| Auth::user()->username == "bm.delossantos" || Auth::user()->username == "v.villadon" ||  Auth::user()->username == "tine" || Auth::user()->username == "ddc.espiritu")
+								  @if(Auth::user()->username == "jpalileo" || Auth::user()->roles->first()->name == "rcef-programmer" ||  Auth::user()->username == "dc.gaspar" ||  Auth::user()->username == "jg.villanueva"||  Auth::user()->username == "e.lopez"||  Auth::user()->username == "jt.rivera" || Auth::user()->username == "renaida_pascual" || Auth::user()->username == "processor_jbl" || Auth::user()->username == "tine" || Auth::user()->username == "ddc.espiritu" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc")
 							
 								  <li><a>Payments<span class="fa fa-chevron-down"></span></a>
 								 
@@ -1451,12 +1451,18 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								  </ul>
 								</li>
 							   @endif
-							   @if(Auth::user()->roles->first()->name == "rcef-programmer")
+							   @if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc")
 							   <li><a href="{{route('ebinhi.utility')}}">e-Binhi Tools</a></li>
+								@endif
+
+								@if(Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc")
+								<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li> 
+
 								@endif
 
 							</ul>
 						</li>
+						
 						
 						<li><a><i class="fa fa-users"></i> Seed Cooperative<span class="fa fa-chevron-down"></span></a>
 							<ul class="nav child_menu">
