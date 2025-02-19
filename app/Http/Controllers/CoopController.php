@@ -1843,8 +1843,8 @@ class CoopController extends Controller
             return redirect()->route('coop.rla.bpi');
         }else{
             $volume_after_edit = $seedtag_total + $request->bags;
-            if($volume_after_edit > 240){
-                Session::flash("error_msg", "The system detected that the specified laboratory & lot number is already recorded: (current count: $seedtag_total), your input exceeds the maximum allocation of 240 bags.");
+            if($volume_after_edit > 200){
+                Session::flash("error_msg", "The system detected that the specified laboratory & lot number is already recorded: (current count: $seedtag_total), your input exceeds the maximum allocation of 200 bags.");
                 return redirect()->route('coop.rla.bpi');
             }else{           
 
@@ -1985,8 +1985,8 @@ class CoopController extends Controller
             
             }else{
                 $volume_after_edit = $seedtag_total + $request->bags;
-                if($volume_after_edit > 240){
-                    Session::flash("error_msg", "The system detected that the specified laboratory number is already recorded: (current count: $seedtag_total), your input exceeds the maximum allocation of 240 bags.");
+                if($volume_after_edit > 200){
+                    Session::flash("error_msg", "The system detected that the specified laboratory number is already recorded: (current count: $seedtag_total), your input exceeds the maximum allocation of 200 bags.");
                     return redirect()->route('coop.rla.manual');
                 }else{
                     $image = $request->file('rla_file');
@@ -2148,8 +2148,8 @@ class CoopController extends Controller
         }
         $volume_after_computation = $seedtag_total + $request_details->no_of_bags;
 
-        if($volume_after_computation > 240){
-            //Session::flash("error_msg", "The system detected that the specified laboratory number is already recorded: (current count: $seedtag_total), your input exceeds the maximum allocation of 240 bags.");
+        if($volume_after_computation > 200){
+            //Session::flash("error_msg", "The system detected that the specified laboratory number is already recorded: (current count: $seedtag_total), your input exceeds the maximum allocation of 200 bags.");
             //return redirect()->route('coop.rla.approve_home');
             return array(
                 "msg" => "exceed_volume",
@@ -2242,7 +2242,7 @@ class CoopController extends Controller
 
     public function confirm_edit_rla(Request $request){
         //layers of checkin
-        //1. check if seedtag is being used, if yes must not exceed 240 bags
+        //1. check if seedtag is being used, if yes must not exceed 200 bags
         //2. check seed grower if exists, if yes return id if no insert profile and return id
 
         // dd($request->all());
@@ -2278,7 +2278,7 @@ class CoopController extends Controller
 
             // dd($delivery_data);
             $seed_volume = $seed_volume + $request->bags;
-			if($seed_volume <= 240){
+			if($seed_volume <= 200){
 					$coop_name = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')->where('accreditation_no', $request->coop)->value('coopName');
 					$coop_moa = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')->where('accreditation_no', $request->coop)->value('current_moa');
 
@@ -2316,12 +2316,12 @@ class CoopController extends Controller
          
 
 			}else{
-				Session::flash('error_msg', 'Exceeded maximum volume for the inputted seedtag (240 bags)');
+				Session::flash('error_msg', 'Exceeded maximum volume for the inputted seedtag (200 bags)');
 				return redirect()->route('rla.monitoring.home', $request->rla_id);
 			}
 		}else{
 			$seed_volume = $seed_volume + $request->bags;
-			if($seed_volume <= 240){
+			if($seed_volume <= 200){
 				//check seed grower profile
 				if($request->sg_name != ""){
 					$seed_grower_profile = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_seed_grower')->where('full_name', $request->sg_name)->first();
@@ -2376,7 +2376,7 @@ class CoopController extends Controller
 				}            
 
 			}else{
-				Session::flash('error_msg', 'Exceeded maximum volume for the inputted seedtag (240 bags)');
+				Session::flash('error_msg', 'Exceeded maximum volume for the inputted seedtag (200 bags)');
 				return redirect()->route('rla.monitoring.home', $request->rla_id);
 			}
 		}
