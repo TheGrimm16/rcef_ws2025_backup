@@ -422,6 +422,17 @@ class ImportController extends Controller
                 ->where("lotNo", $lot)
                 ->get();
 
+            if(!$check_rla_exist)
+            {
+                $check_rla_exist = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.tbl_rla_details")
+                ->where("coopAccreditation", $coop_accre)
+                ->where(DB::RAW("REPLACE(labNo,' ','')"), $lab)
+                ->where(DB::RAW("REPLACE(lotNo,' ','')"), $lot)
+                ->get();
+            }
+
+            dd(count($check_rla_exist));
+
                 if(count($check_rla_exist)>0){
                     $get_id = "exist";
 
