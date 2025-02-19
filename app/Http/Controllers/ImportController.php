@@ -418,28 +418,18 @@ class ImportController extends Controller
 
             $check_rla_exist = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.tbl_rla_details")
                 ->where("coopAccreditation", $coop_accre)
-                ->where("labNo", $lab)
-                ->where("lotNo", $lot)
+                ->where(DB::RAW("REPLACE(labNo,' ','')"), str_replace(" ", "", $lab))
+                ->where(DB::RAW("REPLACE(lotNo,' ','')"), str_replace(" ", "", $lot))
                 ->get();
 
-            if(!$check_rla_exist)
-            {
-                $check_rla_exist = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.tbl_rla_details")
-                ->where("coopAccreditation", $coop_accre)
-                ->where(DB::RAW("REPLACE(labNo,' ','')"), $lab)
-                ->where(DB::RAW("REPLACE(lotNo,' ','')"), $lot)
-                ->get();
-            }
-
-            dd(count($check_rla_exist));
 
                 if(count($check_rla_exist)>0){
                     $get_id = "exist";
 
                     $get_id = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.tbl_rla_details")
                     ->where("coopAccreditation", $coop_accre)
-                    ->where("labNo", $lab)
-                    ->where("lotNo", $lot)
+                    ->where(DB::RAW("REPLACE(labNo,' ','')"), str_replace(" ", "", $lab))
+                    ->where(DB::RAW("REPLACE(lotNo,' ','')"), str_replace(" ", "", $lot))
                     ->update([
                         "enrolled_coop_count" => $coop_count
                     ]);
