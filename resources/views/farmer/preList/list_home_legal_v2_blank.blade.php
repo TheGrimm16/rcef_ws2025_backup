@@ -61,7 +61,7 @@
                         <p style="">
                             <b> Important Notice</b> <br>
                            
-                            This Farmer Acknowledgement Receipt is intended for rice farmers who cannot be found in the RSMS - farmer beneciary list as of June 30, 2024 but are verified through the RSBSA Verifier App.
+                            This Farmer Acknowledgement Receipt is intended for rice farmers who cannot be found in the RSMS - farmer beneciary list as of August 2024 but are verified through the RSBSA Verifier App.
 
                         </p>
                     </div>
@@ -143,7 +143,7 @@
 
 
                     <th style="font-size: 10px;" style="width:20px;" rowspan="2"><center> Data Sharing Consent <br> (<img src="{{ public_path('images/far_check.jpg')}}" style="height: 12px; width: auto;">/ X)</center></th>
-                    <th style="" colspan="5"><center>2024 WS YIELD <br> Major Seed and Variety Planted</center></th> 
+                    <th style="" colspan="5"><center>2025 DS YIELD <br> Major Seed and Variety Planted</center></th> 
 
 
 
