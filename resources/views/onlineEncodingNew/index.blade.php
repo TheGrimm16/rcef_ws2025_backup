@@ -703,52 +703,117 @@
         verifyRsbsaFromIcts(globalInfo.rsbsa_control_no)
     });
 
-    function verifyRsbsaFromIcts(rsbsaData){
+    function verifyRsbsaFromIcts(rsbsaData) {
         $.ajax({
             type: 'GET',
             url: "https://da-nrp.philrice.gov.ph/da-philrice-verifier/icts-farmer-verifier",
             data: {
                 rsbsaData: rsbsaData
             },
-            success: function(result){
-                if(result === "no data"){
+            success: function (result) {
+                if (result === "no data") {
                     existing.icts = false;
                     $("#btn-verify").text("Verifying full profile from ICTS...");
                     verifyNameFromIcts();
-                }else{
+                } else {
                     existing.icts = true;
-                    $("<div>").html(`
-                            <span style="font-style: italic">We've found this profile associated with the RSBSA you entered:</span>
-                            <br>
-                            <br>
-                            <span>RSBSA No: </span><span class="fw-700">${result[0].rsbsa_no}</span>
-                            <br>
-                            <span>Fullname: </span><span class="fw-700">${result[0].lname}, ${result[0].fname} ${result[0].mname} ${result[0].ext_name}</span>
-                            <br>
-                            <span>Birthdate: </span><span class="fw-700">${result[0].birthday}</span>
-                            <br>
-                            <br>
-                            <span style="font-weight: 500; font-style: italic;">If this is the farmer you're trying to encode, please use the <span class="fw-700">Verifier App</span>. Encoding cannot continue.</span>
-                        `).dialog({
-                        title: "Profile Found",
-                        modal: true,
-                        closeOnEscape: false,
-                        buttons: {
-                            Ok: function() {
-                                $(this).dialog("close");
-                                releaseForm();
+                    let commos = [];
+                    has_no_rice = false;
+                    if (result[0].parcels.length < 1) {
+                        has_no_rice = true;
+                    }
+                    else {
+                        result[0].parcels.forEach(element => {
+                            element.commodities.forEach(el => {
+                                commos.push(el);
+                                if (el.cropname == "Rice/Palay") {
+                                    has_no_rice = false;
+                                    $("<div>").html(`
+                                            <span style="font-style: italic">We've found this profile associated with the RSBSA you entered:</span>
+                                            <br>
+                                            <br>
+                                            <span>RSBSA No: </span><span class="fw-700">${result[0].rsbsa_no}</span>
+                                            <br>
+                                            <span>Fullname: </span><span class="fw-700">${result[0].lname}, ${result[0].fname} ${result[0].mname} ${result[0].ext_name}</span>
+                                            <br>
+                                            <span>Birthdate: </span><span class="fw-700">${result[0].birthday}</span>
+                                            <br>
+                                            <br>
+                                            <span style="font-weight: 500; font-style: italic;">If this is the farmer you're trying to encode, please use the <span class="fw-700">Verifier App</span>. Encoding cannot continue.</span>
+                                        `).dialog({
+                                        title: "Profile Found",
+                                        modal: true,
+                                        closeOnEscape: false,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                releaseForm();
+                                            }
+                                        },
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });
+                                } else {
+                                    has_no_rice = true;
+                                }
+                            });
+                        });
+                    }
+                    if (has_no_rice) {
+                        $("<div>").html(`
+                                <span style="font-style: italic">Farmer with <strong>NO Rice/Palay area</strong> detected. </span>
+                                <br>
+                                <br>
+                                <span>RSBSA No: </span><span class="fw-700">${result[0].rsbsa_no}</span>
+                                <br>
+                                <span>Fullname: </span><span class="fw-700">${result[0].lname}, ${result[0].fname} ${result[0].mname} ${result[0].ext_name}</span>
+                                <br>
+                                <span>Birthdate: </span><span class="fw-700">${result[0].birthday}</span>
+                                <br>
+                                <br>
+                                <span style="font-weight: 500; font-style: italic;">Click "Okay" to proceed encoding this farmer without Rice/Palay commodities.</span>
+                            `).dialog({
+                            title: "Profile Found",
+                            modal: true,
+                            closeOnEscape: false,
+                            buttons: {
+                                Ok: function () {
+                                    populateValues(result, true);
+                                    $(this)?.dialog("close");
+                                    $(this)?.dialog("close");
+                                    $(this)?.dialog("close");
+                                    finalizeForm();
+                                }
+                            },
+                            open: function (event, ui) {
+                                $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
                             }
-                        },
-                        open: function(event, ui) {
-                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });
     }
 
-    function verifyNameFromIcts(){
+    function populateValues(result, no_comm = false) {
+        $("#firstName").val(result[0]?.fname);
+        $("#midName").val(result[0]?.mname);
+        $("#lastName").val(result[0]?.lname);
+        $("#extName").val(result[0]?.ext_name);
+        $("#sex").val(`${result[0].sex}`);
+        $("#birthdate").val(`${result[0].birthday}`);
+        globalInfo.firstName = result[0].fname;
+        globalInfo.midName = result[0].mname;
+        globalInfo.lastName = result[0].lname;
+        globalInfo.extName = result[0].ext_name;
+        globalInfo.fullName = `${result[0].lname}, ${result[0].fname} ${result[0].mname} ${result[0].ext_name}`;
+        globalInfo.sex = result[0].sex;
+        globalInfo.birthdate = result[0].birthday;
+        globalRealeaseInfo.remarks = no_comm ? "No Commodity" : "";
+    }
+
+    function verifyNameFromIcts() {
         $.ajax({
             type: 'GET',
             url: "https://da-nrp.philrice.gov.ph/da-philrice-verifier/icts-farmer-verifier",
@@ -761,15 +826,59 @@
                 sex: globalInfo.sex,
                 birthday: globalInfo.birthdate
             },
-            success: function(result){
-                if(result === "no data"){
+            success: function (result) {
+                if (result === "no data") {
                     existing.icts = false;
                     $("#btn-verify").text("Verifying full profile from RSMS list...");
                     checkCurrentDatabase();
-                }else{
+                } else {
                     existing.icts = true;
-                    $("<div>").html(`
-                            <span style="font-style: italic">We've found this profile with the same name under a different RSBSA No.:</span>
+                    let commos = [];
+                    has_no_rice = false;
+                    if (result[0].parcels.length < 1) {
+                        has_no_rice = true;
+                    }
+                    else {
+                        result[0].parcels.forEach(element => {
+                            element.commodities.forEach(el => {
+                                commos.push(el);
+                                if (el.cropname == "Rice/Palay") {
+                                    has_no_rice = false;
+                                    $("<div>").html(`
+                                            <span style="font-style: italic">We've found this profile associated with the RSBSA you entered:</span>
+                                            <br>
+                                            <br>
+                                            <span>RSBSA No: </span><span class="fw-700">${result[0].rsbsa_no}</span>
+                                            <br>
+                                            <span>Fullname: </span><span class="fw-700">${result[0].lname}, ${result[0].fname} ${result[0].mname} ${result[0].ext_name}</span>
+                                            <br>
+                                            <span>Birthdate: </span><span class="fw-700">${result[0].birthday}</span>
+                                            <br>
+                                            <br>
+                                            <span style="font-weight: 500; font-style: italic;">If this is the farmer you're trying to encode, please use the <span class="fw-700">Verifier App</span>. Encoding cannot continue.</span>
+                                        `).dialog({
+                                        title: "Profile Found",
+                                        modal: true,
+                                        closeOnEscape: false,
+                                        buttons: {
+                                            Ok: function () {
+                                                $(this).dialog("close");
+                                                releaseForm();
+                                            }
+                                        },
+                                        open: function (event, ui) {
+                                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
+                                        }
+                                    });
+                                } else {
+                                    has_no_rice = true;
+                                }
+                            });
+                        });
+                    }
+                    if (has_no_rice) {
+                        $("<div>").html(`
+                            <span style="font-style: italic">Farmer with <strong>NO Rice/Palay area</strong> detected. </span>
                             <br>
                             <br>
                             <span>RSBSA No: </span><span class="fw-700">${result[0].rsbsa_no}</span>
@@ -779,21 +888,25 @@
                             <span>Birthdate: </span><span class="fw-700">${result[0].birthday}</span>
                             <br>
                             <br>
-                            <span style="font-weight: 500; font-style: italic;">If this is the farmer you're trying to encode, please use the <span class="fw-700">Verifier App</span>. Encoding cannot continue.</span>
+                            <span style="font-weight: 500; font-style: italic;">Click "Okay" to proceed encoding this farmer without Rice/Palay commodities.</span>
                         `).dialog({
-                        title: "Profile Found",
-                        modal: true,
-                        closeOnEscape: false,
-                        buttons: {
-                            Ok: function() {
-                                $(this).dialog("close");
-                                releaseForm();
+                            title: "Profile Found",
+                            modal: true,
+                            closeOnEscape: false,
+                            buttons: {
+                                Ok: function () {
+                                    populateValues(result, true);
+                                    $(this)?.dialog("close");
+                                    $(this)?.dialog("close");
+                                    $(this)?.dialog("close");
+                                    finalizeForm();
+                                }
+                            },
+                            open: function (event, ui) {
+                                $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
                             }
-                        },
-                        open: function(event, ui) {
-                            $(".ui-dialog-titlebar-close", ui.dialog | ui).hide();
-                        }
-                    });
+                        });
+                    }
                 }
             }
         });
