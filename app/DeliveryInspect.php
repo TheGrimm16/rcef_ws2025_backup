@@ -267,9 +267,18 @@ class DeliveryInspect
             $no = $accreNo[1];
         }
 
+        // $coop = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives as coop')
+        // ->leftjoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_provinces as province', 'province.id', '=', 'coop.provinceId')
+        // ->leftjoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_municipalities as mun', 'mun.id', '=', 'coop.municipalityId')
+        // ->select('*')
+        // ->where('coop.accreditation_no', "like", "%".$no)
+        // ->first();
+
         $coop = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives as coop')
-        ->leftjoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_provinces as province', 'province.id', '=', 'coop.provinceId')
-        ->leftjoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_municipalities as mun', 'mun.id', '=', 'coop.municipalityId')
+        ->join($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv as location', function($join) {
+            $join->on('location.provCode', '=', 'coop.provinceId')
+                 ->on('location.munCode', '=', 'coop.municipalityId');
+        })
         ->select('*')
         ->where('coop.accreditation_no', "like", "%".$no)
         ->first();
