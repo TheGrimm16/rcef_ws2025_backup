@@ -28,7 +28,7 @@ class preListController extends Controller
     }
 
     public function pre_list_index(){
-        if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username== "e.lopez" || Auth::user()->username == "sed_access"){
+        if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username== "e.lopez" || Auth::user()->username == "sed_access" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "rs.jandoc"){
             $provinces = DB::table($GLOBALS['season_prefix'].'rcep_reports_view.rcef_nrp_provinces')
             ->select('rcef_nrp_provinces.*')
             // ->join($GLOBALS['season_prefix'].'rcep_reports.lib_yield_provinces', 'lib_prv.province','=','lib_yield_provinces.province')
