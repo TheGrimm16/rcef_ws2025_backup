@@ -69,21 +69,27 @@ if __name__ == "__main__":
         age_30_59_bags = mother_df.filter((pl.col("seed_variety").eq(seed_var_variety) & (pl.col("age") >= 30) & (pl.col("age") <= 59))).select("bags_claimed").sum().item()
         age_60_up_bags = mother_df.filter((pl.col("seed_variety").eq(seed_var_variety) & (pl.col("age") >= 60))).select("bags_claimed").sum().item()
 
+        def divide(a, b):
+            try:
+                return (a / b) * 100
+            except ZeroDivisionError:
+                return 0
+            
         gad_per_variety.append({
             "seed_variety": seed_var_variety,
             "total_bags": total_bags_variety,
-            "cent_bag": (total_bags_variety / total_bags) * 100,
+            "cent_bag": divide(total_bags_variety / total_bags),
             "male_bag": male_bags,
-            "male_cent": (male_bags / total_male_bags) * 100,
+            "male_cent": divide(male_bags / total_male_bags),
             "female_bag": female_bags,
-            "female_cent": (female_bags / total_female_bags) * 100,
+            "female_cent": divide(female_bags / total_female_bags),
             "blank": "",
             "cat1_bag": age_18_29_bags,
-            "cat1_cent": (age_18_29_bags / total_bags_18_29) * 100,
+            "cat1_cent": divide(age_18_29_bags / total_bags_18_29),
             "cat2_bag": age_30_59_bags,
-            "cat2_cent": (age_30_59_bags / total_bags_30_59)  * 100,
+            "cat2_cent": divide(age_30_59_bags / total_bags_30_59),
             "cat3_bag": age_60_up_bags,
-            "cat3_cent": (age_60_up_bags / total_bags_60_up) * 100
+            "cat3_cent": divide(age_60_up_bags / total_bags_60_up)
         })
     
     json_string = json.dumps(gad_per_variety)
