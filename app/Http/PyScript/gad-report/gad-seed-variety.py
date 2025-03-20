@@ -78,18 +78,18 @@ if __name__ == "__main__":
         gad_per_variety.append({
             "seed_variety": seed_var_variety,
             "total_bags": total_bags_variety,
-            "cent_bag": divide(total_bags_variety / total_bags),
+            "cent_bag": divide(total_bags_variety, total_bags),
             "male_bag": male_bags,
-            "male_cent": divide(male_bags / total_male_bags),
+            "male_cent": divide(male_bags, total_male_bags),
             "female_bag": female_bags,
-            "female_cent": divide(female_bags / total_female_bags),
+            "female_cent": divide(female_bags, total_female_bags),
             "blank": "",
             "cat1_bag": age_18_29_bags,
-            "cat1_cent": divide(age_18_29_bags / total_bags_18_29),
+            "cat1_cent": divide(age_18_29_bags, total_bags_18_29),
             "cat2_bag": age_30_59_bags,
-            "cat2_cent": divide(age_30_59_bags / total_bags_30_59),
+            "cat2_cent": divide(age_30_59_bags, total_bags_30_59),
             "cat3_bag": age_60_up_bags,
-            "cat3_cent": divide(age_60_up_bags / total_bags_60_up)
+            "cat3_cent": divide(age_60_up_bags, total_bags_60_up)
         })
     
     json_string = json.dumps(gad_per_variety)
