@@ -1886,7 +1886,7 @@ class virtual_encodingController extends Controller
                                         $relProv = $getHomeDopInfo->province;
                                         $relMun = $getHomeDopInfo->municipality;
                                         $dropOffPoint = $home_dop_name;
-                                        $claimRemarks = $bags_claimed.' bags claimed in home address DOP '.$request->dop_home.' with area of '.$claimed_area.' but no DOP and delivery in farm parcel address.';
+                                        $claimRemarks = $bags_claimed.' bags claimed intended for Parcel DOP '.$request->dop_home.' with area of '.$claimed_area.' but no DOP and delivery in farm parcel address.';
                                     }
                                     else if($prv_dropoff_id == '' && $request->dop_home=='')
                                     {

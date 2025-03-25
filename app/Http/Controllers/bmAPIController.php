@@ -568,4 +568,24 @@ class bmAPIController extends Controller
             return 0;
         }
     }
+
+    public function downloadFarmers()
+    {
+        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+		$pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+
+		$scriptPath = base_path('app//Http//PyScript//API//downloadFarmers.py');
+
+		$command = "$pythonPath \"$scriptPath\"";
+		
+		$process = new Process($command);
+
+		try {
+			$process->mustRun();
+			$data = $process->getOutput();
+            return $data;
+		} catch (ProcessFailedException $exception) {
+			echo $exception->getMessage();
+		}
+    }
 }

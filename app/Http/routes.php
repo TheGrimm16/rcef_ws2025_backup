@@ -2280,10 +2280,13 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('/api/bm/getStations', ['as' => 'bm.getStations', 'uses' => 'bmAPIController@getStations']);
     Route::post('/api/bm/updateCommitment', ['as' => 'bm.updateCommitment', 'uses' => 'bmAPIController@updateCommitment']);
     Route::post('/api/bm/addCommitment', ['as' => 'bm.addCommitment', 'uses' => 'bmAPIController@addCommitment']);
-
+    
     //Add Seed Grower
     Route::get('/addSeedGrower/home', ['as' => 'addSeedGrower', 'uses' => 'bmAPIController@addSeedGrower_index']);
     Route::post('/addSeedGrower/saveSeedGrower', ['as' => 'saveSeedGrower', 'uses' => 'bmAPIController@saveSeedGrower']);
+    
+    //Pre-reg App
+    Route::get('/api/bm/downloadFarmers', ['as' => 'bm.downloadFarmers', 'uses' => 'bmAPIController@downloadFarmers']);
 
     //e-Paalalay API
     Route::get('/api/epaalalay/login/{login_id}/{password}/{login}', ['as' => 'login', 'uses' => 'epaalalayController@login']);
