@@ -1705,7 +1705,7 @@ class CoopController extends Controller
 	public function coop_rla_bpi(){
         $coop_list = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')->get();
         $variety_list = DB::table($GLOBALS['season_prefix'].'seed_seed.seed_characteristics')->groupBy('variety')->get();
-        dd($variety_list);
+        // dd($variety_list);
         return view('coop.rla.bpi_form')
             ->with('coop_list', $coop_list)
             ->with('variety_list', $variety_list);
