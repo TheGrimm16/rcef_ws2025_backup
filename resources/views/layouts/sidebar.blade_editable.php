@@ -833,7 +833,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									{{-- <li><a href="{{route('FarGeneration.index')}}">Current Season FAR</a></li> --}}
 									{{-- <li><a href="{{route('FarGenerationPreReg.index')}}">Pre-Registered Farmer</a></li>  --}}
 									@endif
-									@if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "je.almine" || Auth::user()->username == "R.Bombase" )
+									@if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "dra.jardinez" || Auth::user()->username == "je.almine" || Auth::user()->username == "R.Bombase" )
 										{{-- <li><a href="{{route('FarGeneration.index')}}">Current Season FAR</a></li> --}}
 										<li><a href="{{route('far.ebinhi.ui')}}">Generate e-Binhi FAR</a></li>
 									@endif
@@ -984,7 +984,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 										
 										@endif
 
-										@if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rfp.esteban")
+										@if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "dra.jardinez")
 											<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li> 
 										@endif
 
@@ -1049,7 +1049,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							  {{-- <li><a href="{{route('FarGenerationPreReg.index')}}">Pre-Registered Farmer</a></li>  --}}
 						 	 {{-- @endif --}}
 
-								{{-- @if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "je.almine" || Auth::user()->username == "R.Bombase" ) --}}
+								{{-- @if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "dra.jardinez" || Auth::user()->username == "je.almine" || Auth::user()->username == "R.Bombase" ) --}}
 									{{-- <li><a href="{{route('FarGeneration.index')}}">Current Season FAR</a></li> --}}
 									{{-- <li><a href="{{route('far.ebinhi.ui')}}">Generate e-Binhi FAR</a></li> --}}
 								{{-- @endif --}}
@@ -1137,7 +1137,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							  <li class="sub_menu"><a href="{{route('paymaya.beneficiary_report')}}">Beneficiary Reports</a></li>
 							   
 
-							   @if(Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "rfp.esteban" || Auth::user()->username == "NUEVAECIJA_Jhoemar" || Auth::user()->username == "e.lopez" || Auth::user()->roles->first()->name == "rcef-programmer" )
+							   @if(Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "dra.jardinez" || Auth::user()->username == "NUEVAECIJA_Jhoemar" || Auth::user()->username == "e.lopez" || Auth::user()->roles->first()->name == "rcef-programmer" )
 							   		<li><a href="{{route('paymaya.beneficiary.codes')}}">Beneficiary List with Codes</a></li>
 							   		@if(Auth::user()->roles->first()->name == "rcef-programmer")
 									{{-- <li class="sub_menu"><a href="{{route('upload.paymaya.process.index')}}" onclick="return confirm('Proceed Processing Paymaya Codes?')">Process Paymaya Codes</a></li>  --}}
