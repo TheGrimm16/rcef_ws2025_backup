@@ -135,6 +135,14 @@ class farmerFinderStandAloneApi extends Controller{
                 ->groupBy("provinceName")
                 ->orderBy("provinceName", "ASC")
                 ->get();
+        } else {
+            // CATCH ALL FOR OTHER SEASONS
+            return DB::table($season."_rcep_reports_view.rcef_nrp_provinces")
+                ->select("province", "prv_code", "regionName", "region_sort")
+                ->groupBy("province")
+                ->orderBy("region_sort", "ASC")
+                ->orderBy("province", "ASC")
+                ->get();
         }
     }
 
@@ -196,6 +204,11 @@ class farmerFinderStandAloneApi extends Controller{
                 ->join("ds2020_prv_".$prv.".area_history", "farmer_profile.farmerID", "=", "area_history.farmerID")
                 ->select(DB::raw("CONCAT(farmer_profile.lastName, ', ', farmer_profile.firstName, ' ', farmer_profile.midName, ' ', farmer_profile.extName) as 'fullName'"), "farmer_profile.farmerID", "sex", DB::raw("farmer_profile.farmerID as rcef_id"),DB::raw("farmer_profile.farmerID as rsbsa_control_no"), "farmer_profile.municipality", "farmer_profile.barangay", DB::raw("area_history.area as final_area"), DB::raw("CONCAT(farmer_profile.municipality, ', ',farmer_profile.province,', ',farmer_profile.region) as homeAddress"))
                 ->whereRaw("LENGTH(CONCAT(farmer_profile.lastName, farmer_profile.firstName)) > 0")
+                ->get();
+        } else {
+            $raw = DB::table($season."_prv_".$prv.".".$ws2023_tbl)
+                ->join($season."_rcep_delivery_inspection.lib_prv", DB::raw("replace(".$ws2023_tbl.".claiming_prv, '-', '')"), "=", "lib_prv.prv")
+                ->select(DB::raw("CONCAT(firstName, ' ', midName, ' ', lastName, ' ', extName) as 'fullName'"), "rsbsa_control_no", "sex", "rcef_id", "".$ws2023_tbl.".municipality", "".$ws2023_tbl.".brgy_name", "final_area", "claiming_prv", "lib_prv.province as parcel_prv", "lib_prv.municipality as parcel_mun", "db_ref as ref", DB::raw("LEFT(claiming_brgy, 6) as geo_code"), "claiming_brgy", DB::raw("LEFT(REPLACE(rsbsa_control_no, '-', ''), 6) as homeGeo"))
                 ->get();
         }
         
@@ -267,9 +280,25 @@ class farmerFinderStandAloneApi extends Controller{
                 ->select(DB::raw("farmer_profile.*"), DB::raw("farmer_profile.farmerID as rcef_id"), DB::raw("area_history.area as final_area"), DB::raw("CEIL(area_history.area * 2) as final_claimable"))
                 ->where("farmer_profile.farmerID", $id)
                 ->get();
+        } else {
+            $raw = DB::table($season."_prv_".$prv.".farmer_information_final")
+                ->select("*", "is_ebinhi", DB::raw("0 as 'parcel_count'"), "birthdate")
+                ->where('rcef_id', $id)
+                ->where('claiming_prv', $claiming_prv)
+                ->get();
+            $raw_count = DB::table($season."_prv_".$prv.".farmer_information_final")
+                ->select(DB::raw("count(rcef_id) as count"))
+                ->where('rcef_id', $id)
+                ->groupBy('rcef_id')
+                ->get();
         }
 
-        if($season == "ds2024" || $season == "ws2023" || $season == "ds2023" || $season == "ds2022" || $season == "ws2022"){
+        if($season == "ds2022" || $season == "ds2021" || $season == "ws2020"){
+            //else if season ds22, ds21, ws20
+            foreach($raw as $row){
+                return json_encode($row);
+            }
+        }else{
             foreach($raw as $row){
                 // $bep = DB::table($GLOBALS["season_prefix"]."rcep_paymaya.tbl_beneficiaries")
                 //     ->where('paymaya_code', $row->rcef_id)
@@ -283,11 +312,6 @@ class farmerFinderStandAloneApi extends Controller{
                 $row->parcel_count = (int)$raw_count[0]->count;
                 $row->birthdate = date('m/d/Y', strtotime($row->birthdate));
     
-                return json_encode($row);
-            }
-        }else{
-            //else if season ds22, ds21, ws20
-            foreach($raw as $row){
                 return json_encode($row);
             }
         }
@@ -428,6 +452,32 @@ class farmerFinderStandAloneApi extends Controller{
                 ->where('farmer_id', $id)
                 ->get();
             $rawBep = json_decode('[{"claimed": 0}]');
+        } else {
+            $claiming_prv = str_replace('-', '', $claiming_prv);
+            $rawConv = DB::table($season."_prv_".$prv.".new_released")
+                ->select(DB::raw('sum(bags_claimed) as claimed'))
+                ->where('db_ref', $db_ref)
+                ->where('prv_dropoff_id', 'LIKE', $claiming_prv."%")
+                ->where('category', "INBRED")
+                ->get();
+            $rawBep = DB::table($season."_rcep_paymaya.tbl_claim")
+                ->select(DB::raw('count(claimId) as claimed'))
+                ->where('paymaya_code', $id)
+                ->get();
+            $rawHyb = DB::table($season."_prv_".$prv.".new_released")
+                ->select(DB::raw('sum(bags_claimed) as kgs'))
+                ->where('db_ref', $db_ref)
+                ->where('prv_dropoff_id', 'LIKE', $claiming_prv."%")
+                ->where('category', "HYBRID")
+                ->get();
+            
+            $total = ($rawConv[0]->claimed? $rawConv[0]->claimed : 0) + ($rawBep[0]->claimed? $rawBep[0]->claimed : 0) + ($rawHyb[0]->kgs? $rawHyb[0]->kgs : 0);
+            return array(
+                "con" => $rawConv[0]->claimed? (int)$rawConv[0]->claimed : 0,
+                "bep" => $rawBep[0]->claimed? (int)$rawBep[0]->claimed : 0,
+                "hyb" => $rawHyb[0]->kgs? (int)$rawHyb[0]->kgs : 0,
+                "total" => (int)$total,
+            );
         }
 
         $total = $rawConv[0]->claimed + $rawBep[0]->claimed;
@@ -556,8 +606,44 @@ class farmerFinderStandAloneApi extends Controller{
                 ->where('rcef_id', $id)
                 ->where('claiming_prv', $claiming_prv)
                 ->update(['is_ebinhi' => 0, 'is_claimed' => 1, 'total_claimed' => $bagsClaimed]);
-        }else{
+        }else if (number_format(substr($season, 2, 4), 0) < 2023){
             return "Only for seasons DS2023 and up.";
+        } else {
+            //DS2024
+            $bep_area = DB::table($season."_rcep_paymaya.tbl_beneficiaries")
+                ->select('area')
+                ->where('paymaya_code', $id)
+                ->first();
+
+            $con_area = DB::table($season."_prv_".$prv.".new_released")
+                ->select(DB::raw('SUM(claimed_area) as claimed_area'))
+                ->where('rcef_id', $id)
+                // ->where('category', "INBRED")
+                ->groupBy('rcef_id')
+                ->get();
+            
+            $bep_total = (float)0.00;
+            if($bep_area){
+                $bep_area = !$bep_area->area? (float)0.00 : (float)$bep_area->area;
+            }else{
+                $bep_area = (float)0.00;
+            }
+
+            $con_total = (float)0.00;
+            if($con_area){
+                foreach($con_area as $areas){
+                    $con_total = (float)$con_total + (float)$areas->claimed_area;
+                }
+            }else{
+                $con_total = (float)0.00;
+            }
+
+            $overall_claimed_area = 0;
+            $overall_claimed_area = $bep_total + $con_total;
+            $result = DB::table($season."_prv_".$prv.".".$ws2023_tbl)
+                ->where('rcef_id', $id)
+                ->where('claiming_prv', $claiming_prv)
+                ->update(['is_ebinhi' => 0, 'is_claimed' => $bagsClaimed > 0? 1 : 0, 'total_claimed' => $bagsClaimed, 'total_claimed_area' => $overall_claimed_area]);
         }
 
         $command = "Transferring ".$id." to conventional with ".$bagsClaimed." bags (".$overall_claimed_area."ha) and result: ".$result;
@@ -656,6 +742,48 @@ class farmerFinderStandAloneApi extends Controller{
 
             $temp = DB::table("rcef_ionic_db.ff_logs")
                 ->insert(["id" => null, "username" => $user, "command" => $command, "season_db" => "ws2023"]);
+            
+            return $result;
+        } else {
+            $bep_area = DB::table($season."_rcep_paymaya.tbl_beneficiaries")
+                ->select('area')
+                ->where('paymaya_code', $id)
+                ->first();
+
+            $con_area = DB::table($season."_prv_".$prv.".new_released")
+                ->select(DB::raw('SUM(claimed_area) as claimed_area'))
+                ->where('rcef_id', $id)
+                ->groupBy('rcef_id')
+                ->get();
+
+            $bep_total = (float)0.00;
+            if($bep_area){
+                $bep_area = !$bep_area->area? (float)0.00 : (float)$bep_area->area;
+            }else{
+                $bep_area = (float)0.00;
+            }
+
+            $con_total = (float)0.00;
+            if($con_area){
+                foreach($con_area as $areas){
+                    $con_total = (float)$con_total + (float)$areas->claimed_area;
+                }
+            }else{
+                $con_total = (float)0.00;
+            }
+            
+            $overall_claimed_area = 0;
+            $overall_claimed_area = $bep_total + $con_total;
+            $result = DB::table($season."_prv_".$prv.".".$ws2023_tbl)
+            ->where('rcef_id', $id)
+            ->where('claiming_prv', $claiming_prv)
+            ->update(['is_replacement' => 1, 'replacement_area' => $overall_claimed_area, 'replacement_bags' => CEIL($overall_claimed_area * 2), 'is_ebinhi' => 0]);
+
+            
+            $command = "Tagging ".$id." to replacement with ".$bagsClaimed." bags (".$overall_claimed_area."ha) and result: ".$result;
+
+            $temp = DB::table("rcef_ionic_db.ff_logs")
+                ->insert(["id" => null, "username" => $user, "command" => $command, "season_db" => $season]);
             
             return $result;
         }
@@ -757,6 +885,13 @@ class farmerFinderStandAloneApi extends Controller{
                 ->groupBy("region")
                 ->get();
             return $rawTblDelivery;
+        } else {
+            $rawTblDelivery = DB::table($season."_sdms_db_dev.lib_station")
+                ->select("region")
+                ->where("stationID", $station)
+                ->groupBy("region")
+                ->get();
+            return $rawTblDelivery;
         }
     }
 
@@ -776,6 +911,14 @@ class farmerFinderStandAloneApi extends Controller{
         }else if($season == "ws2023"){
             $rawCoops = DB::table("ws2023_rcep_delivery_inspection.tbl_delivery")
                 ->join("ws2023_rcep_seed_cooperatives.tbl_cooperatives", "tbl_delivery.coopAccreditation", "=", "tbl_cooperatives.accreditation_no")
+                ->select("tbl_cooperatives.coopName as coopName", "tbl_delivery.coopAccreditation as coopAccreditation")
+                ->where("tbl_delivery.region", $region)
+                ->groupBy("tbl_delivery.coopAccreditation")
+                ->get();
+            return $rawCoops;
+        } else {
+            $rawCoops = DB::table($season."_rcep_delivery_inspection.tbl_delivery")
+                ->join($season."_rcep_seed_cooperatives.tbl_cooperatives", "tbl_delivery.coopAccreditation", "=", "tbl_cooperatives.accreditation_no")
                 ->select("tbl_cooperatives.coopName as coopName", "tbl_delivery.coopAccreditation as coopAccreditation")
                 ->where("tbl_delivery.region", $region)
                 ->groupBy("tbl_delivery.coopAccreditation")
@@ -846,6 +989,35 @@ class farmerFinderStandAloneApi extends Controller{
                 foreach($rawDeliveries as $row){
                     $rawDeliveries[$indexing]->expected = (int)$row->expected;
                     $entry = DB::table("ws2023_rcep_delivery_inspection.tbl_actual_delivery")
+                        ->select(DB::raw("SUM(totalBagCount) as accepted"))
+                        ->where("batchTicketNumber", $row->batch)
+                        ->first();
+                    if(count($entry) > 0){
+                        $rawDeliveries[$indexing]->accepted = (int)$entry->accepted;
+                    }else{
+                        $rawDeliveries[$indexing]->accepted = (int)0;
+                    }
+                    $indexing += 1;
+                }
+            return $rawDeliveries;
+        } else {
+            if($accred == "All"){
+                $accred = "%";
+            }
+            $rawDeliveries = DB::table($season."_rcep_delivery_inspection.tbl_delivery")
+                ->select("tbl_delivery.batchTicketNumber as batch", "tbl_delivery.province as prv", "tbl_delivery.municipality as mun", "tbl_delivery.dropOffPoint as dop", "tbl_delivery.deliveryDate as date", DB::raw("SUM(totalBagCount) as expected"), DB::raw("0 as accepted"))
+                ->where("tbl_delivery.region", $region)
+                ->where("tbl_delivery.coopAccreditation", "LIKE", "%".$accred)
+                ->where("tbl_delivery.region", "<>", "Programmer Region")
+                ->where("tbl_delivery.is_cancelled", 0)
+                ->whereBetween("tbl_delivery.deliveryDate", [$dateStart, $dateEnd])
+                ->groupBy("tbl_delivery.batchTicketNumber")
+                ->get();
+
+                $indexing = 0;
+                foreach($rawDeliveries as $row){
+                    $rawDeliveries[$indexing]->expected = (int)$row->expected;
+                    $entry = DB::table($season."_rcep_delivery_inspection.tbl_actual_delivery")
                         ->select(DB::raw("SUM(totalBagCount) as accepted"))
                         ->where("batchTicketNumber", $row->batch)
                         ->first();
