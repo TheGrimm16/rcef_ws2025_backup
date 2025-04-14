@@ -96,11 +96,11 @@ class FarGenerationController extends Controller
     public function ebinhiIndex()
     {
 
-        if(Auth::user()->roles->first()->name != "rcef-programmer"){
-            $mss = "Under Development";
-                return view("utility.pageClosed")
-            ->with("mss",$mss);
-        }
+        // if(Auth::user()->roles->first()->name != "rcef-programmer"){
+        //     $mss = "Under Development";
+        //         return view("utility.pageClosed")
+        //     ->with("mss",$mss);
+        // }
            $provinces_list =  DB::table($GLOBALS['season_prefix'].'rcep_paymaya.sed_verified') 
                                     ->orderBy('province_name','ASC')
                                     ->groupBy('province_name')
