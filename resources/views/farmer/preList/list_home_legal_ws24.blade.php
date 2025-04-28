@@ -394,7 +394,7 @@
                         <br>
                         <br>
                         <div style="position: fixed; top:60px ; margin-top: 15px;margin-left: 11%; margin-bottom:25px; width:40%; height:10%;">
-                            <span>Year/Season: __<u>2025 Dry Season</u>__</span><br>
+                            <span>Year/Season: __<u>2025 Wet Season</u>__</span><br>
                             <span>Drop-off Point (City/Municipality, Province) __<u>{{strtoupper($municipality)}}, {{strtoupper($province)}}</u>__</span><br>
                             <span>RSBSA Code: Region:_<u>{{$region_code}}</u>_, Province:_<u>{{$province_code}}</u>_, Municipality:_<u>{{$municipality_code}}</u>
 							_, Barangay:_<u>{{$brgy}}</u>_
@@ -431,7 +431,7 @@
 
 
                     <th style="font-size: 10px;" style="width:20px;" rowspan="2"><center> Data Sharing Consent <br> (<img src="{{ public_path('images/far_check.jpg')}}" style="height: 12px; width: auto;">/ X)</center></th>
-                    <th style="" colspan="5"><center>2024 WS YIELD <br> Major Seed and Variety Planted</center></th> 
+                    <th style="" colspan="5"><center>2025 DS YIELD <br> Major Seed and Variety Planted</center></th> 
 
 
 
