@@ -191,14 +191,17 @@
                 return false;
             }
 
-            if (!firstName.trim() || !lastName.trim()) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'First and Last Names are required!',
-                });
-                return false;
+            if (!rsbsaNo.trim()) {
+                if (!firstName.trim() || !lastName.trim()) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'First and Last Names are required when RSBSA Number is empty!',
+                    });
+                    return false;
+                }
             }
+
 
 
             
