@@ -91,7 +91,8 @@
 									<li><a href="{{route('coop.rla.manual')}}">Upload RLA (MANUAL)</a></li> 
 								@endif
 								
-							 <li><a href="{{route('coop.rla.bpi')}}">ADD RLA </a></li> 
+							 <li><a href="{{route('coop.rla.bpi')}}">ADD RLA </a></li>
+							 <li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li>
 							
 								
 								@if(Auth::user()->roles->first()->name == "rcef-pmo" || Auth::user()->roles->first()->name == "rcef-programmer")
