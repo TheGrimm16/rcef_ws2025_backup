@@ -2285,6 +2285,10 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('/addSeedGrower/home', ['as' => 'addSeedGrower', 'uses' => 'bmAPIController@addSeedGrower_index']);
     Route::post('/addSeedGrower/saveSeedGrower', ['as' => 'saveSeedGrower', 'uses' => 'bmAPIController@saveSeedGrower']);
     
+    //Delete Pre-reg
+    Route::get('/deletePreReg/home', ['as' => 'deletePreReg', 'uses' => 'bmAPIController@deletePreReg_index']);
+    Route::POST('/deletePreReg/deletePreRegProfile', ['as' => 'deletePreRegProfile', 'uses' => 'bmAPIController@deletePreRegProfile']);
+    
     //Pre-reg App
     Route::get('/api/bm/downloadFarmers', ['as' => 'bm.downloadFarmers', 'uses' => 'bmAPIController@downloadFarmers']);
 

@@ -588,4 +588,73 @@ class bmAPIController extends Controller
 			echo $exception->getMessage();
 		}
     }
+
+
+    public function deletePreReg_index()
+    {
+        $season = $GLOBALS['season_prefix'];
+
+        $provMuni = [];
+
+        $getPrvs = DB::table($season.'rcep_paymaya.sed_verified')
+        ->select(DB::raw("REPLACE(claiming_prv,'-','') as prv"))
+        ->distinct()
+        ->get();
+
+
+        foreach($getPrvs as $prv)
+        {
+            $getPrvDetails = DB::table($season.'rcep_delivery_inspection.lib_prv')
+            ->where('prv', $prv->prv)
+            ->first();
+
+            array_push($provMuni, [
+                'regionName' => $getPrvDetails->regionName,
+                'province' => $getPrvDetails->province,
+                'municipality' => $getPrvDetails->municipality,
+                'prv' => $getPrvDetails->prv,
+                'claiming_prv' => $getPrvDetails->temp_prv,
+            ]);
+        }
+        return view('deletePreReg.index', compact('provMuni'));
+
+    }
+
+    public function deletePreRegProfile(Request $request)
+    {
+        $season = $GLOBALS['season_prefix'];
+
+        $claiming_prv = $request->provMuni;
+        $rsbsaNo = $request->rsbsaNo;
+        $lastName = $request->lastName;
+        $firstName = $request->firstName;
+        $middleName = $request->middleName;
+        $extName = $request->extName;
+
+        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+		$pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+
+		$scriptPath = base_path('app//Http//PyScript//bm//deletePreReg.py');
+
+		$escapedSeason = escapeshellarg($season);
+        $escapedClaimingPrv = escapeshellarg($claiming_prv);
+        $escapedRsbsaNo = escapeshellarg($rsbsaNo);
+        $escapedLastName = escapeshellarg($lastName);
+        $escapedFirstName = escapeshellarg($firstName);
+        $escapedMiddleName = escapeshellarg($middleName);
+        $escapedExtName = escapeshellarg($extName);
+        $command = "$pythonPath \"$scriptPath\" $escapedSeason $escapedClaimingPrv $escapedRsbsaNo $escapedLastName $escapedFirstName $escapedMiddleName $escapedExtName";
+		
+		$process = new Process($command);
+
+		try {
+			$process->mustRun();
+			$data = $process->getOutput();
+            // dd($data);
+            return $data;
+		} catch (ProcessFailedException $exception) {
+			echo $exception->getMessage();
+		}
+
+    }
 }
