@@ -19,8 +19,8 @@ utc_offset_formatted = f"GMT{utc_offset[:3]}{utc_offset[3:]}"
 timezone_name = "Philippine Standard Time"
 current_date = f"{formatted_time} {utc_offset_formatted} ({timezone_name})"
 
-currentSeason = sys.argv[1]
-# seasons = ['ds2025_']
+# currentSeason = sys.argv[1]
+currentSeason = 'ws2025_'
 
 
 connection = mysql.connector.connect(
@@ -54,7 +54,7 @@ for index,data in getPrv_df.iterrows():
             fullName = data['lastName'] + ', ' + data['firstName'] + ' ' + data['midName']
             rsbsa = data['rsbsa_control_no']
             sex = data['sex']
-            birthdate = data['birthdate']
+            birthdate = data['birthdate']     
 
         getPrvInfo_query = f'SELECT * FROM {currentSeason}rcep_delivery_inspection.lib_prv WHERE prv LIKE "{prv}" LIMIT 1'
         cursor.execute(getPrvInfo_query)
@@ -71,7 +71,7 @@ for index,data in getPrv_df.iterrows():
             print(f"{fullName} - {rsbsa} - {season} already exists.")
         else:
             insertData_query = f"""INSERT INTO kp_distribution.kp_distribution_app (id, fullName, rsbsa_control_no, sex, birthdate, location, season, kpKits, calendars, testimonials, services, apps, yunpalayun, encodedBy, time_stamp) VALUES (0, '{fullName}','{rsbsa}','{sex}','{birthdate}','{location}','{season}',{kpKits},0,0,0,0,0,'{encodedBy}','{time_stamp}');"""
-            # print(f"{fullName} - {rsbsa} - {season}")
+            print(f"{fullName} - {rsbsa} - {season}")
             cursor.execute(insertData_query)
             connection.commit()
 cursor.close()
