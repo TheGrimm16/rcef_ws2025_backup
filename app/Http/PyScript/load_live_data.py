@@ -156,6 +156,7 @@ import os, sys
 import polars as pl
 from urllib.parse import quote
 import re
+import mysql.connector
 uri ="mysql://root:%s@192.168.10.44:3306/" % quote('Zeijan@13')
 
 ssn = sys.argv[1] if len(sys.argv) > 1 else 'ws2025_'#None 
@@ -163,7 +164,13 @@ prov = sys.argv[2] if len(sys.argv) > 1 else None
 prv = sys.argv[3] if len(sys.argv) > 1 else None
 
 
-cache_query = pl.read_database_uri(query=f"SET GLOBAL table_definition_cache = 4000; SET GLOBAL table_open_cache = 4000;", uri=uri)
+conn = mysql.connector.connect(uri=uri)
+cursor = conn.cursor()
+cursor.execute("SET GLOBAL table_definition_cache = 4000")
+cursor.execute("SET GLOBAL table_open_cache = 4000")
+conn.commit()
+cursor.close()
+conn.close()
 
 
 # Read tables from the database
