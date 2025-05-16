@@ -1596,7 +1596,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                             $psa_code = "PH".$prv."000";}else{$psa_code = "";
                             }
                         
-                        $getUpdatedPsaCode = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.;lib_prv")->where("psa_code", $psa_code)->first();
+                        $getUpdatedPsaCode = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.lib_prv")->where("psa_code", $psa_code)->first();
                         if($getUpdatedPsaCode == null){
                             $updated_psa_code = "";
                         }
