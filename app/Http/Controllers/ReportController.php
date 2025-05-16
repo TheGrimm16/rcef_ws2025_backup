@@ -9347,6 +9347,8 @@ class ReportController extends Controller
 //NEW CODE
 
 public function generateLiveMunicipalReportDataPy(Request $request){
+        DB::statement("SET GLOBAL table_definition_cache = 4000");
+        DB::statement("SET GLOBAL table_open_cache = 4000");
         $prv = DB::connection("delivery_inspection_db")->table("lib_dropoff_point")
         ->select("prv","municipality")
         ->where("province", $request->province)
