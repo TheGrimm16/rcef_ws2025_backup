@@ -163,6 +163,9 @@ prov = sys.argv[2] if len(sys.argv) > 1 else None
 prv = sys.argv[3] if len(sys.argv) > 1 else None
 
 
+cache_query = pl.read_database_uri(query=f"SET GLOBAL table_definition_cache = 4000; SET GLOBAL table_open_cache = 4000;", uri=uri)
+
+
 # Read tables from the database
 lib_dropoff_point = pl.read_database_uri(query=f"SELECT DISTINCT prv as t1_prv, coop_accreditation as t1_coop_accreditation , CONCAT(province,'_',municipality) AS ldp_prov_muni_data, CONCAT(region,'_',province,'_',municipality) AS ldp_con_data, province as t1_province FROM {ssn}rcep_delivery_inspection.lib_dropoff_point WHERE province='{prov}'", uri=uri)
 tbl_delivery = pl.read_database_uri(query=f"SELECT coopAccreditation as t2_coopAccreditation, CONCAT(region,'_',province,'_',municipality) AS del_con_data, CONCAT(batchTicketNumber,'_',region,'_',province,'_',municipality) AS del_con_data_batches, isBuffer as t2_isBuffer, municipality as t2_municipality, totalBagCount as t2_totalBagCount FROM {ssn}rcep_delivery_inspection.tbl_delivery WHERE province='{prov}'", uri=uri)
