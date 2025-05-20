@@ -334,7 +334,7 @@
             <div class="item">
                 <div class="x_panel" >
                     <div class="x_title">
-                        <h2>Total Delivery Declared by SGC/A-</h2>
+                        <h2>Total Delivery Declared by SGC/A</h2>
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content form-horizontal form-label-left">
