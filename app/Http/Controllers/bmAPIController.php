@@ -704,7 +704,7 @@ class bmAPIController extends Controller
             }
             else
             {
-                return ('Invalid code.')
+                return ('Invalid code.');
             }
 
         }
