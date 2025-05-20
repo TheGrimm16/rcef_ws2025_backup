@@ -364,7 +364,7 @@
             <div class="item">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Total actual delivery (20kg/bags)</h2> 
+                        <h2>Total Actual Delivery (20kg/bags)</h2> 
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content form-horizontal form-label-left">
