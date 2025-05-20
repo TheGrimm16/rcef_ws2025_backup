@@ -657,4 +657,58 @@ class bmAPIController extends Controller
 		}
 
     }
+
+    public function getLibPrv($val)
+    {
+        if($val == 'all')
+        {
+            $getLibPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+            ->select("psa_code","updated_psa_code","regCode","regionName")
+            ->groupBy('regCode')
+            ->orderBy('region_sort', 'ASC')
+            ->get();
+            return $getLibPrv;
+        }
+        else
+        {
+            $checking = strlen($val);
+            if($checking == 2)
+            {
+                $getLibPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+                ->select("psa_code","updated_psa_code","regCode","regionName","provCode","province")
+                ->where('regCode', $val)
+                ->groupBy('regCode','provCode')
+                ->orderBy('region_sort', 'ASC')
+                ->get();
+                return $getLibPrv;
+            }
+            else if($checking == 4)
+            {
+                $getLibPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+                ->select("psa_code","updated_psa_code","regCode","regionName","provCode","province","munCode","municipality")
+                ->where('prv_code', $val)
+                ->groupBy('regCode','provCode','munCode')
+                ->orderBy('region_sort', 'ASC')
+                ->get();
+                return $getLibPrv;
+            }
+            else if($checking == 6)
+            {
+                $getLibPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+                ->select("psa_code","updated_psa_code","regCode","regionName","provCode","province","munCode","municipality")
+                ->where('prv', $val)
+                ->groupBy('regCode','provCode','munCode')
+                ->orderBy('region_sort', 'ASC')
+                ->get();
+                return $getLibPrv;
+            }
+            else
+            {
+                return ('Invalid code.')
+            }
+
+        }
+    }
+
+
 }

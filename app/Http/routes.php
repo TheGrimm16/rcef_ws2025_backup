@@ -2292,6 +2292,9 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     //Pre-reg App
     Route::get('/api/bm/downloadFarmers', ['as' => 'bm.downloadFarmers', 'uses' => 'bmAPIController@downloadFarmers']);
 
+    //Clustering App API
+    Route::get('/api/clustering/getLibPrv/{var}', ['as' => 'clustering.getPrv', 'uses' => 'bmAPIController@getLibPrv']);
+
     //e-Paalalay API
     Route::get('/api/epaalalay/login/{login_id}/{password}/{login}', ['as' => 'login', 'uses' => 'epaalalayController@login']);
     Route::get('/epaalalay/advisory', ['as' => 'advisory', 'uses' => 'epaalalayController@advisory']);
