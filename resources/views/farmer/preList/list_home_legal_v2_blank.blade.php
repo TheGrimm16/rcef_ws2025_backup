@@ -61,7 +61,7 @@
                         <p style="">
                             <b> Important Notice</b> <br>
                            
-                            This Farmer Acknowledgement Receipt is intended for rice farmers who cannot be found in the RSMS - farmer beneciary list as of August 2024 but are verified through the RSBSA Verifier App.
+                            This Farmer Acknowledgement Receipt is intended for rice farmers who cannot be found in the RSMS - farmer beneciary list as of January 2025 but are verified through the RSBSA Verifier App.
 
                         </p>
                     </div>
