@@ -1814,7 +1814,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								
 			
 								@elseif(Auth::user()->username == "NUEVAECIJA_Jhoemar")
-								<li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li>
+								
 								@endif
 
 						
@@ -1829,10 +1829,16 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 
 
 
-			@if(Auth::user()->username == "dra.jardinez" || Auth::user()->username == "rs.jandoc")
+			@if(Auth::user()->username == "rs.jandoc")
 			<li><a><i class="fa fa-cogs"></i> Utility <span class="fa fa-chevron-down"></span></a>
 						<ul class="nav child_menu">
 						<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li> 
+
+			@endif
+			@if(Auth::user()->username == "NUEVAECIJA_Jhoemar")
+			<li><a><i class="fa fa-cogs"></i> Utility <span class="fa fa-chevron-down"></span></a>
+						<ul class="nav child_menu">
+						<li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li>
 
 			@endif
 
