@@ -375,7 +375,7 @@ class HistoryMonitoringController extends Controller
             $dest_location = $batch->region.', '.$batch->province.', '.$batch->municipality.'=> '.$batch->dropOffPoint;
             $seed_variety = '<b>SEED TAG:</b> '.$batch->seedTag.' <br> <b>Seed Variety:</b> '.$batch->seedVariety;
 
-            if(Auth::user()->roles->first()->name == "rcef-programmer"){
+            if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->roles->first()->name == "branch-it"){
                 $btn = "<button class='btn btn-warning' onclick='ps_cancel(".'"'.$orig_batch.'"'.",".'"'.$batch->batchTicketNumber.'"'.",".'"'.$batch->seedTag.'"'.");' > Cancel </button>";
             }else{
                 $btn = "-";
@@ -396,7 +396,7 @@ class HistoryMonitoringController extends Controller
                     ->where("seedTag", $batch->seedTag )
                     ->get();
                 foreach($transferred_seeds as $trans){
-                    if(Auth::user()->roles->first()->name == "rcef-programmer"){
+                    if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->roles->first()->name == "branch-it"){
                         $btn_partial = "<button class='btn btn-warning' onclick='ps_cancel(".'"'.$batch->batchTicketNumber.'"'.",".'"'.$trans->batchTicketNumber.'"'.",".'"'.$batch->seedTag.'"'.");' > Cancel Re-Transfer </button>";
                     }else{
                         $btn_partial = "-";
