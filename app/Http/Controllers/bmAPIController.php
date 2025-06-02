@@ -591,7 +591,7 @@ class bmAPIController extends Controller
             })
             ->get();
 
-            dd($checkIfExists);
+            // dd($checkIfExists);
         }
 
 
