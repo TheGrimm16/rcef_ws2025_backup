@@ -558,7 +558,8 @@ class bmAPIController extends Controller
 
         $name1 = $request->firstName.'%'.$request->lastName;
         $name2 = $request->lastName.'%'.$request->firstName.'%';
-        $name3 = $request->lastName.'%'.$request->firstName.'%'.substr($ext, 0, 1).'%';
+        $name3 = $request->firstName.'%'.$request->lastName.'%'.substr($ext, 0, 1).'%';
+        $name4 = $request->lastName.'%'.$request->firstName.'%'.substr($ext, 0, 1).'%';
         $coop = $request->coop;
         $timestamp = Carbon::now()->format('Y-m-d H:i:s');
 
@@ -577,12 +578,20 @@ class bmAPIController extends Controller
         }
         else
         {
+
+            // dd($name3);
             $checkIfExists = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
             ->where(function ($query) use ($name3, $coop) {
                 $query->where('full_name', 'LIKE', $name3)
                       ->where('coop_accred', 'LIKE', $coop);
             })
+            ->orWhere(function ($query) use ($name4, $coop) {
+                $query->where('full_name', 'LIKE', $name4)
+                      ->where('coop_accred', 'LIKE', $coop);
+            })
             ->get();
+
+            dd($checkIfExists);
         }
 
 
