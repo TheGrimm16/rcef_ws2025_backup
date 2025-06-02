@@ -299,6 +299,11 @@ class HistoryMonitoringController extends Controller
                             ->where("actualDeliveryId", $cur_data->actualDeliveryId)
                             ->delete();
 
+                        DB::connection('delivery_inspection_db')->table('tbl_inspection_for_breakdown')
+                            ->where("seedTag", $request->seedtag ) 
+                            ->where("batchTicketNumber", $request->last_season)
+                            ->delete();
+
                         return json_encode("Partial Transfer Reverted");
 
                     }else{
@@ -323,7 +328,12 @@ class HistoryMonitoringController extends Controller
                             DB::connection('delivery_inspection_db')->table('tbl_actual_delivery') 
                                 ->where("actualDeliveryId", $cur_data->actualDeliveryId)
                                 ->delete();
-    
+
+                            DB::connection('delivery_inspection_db')->table('tbl_inspection_for_breakdown')
+                                ->where("seedTag", $request->seedtag ) 
+                                ->where("batchTicketNumber", $request->last_season)
+                                ->delete();
+        
                             return json_encode("Previous Transfer Cancelled");
     
                     }else{
