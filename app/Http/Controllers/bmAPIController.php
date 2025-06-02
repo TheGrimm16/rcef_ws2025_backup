@@ -529,21 +529,62 @@ class bmAPIController extends Controller
     {
         $season = $GLOBALS['season_prefix'];
 
+        $ext = $request->extName;
+        
+        if(substr($ext, 0, 1) == 'J' || substr($ext, 0, 1) == 'j')
+        {
+            $ext = 'Jr.';
+        }
+        else if(substr($ext, 0, 1) == 'S' || substr($ext, 0, 1) == 's')
+        {
+            $ext = 'Sr.';
+        }
+        else if(substr($ext, 0, 1) == 'I' || substr($ext, 0, 1) == 'i' || substr($ext, 0, 1) == 'L' || substr($ext, 0, 1) == 'l')
+        {
+            $ext = 'I';
+        }
+        else if(substr($ext, 0, 1) == 'II' || substr($ext, 0, 2) == 'ii' || substr($ext, 0, 1) == 'LL' || substr($ext, 0, 1) == 'll')
+        {
+            $ext = 'II';
+        }
+        else if(substr($ext, 0, 1) == 'III' || substr($ext, 0, 3) == 'iii' || substr($ext, 0, 1) == 'LLL' || substr($ext, 0, 1) == 'LLL')
+        {
+            $ext = 'III';
+        }
+        else
+        {
+            $ext = '';
+        }
+
         $name1 = $request->firstName.'%'.$request->lastName;
         $name2 = $request->lastName.'%'.$request->firstName.'%';
+        $name3 = $request->lastName.'%'.$request->firstName.'%'.substr($ext, 0, 1).'%';
         $coop = $request->coop;
         $timestamp = Carbon::now()->format('Y-m-d H:i:s');
 
-        $checkIfExists = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
-        ->where(function ($query) use ($name1, $coop) {
-            $query->where('full_name', 'LIKE', $name1)
-                  ->where('coop_accred', 'LIKE', $coop);
-        })
-        ->orWhere(function ($query) use ($name2, $coop) {
-            $query->where('full_name', 'LIKE', $name2)
-                  ->where('coop_accred', 'LIKE', $coop);
-        })
-        ->get();
+        if($ext == '')
+        {
+            $checkIfExists = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
+            ->where(function ($query) use ($name1, $coop) {
+                $query->where('full_name', 'LIKE', $name1)
+                      ->where('coop_accred', 'LIKE', $coop);
+            })
+            ->orWhere(function ($query) use ($name2, $coop) {
+                $query->where('full_name', 'LIKE', $name2)
+                      ->where('coop_accred', 'LIKE', $coop);
+            })
+            ->get();
+        }
+        else
+        {
+            $checkIfExists = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
+            ->where(function ($query) use ($name3, $coop) {
+                $query->where('full_name', 'LIKE', $name3)
+                      ->where('coop_accred', 'LIKE', $coop);
+            })
+            ->get();
+        }
+
 
         if($checkIfExists)
         {
@@ -551,7 +592,7 @@ class bmAPIController extends Controller
         }
         else
         {
-            $fullname = $request->firstName.' '.$request->middleName.' '.$request->lastName.' '.$request->extName;
+            $fullname = $request->firstName.' '.$request->middleName.' '.$request->lastName.' '.$ext;
             $fullname = str_replace('  ', ' ', $fullname);
             $saveSeedGrower = DB::table($season.'rcep_delivery_inspection.tbl_seed_grower')
             ->insert([
@@ -561,7 +602,7 @@ class bmAPIController extends Controller
                 'fname' => $request->firstName,
                 'mname' => $request->middleName,
                 'lname' => $request->lastName,
-                'extension' => $request->extName,
+                'extension' => $ext,
                 'full_name' => rtrim($fullname),
                 'sync_date' => $timestamp
             ]);
