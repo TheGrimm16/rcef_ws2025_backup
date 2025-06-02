@@ -710,7 +710,14 @@ class bmAPIController extends Controller
 
     public function getLibPrv($val)
     {
-        if($val == 'all')
+        if($val == 'lib')
+        {
+            $getLibPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+            ->orderBy('region_sort', 'ASC')
+            ->get();
+            return $getLibPrv;
+        }
+        else if($val == 'all')
         {
             $getLibPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
             ->select("psa_code","updated_psa_code","regCode","regionName")
