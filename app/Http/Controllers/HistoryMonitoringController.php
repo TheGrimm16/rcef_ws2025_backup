@@ -244,10 +244,10 @@ class HistoryMonitoringController extends Controller
                         
                       $transferlogid = $dop->getTransferLogInfo('transfer_id',$batch_number,$row->prv_dropoff_id);
                       $transferBY = $dop->getTransferLogInfo('transferred_by',$batch_number,$row->prv_dropoff_id);
-                if(Auth::user()->username == $transferBY ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos"){
+                if(Auth::user()->username == $transferBY ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos" || Auth::user()->roles->first()->name == "branch-it"){
                 return "<a class='btn btn-warning btn-xs' data-rowid='$row->actualDeliveryId' data-dest='$dest_details' data-origin='$origin_details' data-batch='$batch_number' data-bcount='$row->totalBagCount' data-doporigin='$origin_id' data-ttype='cstocs_partial' data-seedtag='$row->seedTag' data-transferlogid='$transferlogid'  data-toggle='modal' data-target='#deleteHistoryData'><i class='fa fa-trash'></i> CANCEL</a>";
                 }else{
-                    if(Auth::user()->roles->first()->name == "rcef-programmer" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos"){
+                    if(Auth::user()->roles->first()->name == "rcef-programmer" ||Auth::user()->username == "v.villadon"||Auth::user()->username == "bm.delossantos" || Auth::user()->roles->first()->name == "branch-it"){
                         return "<a class='btn btn-warning btn-xs' data-rowid='$row->actualDeliveryId' data-dest='$dest_details' data-origin='$origin_details' data-batch='$batch_number' data-bcount='$row->totalBagCount' data-doporigin='$origin_id' data-ttype='cstocs_partial' data-seedtag='$row->seedTag' data-transferlogid='$transferlogid'  data-toggle='modal' data-target='#deleteHistoryData'><i class='fa fa-trash'></i> CANCEL</a>";
                     }else{
                         return $transferBY;
