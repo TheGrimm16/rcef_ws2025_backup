@@ -352,7 +352,7 @@
 					   <?php
 					 //  echo "<script>alert(". Auth::user()->roles->first()->name.") </script>";
 					   $prov = substr(Auth::user()->province,0,2);
-						if(Auth::user()->province!="" and (Auth::user()->roles->first()->name == "rcef-programmer" or Auth::user()->roles->first()->name == "administrator" )){
+						if(Auth::user()->province!="" and (Auth::user()->roles->first()->name == "rcef-programmer" or Auth::user()->roles->first()->name == "administrator"  or Auth::user()->roles->first()->name == "branch-it" )){
 	
 
 									    $curr =  basename(getcwd());
