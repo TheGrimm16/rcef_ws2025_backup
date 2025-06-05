@@ -80,7 +80,7 @@
 
 
 
-                        @for($x = 1; $x<6; $x++)
+                        @for($x = 1; $x<21; $x++)
 
                         <div class="row">
                             <div class="col-md-2">
