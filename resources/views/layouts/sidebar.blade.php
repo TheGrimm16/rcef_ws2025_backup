@@ -958,7 +958,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 					   <?php
 					 //  echo "<script>alert(". Auth::user()->roles->first()->name.") </script>";
 					   $prov = substr(Auth::user()->province,0,2);
-						if(Auth::user()->province!="" and ($prov != '03' or  Auth::user()->roles->first()->name == "administrator"  or Auth::user()->roles->first()->name == "rcef-pmo")){
+						if(Auth::user()->province!="" and (Auth::user()->roles->first()->name == "rcef-programmer" or Auth::user()->roles->first()->name == "administrator"  or Auth::user()->roles->first()->name == "rcef-pmo")){
 	
 
 									    $curr =  basename(getcwd());
@@ -1667,7 +1667,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 					   <?php
 					 //  echo "<script>alert(". Auth::user()->roles->first()->name.") </script>";
 					   $prov = substr(Auth::user()->province,0,2);
-						if(Auth::user()->province!="" and ($prov != '03' or  Auth::user()->roles->first()->name == "administrator"  or Auth::user()->roles->first()->name == "rcef-pmo")){
+						if(Auth::user()->province!="" and (Auth::user()->roles->first()->name == "rcef-programmer" or Auth::user()->roles->first()->name == "administrator"  or Auth::user()->roles->first()->name == "rcef-pmo")){
 	
 
 									    $curr =  basename(getcwd());
