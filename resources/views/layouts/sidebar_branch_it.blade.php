@@ -150,7 +150,7 @@
 							  		<li><a href="{{route('distribution.app.stocks_home')}}">Release Stocks</a></li>
 									<li><a href="{{route('released.data.index')}}"> Edit\Delete Distribution Data</a></li>
 									<li><a href="{{route('web.dop.maker.regular')}}">DOP Maker</a></li>
-								
+									<li><a href="{{route('distribution.app.stocks_seedType')}}">Change Seed Type</a></li>
 									<li><a href="{{route('encoding_vs')}}">Online Encoding For Synced Farmers From Verifier</a></li>
 									<li><a href="{{route('encoding_vs_fca')}}">Online Encoding For Endorsed FCA Member</a></li>
 									<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding For Small Landholding Farmers</a></li>
