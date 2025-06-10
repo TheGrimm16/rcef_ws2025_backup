@@ -567,7 +567,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 					<li><a href="{{url('sra/scheduled/farmers')}}"><i class="fa fa-users" aria-hidden="true"></i> Scheduled Farmers </a></li> 
 					<li><a href="{{url('sra/dop')}}"><i class="fa fa-map"></i> Drop Off Points </a></li>
 					<li><a href="{{url('sra/utility')}}"><i class="fa fa-cogs" aria-hidden="true"></i> E-Binhi Utility </a></li>    
-					@elseif(Auth::user()->roles->first()->name == "bpi-nsqcs" || Auth::user()->username == "rbombase.1")
+					@elseif(Auth::user()->roles->first()->name == "bpi-nsqcs" || Auth::user()->username == "rbombase.1" || Auth::user()->roles->first()->name == "dro")
 					  <li><a href="{{route('coop.rla.pmo')}}"><i class="fa fa-eye"></i> Monitor RLA </a></li>
 					  <li><a href="{{route('coop.rla.bpi')}}"><i class="fa fa-plus-circle"></i> ADD RLA </a></li>
 					@else
@@ -851,7 +851,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 													<li><a href="{{route('coop.rla.manual')}}">Upload RLA (MANUAL)</a></li> 
 												@endif
 												
-												@if(Auth::user()->roles->first()->name == "system-admin" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "NUEVAECIJA_Jhoemar"  || Auth::user()->username == "e.lopez" || Auth::user()->username == "rbombase.1")
+												@if(Auth::user()->roles->first()->name == "system-admin" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "NUEVAECIJA_Jhoemar"  || Auth::user()->username == "e.lopez" || Auth::user()->username == "rbombase.1" || Auth::user()->roles->first()->name == "dro")
 													 <li><a href="{{route('coop.rla.bpi')}}">ADD RLA </a></li> 
 												@endif
 												
@@ -1239,7 +1239,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 					<li><a href="{{url('sra/scheduled/farmers')}}"><i class="fa fa-users" aria-hidden="true"></i> Scheduled Farmers </a></li> 
 					<li><a href="{{url('sra/dop')}}"><i class="fa fa-map"></i> Drop Off Points </a></li>
 					<li><a href="{{url('sra/utility')}}"><i class="fa fa-cogs" aria-hidden="true"></i> E-Binhi Utility </a></li>    
-					@elseif(Auth::user()->roles->first()->name == "bpi-nsqcs" || Auth::user()->username == "rbombase.1")
+					@elseif(Auth::user()->roles->first()->name == "bpi-nsqcs" || Auth::user()->username == "rbombase.1" || Auth::user()->roles->first()->name == "dro")
 					  <li><a href="{{route('coop.rla.pmo')}}"><i class="fa fa-eye"></i> Monitor RLA </a></li>
 					  <li><a href="{{route('coop.rla.bpi')}}"><i class="fa fa-plus-circle"></i> ADD RLA </a></li>
 					@else
@@ -1290,7 +1290,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									<li><a href="{{route('coop.rla.manual')}}">Upload RLA (MANUAL)</a></li> 
 								@endif
 								
-								@if(Auth::user()->roles->first()->name == "system-admin" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "NUEVAECIJA_Jhoemar"  || Auth::user()->username == "e.lopez" || Auth::user()->username == "rbombase.1")
+								@if(Auth::user()->roles->first()->name == "system-admin" || Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "NUEVAECIJA_Jhoemar"  || Auth::user()->username == "e.lopez" || Auth::user()->username == "rbombase.1" || Auth::user()->roles->first()->name == "dro")
 									 <li><a href="{{route('coop.rla.bpi')}}">ADD RLA </a></li> 
 								@endif
 								
