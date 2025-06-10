@@ -795,12 +795,12 @@ class UserController extends Controller
 
     public function datatable()
     {
- 
+      
         if(Auth::user()->roles->first()->name == "branch-it"){
 
       
                 $users = DB::table('users')
-                ->select('userId', 'firstName', 'middleName', 'lastName', 'extName', 'email', 'username', 'isDeleted')
+                ->select('userId', 'firstName', 'middleName', 'lastName', 'extName', 'email', 'username', 'municipality', 'isDeleted')
                 ->where('isDeleted', 0)
                 ->where("stationId",Auth::user()->stationId)
                 ->get();
@@ -808,7 +808,7 @@ class UserController extends Controller
          
         }else{
             $users = DB::table('users')
-            ->select('userId', 'firstName', 'middleName', 'lastName', 'extName', 'email', 'username', 'isDeleted')
+            ->select('userId', 'firstName', 'middleName', 'lastName', 'extName', 'email', 'username', 'municipality', 'isDeleted')
             ->where('isDeleted', 0)
             ->get();
          
@@ -816,7 +816,9 @@ class UserController extends Controller
        
         $data = array();
 
+
         foreach ($users as $item) {
+    
             $roles = DB::table('roles')
             ->leftJoin('role_user', 'role_user.roleId', '=', 'roles.roleId')
             ->select('roles.display_name')
@@ -829,10 +831,28 @@ class UserController extends Controller
                 $name = $item->firstName . ' ' . $item->lastName . ', ' . $item->extName;
             }
 
+            $getPrvMun = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+            ->select('province', 'municipality')
+            ->where('prv', 'LIKE', $item->municipality)
+            ->first();
+
+            if($getPrvMun)
+            {
+                $province = $getPrvMun->province;
+                $municipality = $getPrvMun->municipality;
+            }
+            else
+            {
+                $province = 'N/A';
+                $municipality = 'N/A';
+            }
+
             $data[] = array(
                 'userId' => $item->userId,
                 'name' => $name,
                 'email' => $item->email,
+                'province' => $province,
+                'municipality' => $municipality,
                 'username' => $item->username,
                 'lastName' => $item->lastName,
                 'firstName' => $item->firstName,
@@ -845,6 +865,7 @@ class UserController extends Controller
         }
 
         $data = collect($data);
+
 
         return Datatables::of($data)
         ->addColumn('roles', function($data) {

@@ -3036,6 +3036,8 @@ $(document).ready(function () {
             {data: 'name', name: 'name'},
             {data: 'username', name: 'username'},
             {data: 'email', name: 'email'},
+            {data: 'province', name: 'province'},
+            {data: 'municipality', name: 'municipality'},
             {data: 'roles', name: 'roles', orderable: false, searchable: false},
             {data: 'status', name: 'status', orderable: false, searchable: false},
             {data: 'actions', name: 'actions', orderable: false, searchable: false}

@@ -38,6 +38,8 @@
 									<th style="width: 20%;">Name</th>
 									<th style="width: 15%;">Username</th>
 									<th style="width: 20%;">Email</th>
+									<th style="width: 15%;">Province</th>
+									<th style="width: 15%;">Municipality</th>
 									<th style="width: 15%;">Roles</th>
 									<th style="width: 10%;">Status</th>
 									<th style="width: 20%;">Actions</th>
@@ -263,7 +265,7 @@
 			'csrf_token' => csrf_token(),
 			'tableRoute' => route('users.datatable')
 		]) !!};
-
+		
 
 		function generateRandomPass(e) {
 			e.preventDefault();
