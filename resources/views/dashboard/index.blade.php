@@ -171,14 +171,6 @@
                         <div class="card-content">
                             <span class="title">Total Delivery Declared by SGC/A (bags)</span>
                             <span class="value">{{number_format($confirmed->total_bag_count)}}</span>
-                            <div class="breakdown" style="color: #234f1e">
-                                <span class="small-title">RCEF</span>
-                                <span class="small-value">{{number_format(isset($confirmed->total_bag_count_RCEF) ? $confirmed->total_bag_count_RCEF : 0)}}</span>
-                            </div>
-                            <div class="breakdown" style="color: #241571">
-                                <span class="small-title">NRP (Inbred)</span>
-                                <span class="small-value">{{number_format(isset($confirmed->total_bag_count_NRP) ? $confirmed->total_bag_count_NRP : 0)}}</span>
-                            </div>
                         </div>
                     </div>
                     <div class="actual-delivery insight-card">
@@ -341,20 +333,6 @@
                         <div class="row tile_count" style="margin: 0">
                             <div class="col-md-7 col-sm-12 col-xs-12 tile_stats_count" style="padding-bottom: 0;padding-left: 0;">
                                 <div class="count" ><i class="fa fa-check-square-o" style="margin-right:3px;" aria-hidden="true"></i>{{number_format(isset($confirmed->total_bag_count) ? $confirmed->total_bag_count : 0)}}</div>
-                            </div>
-
-                            <div class="col-md-5 col-sm-12 col-xs-12" style="padding-bottom: 0;padding-left: 0;">
-                                <div class="row ml-3">
-                                    <div class="col-md-12 col-sm-4 col-xs-4">
-                                        <div class="sub-count" id=""> <i class="fa fa-leaf"> RCEF: {{number_format(isset($confirmed->total_bag_count_RCEF) ? $confirmed->total_bag_count_RCEF : 0)}}</i>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-12 col-sm-4 col-xs-4">
-                                        <div class="sub-count" id=""> <i class="fa fa-pagelines">   NRP (Inbred): {{number_format(isset($confirmed->total_bag_count_NRP) ? $confirmed->total_bag_count_NRP : 0)}}</i>
-                                        </div>
-                                    </div>
-
-                                </div>
                             </div>
                         </div>
                     </div>
