@@ -156,12 +156,30 @@ import os, sys
 import polars as pl
 from urllib.parse import quote
 import re
+import mysql.connector
 uri ="mysql://root:%s@192.168.10.44:3306/" % quote('Zeijan@13')
 
 ssn = sys.argv[1] if len(sys.argv) > 1 else 'ws2025_'#None 
 prov = sys.argv[2] if len(sys.argv) > 1 else None
 prv = sys.argv[3] if len(sys.argv) > 1 else None
 
+
+connection = mysql.connector.connect(
+        host="192.168.10.44",
+        user="json",
+        password="Zeijan@13",
+        database=f"{ssn}rcep_delivery_inspection",
+    )
+
+cursor = connection.cursor()
+
+setTableCache_query = "SET GLOBAL table_definition_cache = 4000;"
+cursor.execute(setTableCache_query)
+setOpenCache_query = "SET GLOBAL table_open_cache = 4000;"
+cursor.execute(setOpenCache_query)
+
+cursor.close()
+connection.close()
 
 # Read tables from the database
 lib_dropoff_point = pl.read_database_uri(query=f"SELECT DISTINCT prv as t1_prv, coop_accreditation as t1_coop_accreditation , CONCAT(province,'_',municipality) AS ldp_prov_muni_data, CONCAT(region,'_',province,'_',municipality) AS ldp_con_data, province as t1_province FROM {ssn}rcep_delivery_inspection.lib_dropoff_point WHERE province='{prov}'", uri=uri)
