@@ -255,7 +255,7 @@ tr{
           <td style ="border:none; text-align:left;" ><br><br></td>
         </tr>   
         <tr> 
-          <td style ="border:none; text-align:left;" >eBinhi Padala 2025 DS</td>
+          <td style ="border:none; text-align:left;" >eBinhi Padala 2025 WS</td>
         </tr>
         <tr>
           <td style ="border:none; text-align:left;">Payment Summary with DBP Account</td>   

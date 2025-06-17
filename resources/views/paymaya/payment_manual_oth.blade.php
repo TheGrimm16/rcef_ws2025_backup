@@ -249,7 +249,7 @@ body { margin-top: 20px; margin-bottom: 0px;}
     <table  style ="border:none; text-align:left; font-size: 12pt" width="100%" id="emp" >    
       <tr> 
 
-        <td style ="border:none; text-align:left;" >2024DS Binhi E-Padala:</td>
+        <td style ="border:none; text-align:left;" >2025 WS Binhi E-Padala:</td>
       </tr>
       <tr>
         <td style ="border:none; text-align:left;">Payment Summary of Other Banks</td>   
