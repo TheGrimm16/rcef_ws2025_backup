@@ -30,7 +30,7 @@ class BePDashboardController extends Controller
     public function home_ui(){
         $season = $GLOBALS['season_prefix'];
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+		$pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
 		$scriptPath = base_path('app//Http//PyScript//bepDashboard//bepDashboardIndex.py');
 
@@ -1091,7 +1091,7 @@ class BePDashboardController extends Controller
                 ->select('tbl_claim.coopAccreditation as Cooperative_Name', DB::raw("CONCAT(DATE_FORMAT(tbl_beneficiaries.schedule_start, '%M %d, %Y'), ' - ', DATE_FORMAT(tbl_beneficiaries.schedule_end, '%M %d, %Y')) as Schedule"),
                 'tbl_claim.rsbsa_control_no as RSBSA_Number', 'tbl_beneficiaries.firstname as First_Name', 'tbl_beneficiaries.middname as Middle_Name',
                 'tbl_beneficiaries.lastname as Last_Name', 'tbl_beneficiaries.extname as Ext_Name', 'tbl_claim.paymaya_code as eBinhiCode', 'tbl_claim.date_created as Date_Claimed', 'tbl_claim.province as Province','tbl_claim.municipality as Municipality',
-                'tbl_claim.barangay as Barangay', 'tbl_claim.claimLocation as Pick-up_Point', 'tbl_claim.phoneNumber as Phone_Number', 'tbl_beneficiaries.area as Area', DB::raw('0 as Bags'), 'tbl_claim.seedVariety as Seed_Variety', DB::raw("IF(is_paid = 1, 'Procossed via RSMS', '-') as Remarks"))
+                'tbl_claim.barangay as Barangay', 'tbl_claim.claimLocation as Pick-up_Point', 'tbl_claim.phoneNumber as Phone_Number', 'tbl_beneficiaries.area as Area', DB::raw('0 as Bags'), 'tbl_claim.seedVariety as Seed_Variety', DB::raw('"-" as Seed_Tag'), DB::raw('"-" as Seed_Grower'), DB::raw("IF(is_paid = 1, 'Procossed via RSMS', '-') as Remarks"))
                 ->join($GLOBALS['season_prefix'].'rcep_paymaya.tbl_beneficiaries', 'tbl_claim.paymaya_code', '=', 'tbl_beneficiaries.paymaya_code')
                 ->where('tbl_claim.coopAccreditation', 'LIKE', $coopAccred)
                 ->whereBetween('date_created', [$date1, $date2])
@@ -1114,14 +1114,38 @@ class BePDashboardController extends Controller
 
         // $getInfo = array_merge($getInfo,$getInfo2);
         foreach($getInfo as $row)
-        {
+        { 
             $getBags = count(DB::table($GLOBALS['season_prefix'].'rcep_paymaya.tbl_claim')
             ->where('paymaya_code',$row->eBinhiCode)
             ->where('coopAccreditation','=', $row->Cooperative_Name)
             ->whereBetween('date_created', [$date1, $date2])
             ->get());
 
+            $getSeedTags =DB::table($GLOBALS['season_prefix'].'rcep_paymaya.tbl_claim')
+            ->select(DB::RAW("DISTINCT(seedTag)"))
+            ->where('paymaya_code',$row->eBinhiCode)
+            ->where('coopAccreditation','=', $row->Cooperative_Name)
+            ->whereBetween('date_created', [$date1, $date2])
+            ->get();
 
+            $seed_tags = [];
+            $seed_growers = [];
+
+            foreach($getSeedTags as $seedTag){
+                $seedTag = $seedTag->seedTag;
+                array_push($seed_tags, $seedTag);
+                $seedTag = explode('/', $seedTag);
+                $getSeedGrower = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_rla_details')
+                ->select('sg_name')
+                ->where('labNo', '=', $seedTag[0])
+                ->where('lotNo', '=', $seedTag[1])
+                ->where('seedVariety', '=', $row->Seed_Variety)
+                ->first();
+                array_push($seed_growers, $getSeedGrower->sg_name);
+            }
+            
+            $row->Seed_Tag = implode(', ', $seed_tags);
+            $row->Seed_Grower = implode(', ', $seed_growers);
             $getCoop = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')
             ->select('coopName')
             ->where('accreditation_no','=', $row->Cooperative_Name)
@@ -1136,7 +1160,7 @@ class BePDashboardController extends Controller
         return Excel::create($filename, function($excel) use ($excel_data) {
         $excel->sheet("Farmer Information", function($sheet) use ($excel_data) {
             $sheet->fromArray($excel_data);
-            $sheet->getStyle('A1:R1')->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('00B53F');
+            $sheet->getStyle('A1:T1')->getFill()->setFillType(\PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setARGB('00B53F');
             foreach ($excel_data as $key => $value) {
                 $hour = date("H:i:s", strtotime($value["Date_Claimed"]));
                 if (strtotime($hour) > strtotime("16:00:00")) {
