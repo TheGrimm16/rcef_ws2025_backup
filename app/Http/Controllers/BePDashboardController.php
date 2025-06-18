@@ -1165,7 +1165,7 @@ class BePDashboardController extends Controller
                 $hour = date("H:i:s", strtotime($value["Date_Claimed"]));
                 if (strtotime($hour) > strtotime("16:00:00")) {
                     $rowIndex = $key + 2; 
-                    $cellRange = 'A' . $rowIndex . ':Q' . $rowIndex;
+                    $cellRange = 'A' . $rowIndex . ':T' . $rowIndex;
                     $sheet->getStyle($cellRange)->applyFromArray([
                         'fill' => [
                             'type' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
