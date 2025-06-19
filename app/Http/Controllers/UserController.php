@@ -41,7 +41,7 @@ class UserController extends Controller
         "branch-it", "buffer-inspector", "dro", "delivery-manager", "ebinhi-implementor", "rcef-pmo", "system-encoder", "techno_demo_officer", "seed-grower", "administrator"
     ];
 
-     if(Auth::user()->roles->first()->name == "rcef-programmer"){
+     if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rs.jandoc-ces"){
         $roles = DB::table('roles')
         // ->whereIn("name", $roles_filtered)
         ->pluck('display_name', 'roleId');
