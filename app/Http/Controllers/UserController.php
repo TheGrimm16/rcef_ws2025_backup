@@ -1015,7 +1015,7 @@ class UserController extends Controller
             ->where("userId", $request->userID)
             ->value("province");
 
-        if(Auth::user()->roles->first()->name == "branch-it"){
+        if(Auth::user()->roles->first()->name == "branch-it" && Auth::user()->username != "rs.jandoc-ces"){
             $station_name = DB::table("geotag_db2.tbl_station")
                 ->where("stationId",Auth::user()->stationId)
                 ->first();
