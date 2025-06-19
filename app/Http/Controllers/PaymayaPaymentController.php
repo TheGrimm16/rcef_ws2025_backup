@@ -1062,36 +1062,36 @@ private function search_to_array($array, $key, $value) {
                     $rowDate = date("Y-m-d H:i:s", strtotime($row->date_created));
 
                     // dd($row);
-                    $getSeedTags =DB::table($GLOBALS['season_prefix'].'rcep_paymaya.tbl_claim')
-                      ->select(DB::RAW("DISTINCT(seedTag)"))
-                      ->where('paymaya_code',$row->paymaya_code)
-                      ->where('coopAccreditation','=', $row->coopAccreditation)
-                      ->whereBetween('date_created', [$from, $to])
-                      ->get();
+                    // $getSeedTags =DB::table($GLOBALS['season_prefix'].'rcep_paymaya.tbl_claim')
+                    //   ->select(DB::RAW("DISTINCT(seedTag)"))
+                    //   ->where('paymaya_code',$row->paymaya_code)
+                    //   ->where('coopAccreditation','=', $row->coopAccreditation)
+                    //   ->whereBetween('date_created', [$from, $to])
+                    //   ->get();
 
-                      $seed_tags = [];
-                      $seed_growers = [];
+                    //   $seed_tags = [];
+                    //   $seed_growers = [];
 
-                      foreach($getSeedTags as $seedTag){
-                          $seedTag = $seedTag->seedTag;
-                          array_push($seed_tags, $seedTag);
-                          $seedTag = explode('/', $seedTag);
-                          $getSeedGrower = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_rla_details')
-                          ->select('sg_name')
-                          ->where('labNo', '=', $seedTag[0])
-                          ->where('lotNo', '=', $seedTag[1])
-                          ->where('seedVariety', '=', $row->seedVariety)
-                          ->first();
-                          array_push($seed_growers, $getSeedGrower->sg_name);
-                      }
+                    //   foreach($getSeedTags as $seedTag){
+                    //       $seedTag = $seedTag->seedTag;
+                    //       array_push($seed_tags, $seedTag);
+                    //       $seedTag = explode('/', $seedTag);
+                    //       $getSeedGrower = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_rla_details')
+                    //       ->select('sg_name')
+                    //       ->where('labNo', '=', $seedTag[0])
+                    //       ->where('lotNo', '=', $seedTag[1])
+                    //       ->where('seedVariety', '=', $row->seedVariety)
+                    //       ->first();
+                    //       array_push($seed_growers, $getSeedGrower->sg_name);
+                    //   }
                       
-                      $row->Seed_Tag = implode(', ', $seed_tags);
-                      $row->Seed_Grower = implode(', ', $seed_growers);
-                      $getCoop = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')
-                      ->select('coopName')
-                      ->where('accreditation_no','=', $row->coopAccreditation)
-                      ->get();
-                      $row->Cooperative_Name = $getCoop[0]->coopName;
+                    //   $row->Seed_Tag = implode(', ', $seed_tags);
+                    //   $row->Seed_Grower = implode(', ', $seed_growers);
+                    //   $getCoop = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')
+                    //   ->select('coopName')
+                    //   ->where('accreditation_no','=', $row->coopAccreditation)
+                    //   ->get();
+                    //   $row->Cooperative_Name = $getCoop[0]->coopName;
 
                     // if(strtotime($rowDate)>= strtotime($from) AND strtotime($rowDate) <= strtotime($to)){
                         if(count($beneficiary_details) > 0){
@@ -1114,8 +1114,8 @@ private function search_to_array($array, $key, $value) {
                                     "area" => $beneficiary_details->area,
                                     "bags" => $row->bags,
                                     "seedVariety" => $row->seedVariety,
-                                    "seed_grower" => $row->Seed_Grower,
-                                    "seedTag" => $row->Seed_Tag,
+                                    // "seed_grower" => $row->Seed_Grower,
+                                    // "seedTag" => $row->Seed_Tag,
                                     
                                 //  "seed_grower" => $seed_grower,
                                 //  "seedTag" => $row->seedTag
@@ -1140,8 +1140,8 @@ private function search_to_array($array, $key, $value) {
                                     "area" => $beneficiary_details->area,
                                      "bags" => $row->bags,
                                     "seedVariety" => $row->seedVariety,
-                                    "seed_grower" => $row->Seed_Grower,
-                                    "seedTag" => $row->Seed_Tag
+                                    // "seed_grower" => $row->Seed_Grower,
+                                    // "seedTag" => $row->Seed_Tag
                                    
                                 //  "seed_grower" => $seed_grower,
                                 //  "seedTag" => $row->seedTag
@@ -1170,7 +1170,7 @@ private function search_to_array($array, $key, $value) {
 
                     $paycode = "";
                     $bags = 0;
-                    $finalCol = "S";
+                    $finalCol = "Q";
                     $varityCount = 1;
                     $fr =1;
                     $columnwithdata = array();
@@ -1207,7 +1207,7 @@ private function search_to_array($array, $key, $value) {
                             $varityCount = 1;
                             $bags = $value["bags"];
                             $fc = "A";
-                            $lc = "S";
+                            $lc = "Q";
                             $paycode = $value["paymaya_code"];
                             $row++;
                             $hour = date("H:i:s", strtotime($value["date_created"]));
@@ -1230,7 +1230,7 @@ private function search_to_array($array, $key, $value) {
                         $row2++;
                         if($row2<=$lr){
                           $finalCol;
-                            $lcr="S"; 
+                            $lcr="Q"; 
                             if($finalCol>$lcr){
                                     if(!isset($columnwithdata[$row2])){
                                         do{
