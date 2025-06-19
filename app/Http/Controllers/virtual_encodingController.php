@@ -270,7 +270,7 @@ class virtual_encodingController extends Controller
             ->orderBy("region_sort", 'ASC')
             ->get();
         }else{
-            $provinceList = ["LEYTE","NEGROS OCCIDENTAL","BULACAN","NUEVA ECIJA","AURORA","BATAAN","PAMPANGA","TARLAC","ZAMBALES"];
+            $provinceList = ["LEYTE","NEGROS OCCIDENTAL","BULACAN","NUEVA ECIJA","AURORA","BATAAN","PAMPANGA","TARLAC","ZAMBALES","LAGUNA"];
             $user_provinces = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
             ->select('lib_prv.province')
             ->whereIn("province", $provinceList)
