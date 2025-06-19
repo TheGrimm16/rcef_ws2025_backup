@@ -1165,7 +1165,8 @@ private function search_to_array($array, $key, $value) {
                     $sheet->prependRow($row, array(
                         "Cooperative","Schedule", 'RSBSA #', "First Name", "Middle Name", "Last Name", "Ext Name", "e-Binhi Code",
                          "Date Claimed", "Province", "Municipality", "Barangay", "Pickup Point", "Phone Number",
-                        "Area",  "Bags", "Seed Variety 1","Seed Grower","Seed Tag"
+                        "Area",  "Bags", "Seed Variety 1"
+                        // ,"Seed Grower","Seed Tag"
                     ));
 
                     $paycode = "";
