@@ -30,7 +30,7 @@ class BePDashboardController extends Controller
     public function home_ui(){
         $season = $GLOBALS['season_prefix'];
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+		$pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
 		$scriptPath = base_path('app//Http//PyScript//bepDashboard//bepDashboardIndex.py');
 
@@ -1122,7 +1122,7 @@ class BePDashboardController extends Controller
             ->get());
 
             $getSeedTags =DB::table($GLOBALS['season_prefix'].'rcep_paymaya.tbl_claim')
-            ->select(DB::RAW("DISTINCT(seedTag)"))
+            ->select(DB::RAW("DISTINCT(seedTag)"),'seedVariety')
             ->where('paymaya_code',$row->eBinhiCode)
             ->where('coopAccreditation','=', $row->Cooperative_Name)
             ->whereBetween('date_created', [$date1, $date2])
@@ -1132,6 +1132,7 @@ class BePDashboardController extends Controller
             $seed_growers = [];
 
             foreach($getSeedTags as $seedTag){
+                $seedVariety = $seedTag->seedVariety;
                 $seedTag = $seedTag->seedTag;
                 array_push($seed_tags, $seedTag);
                 $seedTag = explode('/', $seedTag);
@@ -1139,7 +1140,7 @@ class BePDashboardController extends Controller
                 ->select('sg_name')
                 ->where('labNo', '=', $seedTag[0])
                 ->where('lotNo', '=', $seedTag[1])
-                ->where('seedVariety', '=', $row->Seed_Variety)
+                ->where('seedVariety', '=', $seedVariety)
                 ->first();
                 array_push($seed_growers, $getSeedGrower->sg_name);
             }
@@ -1154,7 +1155,7 @@ class BePDashboardController extends Controller
             $row->Cooperative_Name = $getCoop[0]->coopName;
 
         }     
-
+        $coop = preg_replace('/[\r\n]+/', '', $coop);
         $excel_data = json_decode(json_encode($getInfo), true);
         $filename = 'eBinhi_'.$coop.'('.$date1.' - '.$date2.')';
         return Excel::create($filename, function($excel) use ($excel_data) {
