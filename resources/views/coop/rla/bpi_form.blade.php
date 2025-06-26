@@ -45,7 +45,7 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2>
-                    Please fill-up all the required fields on the from.
+                    Please fill-out all the required fields on the form.
                 </h2>
                 <div class="clearfix"></div>
             </div>
@@ -79,7 +79,7 @@
                         <div class="form-group">
                             <label class="control-label col-md-2 col-sm-2 col-xs-2">Lab Number:</label>
                             <div class="col-md-10 col-sm-10 col-xs-10">
-                                <input type="text" class="form-control" name="lab_number" id="lab_number" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
+                                <input type="text" class="form-control" name="lab_number" id="lab_number" oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9.]/g, '').replace(/(\..*)\./g, '$1');" required>
                             </div>
                         </div>
                         <div class="form-group">
