@@ -137,7 +137,7 @@ class bmAPIController extends Controller
     }
     public function getSeedVariety()
     {
-        $variety_list = DB::table('seed_seed.seed_characteristics')->groupBy('variety')->get();
+        $variety_list = DB::table($GLOBALS['season_prefix'].'seed_seed.seed_characteristics')->groupBy('variety')->get();
 
         return ($variety_list);
     }
