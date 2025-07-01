@@ -50,6 +50,7 @@ class reportGADController extends Controller
         // $pythonPath = 'C://Python312//python.exe';
 
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
         $scriptPath = base_path('app/Http/PyScript/gad-report/gad-charts2.py');
 
@@ -226,7 +227,7 @@ class reportGADController extends Controller
         ));
 
       
-                $excel_file =  Excel::create("2023DS_as_of"."_".date("Y-m-d"), function($excel) use ($excel_arr) {
+                $excel_file =  Excel::create($GLOBALS['season_prefix']."as_of"."_".date("Y-m-d"), function($excel) use ($excel_arr) {
                      
                     foreach($excel_arr as $key => $data_arr){
                         $data_list = json_decode(json_encode($data_arr["data"]), true);
@@ -986,6 +987,7 @@ class reportGADController extends Controller
         // $pythonPath = 'C://Python312//python.exe';
 
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
         $scriptPath = base_path('app/Http/PyScript/gad-report/gad-index.py');
 
@@ -1091,6 +1093,7 @@ class reportGADController extends Controller
     // $pythonPath = 'C://Python312//python.exe';
 
     $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+    $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
     $scriptPath = base_path('app/Http/PyScript/gad-report/gad-charts.py');
 
@@ -1181,6 +1184,7 @@ class reportGADController extends Controller
         // $pythonPath = 'C://Python312//python.exe';
 
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
         $scriptPath = base_path('app/Http/PyScript/gad-report/gad-seed-variety.py');
 
@@ -1406,8 +1410,8 @@ class reportGADController extends Controller
 
     public function processGadData(){
         //AS_OF
-        $request_date = "2022-06-30";
-         //$request_date = date("Y-m-d");
+        // $request_date = "2025-07-01";
+         $request_date = date("Y-m-d");
          $region = DB::connection("delivery_inspection_db")->table("tbl_actual_delivery")
                 //->where("region", "ILOCOS")
                 ->groupBy("region")
@@ -1476,8 +1480,8 @@ class reportGADController extends Controller
                         //     ->get();
 
 
-                            $released = DB::table($prv.".released")
-                            ->where("released.seed_variety", $variety->seedVariety)
+                            $released = DB::table($prv.".new_released")
+                            ->where("new_released.seed_variety", $variety->seedVariety)
                             //->select(DB::raw("STR_TO_DATE(date_released, '%Y-%m-%d')"))
                             // ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') <=  STR_TO_DATE(".$request_date.", '%Y-%m-%d')")
                                 ->get();
@@ -1486,7 +1490,7 @@ class reportGADController extends Controller
                             // //    dd($released);
                             // }
                     //FOR LIST
-                    
+                    // dd($released);
                     $maleGroup1 = 0;
                     $maleGroup2 = 0;
                     $maleGroup3 = 0;                    
@@ -1534,17 +1538,17 @@ class reportGADController extends Controller
                                     if($age<=29){
                                         $femaleGroup1++;
                                         $femaleArea1 += $released_data->claimed_area;
-                                        $femaleBags1 += intval($released_data->bags);
+                                        $femaleBags1 += intval($released_data->bags_claimed);
                                     }elseif($age>29 && $age <=59){
                                         //dd(intval($released_data->farmer_area));
     
                                         $femaleGroup2++;
                                         $femaleArea2 += $released_data->claimed_area;
-                                        $femaleBags2 += intval($released_data->bags);
+                                        $femaleBags2 += intval($released_data->bags_claimed);
                                     }elseif($age>=60){
                                         $femaleGroup3++;
                                         $femaleArea3 += $released_data->claimed_area;
-                                        $femaleBags3 += intval($released_data->bags);
+                                        $femaleBags3 += intval($released_data->bags_claimed);
                                     }else{
                                         dd($age);
                                     }
@@ -1563,15 +1567,15 @@ class reportGADController extends Controller
                                     if($age<=29){
                                         $maleGroup1++;
                                         $maleArea1 += $released_data->claimed_area;
-                                        $maleBags1 += intval($released_data->bags);
+                                        $maleBags1 += intval($released_data->bags_claimed);
                                     }elseif($age>29 && $age <=59){
                                         $maleGroup2++;
                                         $maleArea2 += $released_data->claimed_area;
-                                        $maleBags2 += intval($released_data->bags);
+                                        $maleBags2 += intval($released_data->bags_claimed);
                                     }elseif($age>=60){
                                         $maleGroup3++;
                                         $maleArea3 += $released_data->claimed_area;
-                                        $maleBags3 += intval($released_data->bags);
+                                        $maleBags3 += intval($released_data->bags_claimed);
                                     }else{
                                             dd($age);
                                     }
