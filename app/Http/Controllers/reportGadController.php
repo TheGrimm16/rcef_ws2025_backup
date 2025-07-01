@@ -50,7 +50,7 @@ class reportGADController extends Controller
         // $pythonPath = 'C://Python312//python.exe';
 
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-        $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
         $scriptPath = base_path('app/Http/PyScript/gad-report/gad-charts2.py');
 
@@ -987,7 +987,7 @@ class reportGADController extends Controller
         // $pythonPath = 'C://Python312//python.exe';
 
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-        $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
         $scriptPath = base_path('app/Http/PyScript/gad-report/gad-index.py');
 
@@ -1093,7 +1093,7 @@ class reportGADController extends Controller
     // $pythonPath = 'C://Python312//python.exe';
 
     $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-    $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+    // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
     $scriptPath = base_path('app/Http/PyScript/gad-report/gad-charts.py');
 
@@ -1184,7 +1184,7 @@ class reportGADController extends Controller
         // $pythonPath = 'C://Python312//python.exe';
 
         $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-        $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
         $scriptPath = base_path('app/Http/PyScript/gad-report/gad-seed-variety.py');
 
