@@ -199,6 +199,7 @@
 							  <!--<li><a href="{{route('paymaya.variety_report')}}">Variety Report</a></li>-->
 							  <li class="sub_menu"><a href="{{route('paymaya.beneficiary_report')}}">Beneficiary Reports</a></li>
 							  <li class="sub_menu"><a href="{{route('deletePreReg')}}">Delete Pre-Registration Data</a></li> 
+							  <li class="sub_menu"><a href="{{route('bepToReg')}}">BeP to Conventional Profile Tagging</a></li>
 							   
 
 							   @if(Auth::user()->username == "bs.pungtilan" || Auth::user()->username == "dra.jardinez" || Auth::user()->username == "NUEVAECIJA_Jhoemar" || Auth::user()->username == "e.lopez" || Auth::user()->roles->first()->name == "rcef-programmer" )

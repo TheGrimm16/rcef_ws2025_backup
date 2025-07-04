@@ -768,4 +768,69 @@ class bmAPIController extends Controller
     }
 
 
+    public function bepToReg_index()
+    {
+        $season = $GLOBALS['season_prefix'];
+
+        $provMuni = [];
+
+        $getPrvs = DB::table($season.'rcep_delivery_inspection.lib_prv')
+        ->get();
+
+
+        foreach($getPrvs as $prv)
+        {
+
+            array_push($provMuni, [
+                'regionName' => $prv->regionName,
+                'province' => $prv->province,
+                'municipality' => $prv->municipality,
+                'prv' => $prv->prv,
+                'claiming_prv' => $prv->temp_prv,
+            ]);
+        }
+        return view('bepToReg.index', compact('provMuni'));
+
+    }
+
+
+    public function bepToRegUpdate(Request $request)
+    {
+        $season = $GLOBALS['season_prefix'];
+
+        $claiming_prv = $request->provMuni;
+        $rsbsaNo = $request->rsbsaNo;
+        $lastName = $request->lastName;
+        $firstName = $request->firstName;
+        $middleName = $request->middleName;
+        $extName = $request->extName;
+        // dd($claiming_prv, $rsbsaNo, $lastName, $firstName, $middleName, $extName);
+
+        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+
+		$scriptPath = base_path('app//Http//PyScript//bm//bepToReg.py');
+
+		$escapedSeason = escapeshellarg($season);
+        $escapedClaimingPrv = escapeshellarg($claiming_prv);
+        $escapedRsbsaNo = escapeshellarg($rsbsaNo);
+        $escapedLastName = escapeshellarg($lastName);
+        $escapedFirstName = escapeshellarg($firstName);
+        $escapedMiddleName = escapeshellarg($middleName);
+        $escapedExtName = escapeshellarg($extName);
+        $command = "$pythonPath \"$scriptPath\" $escapedSeason $escapedClaimingPrv $escapedRsbsaNo $escapedLastName $escapedFirstName $escapedMiddleName $escapedExtName";
+		
+		$process = new Process($command);
+
+		try {
+			$process->mustRun();
+			$data = $process->getOutput();
+            // dd($data);
+            return $data;
+		} catch (ProcessFailedException $exception) {
+			echo $exception->getMessage();
+		}
+
+    }
+
 }

@@ -2288,6 +2288,10 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     //Delete Pre-reg
     Route::get('/deletePreReg/home', ['as' => 'deletePreReg', 'uses' => 'bmAPIController@deletePreReg_index']);
     Route::POST('/deletePreReg/deletePreRegProfile', ['as' => 'deletePreRegProfile', 'uses' => 'bmAPIController@deletePreRegProfile']);
+
+    //Bep to Regulard
+    Route::get('/bepToReg/home', ['as' => 'bepToReg', 'uses' => 'bmAPIController@bepToReg_index']);
+    Route::POST('/bepToReg/bepToRegUpdate', ['as' => 'bepToRegUpdate', 'uses' => 'bmAPIController@bepToRegUpdate']);
     
     //Pre-reg App
     Route::get('/api/bm/downloadFarmers', ['as' => 'bm.downloadFarmers', 'uses' => 'bmAPIController@downloadFarmers']);
