@@ -83,6 +83,7 @@ if(getFarmerInfo and len(getFarmerInfo) == 1):
 
     total_bags = 0
     total_area = 0.0
+    is_claimed = 0
 
     getBepClaims_query = f"SELECT COUNT(*) as bags FROM {currentSeason}rcep_paymaya.tbl_claim WHERE rsbsa_control_no LIKE '{reg_rsbsa}'"
     cursor.execute(getBepClaims_query)
@@ -91,14 +92,16 @@ if(getFarmerInfo and len(getFarmerInfo) == 1):
         getBepClaims_df = pd.DataFrame(getBepClaims, columns=[col[0] for col in cursor.description])
         bep_claims = getBepClaims_df.iloc[0]['bags']
         bep_area = bep_claims/2.169
+        is_claimed = 1
     else:
         bep_claims = 0
         bep_area = 0
+        is_claimed = 0
     
     total_bags = reg_total_claimed + bep_claims
     total_area = reg_total_claimed_area + bep_area
 
-    updateFarmer_query = f"UPDATE {table_name} SET is_ebinhi = 0, is_claimed = 1, total_claimed = {total_bags}, total_claimed_area = {total_area}, replacement_bags = {total_bags}, replacement_area = {total_area} WHERE id = {reg_id}"
+    updateFarmer_query = f"UPDATE {table_name} SET is_ebinhi = 0, is_claimed = {is_claimed}, total_claimed = {total_bags}, total_claimed_area = {total_area}, replacement_bags = {total_bags}, replacement_area = {total_area} WHERE id = {reg_id}"
     cursor.execute(updateFarmer_query)
     connection.commit()
     print(0)
