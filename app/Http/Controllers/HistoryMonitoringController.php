@@ -304,6 +304,16 @@ class HistoryMonitoringController extends Controller
                             ->where("batchTicketNumber", $request->last_season)
                             ->delete();
 
+                        DB::connection('delivery_inspection_db')->table('tbl_actual_delivery_breakdown')
+                            ->where("seedTag", $request->seedtag ) 
+                            ->where("batchTicketNumber", $request->last_season)
+                            ->delete();
+
+                        DB::connection('delivery_inspection_db')->table('tbl_breakdown_buffer')
+                            ->where("seedTag", $request->seedtag ) 
+                            ->where("batchTicketNumber", $request->last_season)
+                            ->delete();
+
                         return json_encode("Partial Transfer Reverted");
 
                     }else{
@@ -330,6 +340,16 @@ class HistoryMonitoringController extends Controller
                                 ->delete();
 
                             DB::connection('delivery_inspection_db')->table('tbl_inspection_for_breakdown')
+                                ->where("seedTag", $request->seedtag ) 
+                                ->where("batchTicketNumber", $request->last_season)
+                                ->delete();
+
+                            DB::connection('delivery_inspection_db')->table('tbl_actual_delivery_breakdown')
+                                ->where("seedTag", $request->seedtag ) 
+                                ->where("batchTicketNumber", $request->last_season)
+                                ->delete();
+
+                            DB::connection('delivery_inspection_db')->table('tbl_breakdown_buffer')
                                 ->where("seedTag", $request->seedtag ) 
                                 ->where("batchTicketNumber", $request->last_season)
                                 ->delete();
