@@ -1296,51 +1296,51 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                 $date_from = date("Y-m-d", strtotime($date_from));
                 $date_to = date("Y-m-d", strtotime($date_to));
                 
-
                 //BUILD VIRTUAL RELEASE
-                $release_vs_tbl = DB::table("information_schema.TABLES")
-                    ->where("TABLE_SCHEMA", "LIKE",$GLOBALS['season_prefix']."prv_%")
-                    ->where("TABLE_NAME", "new_released_virtual")
-                    ->where("TABLE_ROWS", ">", 0)
-                    ->get();
-
-                $release_vs_data  = array();
-
-                foreach($release_vs_tbl as $vs_tbl){
-                        $release_vs_db = $vs_tbl->TABLE_SCHEMA.".".$vs_tbl->TABLE_NAME;
-                        $rel_vs =  DB::table($release_vs_db)
-                            ->select(DB::raw("LEFT(prv_dropoff_id,6) as prv"),DB::raw("SUM(bags_claimed) as total_claimed_bags "), DB::raw("SUM(claimed_area) as total_claimed_area "),
-                            DB::raw("SUM(final_area) as total_final_area"), DB::raw("SUM(IF(LEFT(sex,1) = 'M',1,0)) as total_male"), DB::raw("SUM(IF(LEFT(sex,1) = 'F',1,0)) as total_female"),
-                            DB::raw("SUM(IF(db_ref >0, 1, 0)) as total_farmer")
-                            )
-                            ->groupBy(DB::raw("LEFT(prv_dropoff_id,6)"))
-                            ->get();
+                // $release_vs_tbl = DB::table("information_schema.TABLES")
+                // ->where("TABLE_SCHEMA", "LIKE",$GLOBALS['season_prefix']."prv_%")
+                // ->where("TABLE_NAME", "new_released_virtual")
+                // ->where("TABLE_ROWS", ">", 0)
+                // ->get();
+                
+                // $release_vs_data  = array();
+                
+                // // dd($date_from, $date_to, $region,$release_vs_tbl);
+                // foreach($release_vs_tbl as $vs_tbl){
+                //         $release_vs_db = $vs_tbl->TABLE_SCHEMA.".".$vs_tbl->TABLE_NAME;
+                //         $rel_vs =  DB::table($release_vs_db)
+                //             ->select(DB::raw("LEFT(prv_dropoff_id,6) as prv"),DB::raw("SUM(bags_claimed) as total_claimed_bags "), DB::raw("SUM(claimed_area) as total_claimed_area "),
+                //             DB::raw("SUM(final_area) as total_final_area"), DB::raw("SUM(IF(LEFT(sex,1) = 'M',1,0)) as total_male"), DB::raw("SUM(IF(LEFT(sex,1) = 'F',1,0)) as total_female"),
+                //             DB::raw("SUM(IF(db_ref >0, 1, 0)) as total_farmer")
+                //             )
+                //             ->groupBy(DB::raw("LEFT(prv_dropoff_id,6)"))
+                //             ->get();
                         
-                        foreach($rel_vs as $rvs){
-                            $release_prv_code = $rvs->prv;
-                            if($rvs->prv == ""){
-                                $release_prv_code = "NA" ;
-                            }
+                //         foreach($rel_vs as $rvs){
+                //             $release_prv_code = $rvs->prv;
+                //             if($rvs->prv == ""){
+                //                 $release_prv_code = "NA" ;
+                //             }
                             
-                            if(isset($release_vs_data[$release_prv_code])){
-                                $release_vs_data[$release_prv_code]["claimed_bags"] += $rvs->total_claimed_bags;
-                                $release_vs_data[$release_prv_code]["claimed_area"] += $rvs->total_claimed_area;
-                                $release_vs_data[$release_prv_code]["final_area"] += $rvs->total_final_area;
-                                $release_vs_data[$release_prv_code]["male"] += $rvs->total_male;
-                                $release_vs_data[$release_prv_code]["female"] += $rvs->total_female;
-                                $release_vs_data[$release_prv_code]["total_farmer"] += $rvs->total_farmer;
-                                $release_vs_data[$release_prv_code]["others"] = $release_vs_data[$release_prv_code]["total_farmer"] - ($release_vs_data[$release_prv_code]["male"] + $release_vs_data[$release_prv_code]["female"]) ;  
-                            }else{
-                                $release_vs_data[$release_prv_code]["claimed_bags"] = $rvs->total_claimed_bags;
-                                $release_vs_data[$release_prv_code]["claimed_area"] = $rvs->total_claimed_area;
-                                $release_vs_data[$release_prv_code]["final_area"] = $rvs->total_final_area;
-                                $release_vs_data[$release_prv_code]["male"] = $rvs->total_male;
-                                $release_vs_data[$release_prv_code]["female"] = $rvs->total_female;
-                                $release_vs_data[$release_prv_code]["total_farmer"] = $rvs->total_farmer;
-                                $release_vs_data[$release_prv_code]["others"] = $release_vs_data[$release_prv_code]["total_farmer"] - ($release_vs_data[$release_prv_code]["male"] + $release_vs_data[$release_prv_code]["female"]) ;  
-                            }
-                        }
-                }
+                //             if(isset($release_vs_data[$release_prv_code])){
+                //                 $release_vs_data[$release_prv_code]["claimed_bags"] += $rvs->total_claimed_bags;
+                //                 $release_vs_data[$release_prv_code]["claimed_area"] += $rvs->total_claimed_area;
+                //                 $release_vs_data[$release_prv_code]["final_area"] += $rvs->total_final_area;
+                //                 $release_vs_data[$release_prv_code]["male"] += $rvs->total_male;
+                //                 $release_vs_data[$release_prv_code]["female"] += $rvs->total_female;
+                //                 $release_vs_data[$release_prv_code]["total_farmer"] += $rvs->total_farmer;
+                //                 $release_vs_data[$release_prv_code]["others"] = $release_vs_data[$release_prv_code]["total_farmer"] - ($release_vs_data[$release_prv_code]["male"] + $release_vs_data[$release_prv_code]["female"]) ;  
+                //             }else{
+                //                 $release_vs_data[$release_prv_code]["claimed_bags"] = $rvs->total_claimed_bags;
+                //                 $release_vs_data[$release_prv_code]["claimed_area"] = $rvs->total_claimed_area;
+                //                 $release_vs_data[$release_prv_code]["final_area"] = $rvs->total_final_area;
+                //                 $release_vs_data[$release_prv_code]["male"] = $rvs->total_male;
+                //                 $release_vs_data[$release_prv_code]["female"] = $rvs->total_female;
+                //                 $release_vs_data[$release_prv_code]["total_farmer"] = $rvs->total_farmer;
+                //                 $release_vs_data[$release_prv_code]["others"] = $release_vs_data[$release_prv_code]["total_farmer"] - ($release_vs_data[$release_prv_code]["male"] + $release_vs_data[$release_prv_code]["female"]) ;  
+                //             }
+                //         }
+                // }
 
 
             
@@ -1367,20 +1367,11 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                     ->groupBy("province")
                     ->groupBy("municipality")
                     ->where("region", $region->region)
-                
-                    // ->skip(0)
-                    // ->take(2)
                     ->orderBy("prv")
                     ->get();
 
-                    // dd($data);
-            
                     foreach ($data as $key => $value) {
                         $eBinhi_claim = 0;
-                        
-
-
-
 
                     $accepted = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                         ->select(DB::raw('SUM(totalBagCount) as total_bags'))
@@ -1391,7 +1382,6 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                         ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
                         ->value('total_bags');
                 
-                    
                         $accepted = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                         ->select(DB::raw('SUM(totalBagCount) as total_bags'))
                         ->where('province', $value->province)
@@ -1399,12 +1389,8 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                         ->where('is_transferred', '!=', 1)
                         ->where('qrStart', '<=', 0)
                         ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-                        
-                        //->where('batchSeries', '=', '')
                         ->value('total_bags');
                 
-                    
-
                     $transferred = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                         ->select(DB::raw('SUM(totalBagCount) as total_bags'))
                         ->where('province', $value->province)
@@ -1414,8 +1400,6 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                         //->where('qrStart', '<=', 0)
                         //->where('batchSeries', '=', '')
                         ->value('total_bags');
-                    
-                
 
                     $transferred_curr = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                         ->select(DB::raw('SUM(totalBagCount) as total_bags'))
@@ -1424,11 +1408,8 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                         ->where('transferCategory', "!=","P")
                         ->where('is_transferred', 1)
                         ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-                        //->where('qrStart', '<=', 0)
-                        //->where('batchSeries', '=', '')
                         ->value('total_bags');
                     
-
                     $ebinhi = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                         ->select(DB::raw('SUM(totalBagCount) as total_bags'))
                         ->where('province', $value->province)
@@ -1436,12 +1417,9 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                         ->where('is_transferred', "!=",1)
                         ->where('qrStart', '>', 0)
                         ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-                        
-                        //->where('batchSeries', '=', '')
+
                         ->value('total_bags');
                 
-                    
-
                     //EBINHI ----------------------
 
                         $binhi_male = 0;
@@ -1450,8 +1428,6 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
 
                         $binhi_claimed_area = 0;
                         $binhi_actual_area = 0;
-
-
 
                         $eBinhi_data = DB::table($GLOBALS['season_prefix']."rcep_paymaya.tbl_claim")
                             // ->select("tbl_claim.*,tbl_beneficiaries.*")
@@ -1479,20 +1455,11 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                             ->where('province', $value->province)
                             ->where('municipality', $value->municipality)
                             ->whereRaw("STR_TO_DATE(date_created, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-                        
                             ->get());
                     
-                    
-            
-
-
-                            // dd($transferred_curr);
                             if($eBinhi_claim <= 0 && $transferred <= 0 && $accepted <=0 && $transferred_curr <=0){
                                 continue;
                             }
-                            
-                        
-                    
                     $prv_tbl = $GLOBALS['season_prefix']."prv_".substr($value->prv,0,4).".new_released";
 
 
@@ -1536,10 +1503,8 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                         ->groupby("birthdate")
                         ->groupby("sex")
                         ->get());
-
-                    
+                
                     $total_other = $total_farmer - ($total_male + $total_female);
-
                     
                     $total_bags = DB::table($prv_tbl)
                         ->where("municipality", $value->municipality)
@@ -1639,74 +1604,70 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                             "Undefined (REGULAR)" => $total_other,
                             "Undefined (eBinhi)" => $binhi_other,
                         ));    
-                        
 
+                        // dd($a);
 
-                        
-            
-
-
-                            //FOR VIRTUAL
-                            try {
-                                // $accepted_vs_added = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery_virtual')
-                                // ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-                                // ->where('prv', $value->prv)
-                                // ->whereRaw("STR_TO_DATE(date_processed, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-                                // ->value('total_bags');
+                            // //FOR VIRTUAL
+                            // try {
+                            //     // $accepted_vs_added = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery_virtual')
+                            //     // ->select(DB::raw('SUM(totalBagCount) as total_bags'))
+                            //     // ->where('prv', $value->prv)
+                            //     // ->whereRaw("STR_TO_DATE(date_processed, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                            //     // ->value('total_bags');
                                 
                             
-                                $accepted_vs_deducted = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery_virtual')
-                                    ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-                                    ->where('prv_ref', $value->prv)
-                                    ->whereRaw("STR_TO_DATE(date_processed, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-                                    ->value('total_bags');
+                            //     $accepted_vs_deducted = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery_virtual')
+                            //         ->select(DB::raw('SUM(totalBagCount) as total_bags'))
+                            //         ->where('prv_ref', $value->prv)
+                            //         ->whereRaw("STR_TO_DATE(date_processed, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                            //         ->value('total_bags');
                     
-                                $prv_tbl_vs = $GLOBALS['season_prefix']."prv_".substr($value->prv,0,4).".new_released_virtual";
+                            //     $prv_tbl_vs = $GLOBALS['season_prefix']."prv_".substr($value->prv,0,4).".new_released_virtual";
                     
-                                $prv_code_vs = $value->prv;
+                            //     $prv_code_vs = $value->prv;
                     
-                                // if($accepted_vs_added <= 0){
-                                //     continue;
-                                // }
+                            //     // if($accepted_vs_added <= 0){
+                            //     //     continue;
+                            //     // }
                                 
                                 
-                                if(isset($release_vs_data[$prv_code_vs])){
+                            //     if(isset($release_vs_data[$prv_code_vs])){
                     
-                                    $total_bags_vs = $release_vs_data[$prv_code_vs]["claimed_bags"];
-                                    $claimed_area_vs = $release_vs_data[$prv_code_vs]["claimed_area"];
-                                    $final_area_vs = $release_vs_data[$prv_code_vs]["final_area"];
-                                    $male_vs = $release_vs_data[$prv_code_vs]["male"];
-                                    $female_vs = $release_vs_data[$prv_code_vs]["female"];
-                                    $total_farmer_vs = $release_vs_data[$prv_code_vs]["total_farmer"];
-                                    $others_vs = $release_vs_data[$prv_code_vs]["others"];
+                            //         $total_bags_vs = $release_vs_data[$prv_code_vs]["claimed_bags"];
+                            //         $claimed_area_vs = $release_vs_data[$prv_code_vs]["claimed_area"];
+                            //         $final_area_vs = $release_vs_data[$prv_code_vs]["final_area"];
+                            //         $male_vs = $release_vs_data[$prv_code_vs]["male"];
+                            //         $female_vs = $release_vs_data[$prv_code_vs]["female"];
+                            //         $total_farmer_vs = $release_vs_data[$prv_code_vs]["total_farmer"];
+                            //         $others_vs = $release_vs_data[$prv_code_vs]["others"];
                     
-                                }else{
-                                    $total_bags_vs = 0;
-                                    $claimed_area_vs = 0;
-                                    $final_area_vs = 0;
-                                    $male_vs = 0;
-                                    $female_vs = 0;
-                                    $total_farmer_vs = 0;
-                                    $others_vs = 0;
-                                }
+                            //     }else{
+                            //         $total_bags_vs = 0;
+                            //         $claimed_area_vs = 0;
+                            //         $final_area_vs = 0;
+                            //         $male_vs = 0;
+                            //         $female_vs = 0;
+                            //         $total_farmer_vs = 0;
+                            //         $others_vs = 0;
+                            //     }
                     
                             
-                                    array_push($b, array(
-                                        "Region" => $value->region,
-                                        "Province" => $value->province,
-                                        "Municipality" => $value->municipality,
-                                        "PSA code" => $psa_code,
-                                        "Virtual Stocks Added" => $total_bags_vs,
-                                        "Virtual Stocks Deducted" => $accepted_vs_deducted,
-                                        "Virtual Distributed" => $total_bags_vs,
-                                        "Virtual Claimed Area" => $claimed_area_vs,
-                                        "Virtual Registered Area" => $final_area_vs,
-                                        "Virtual Total Farmers" => $total_farmer_vs,
-                                        "Virtual Total Male" => $male_vs,
-                                        "Virtual Total Female" => $female_vs,
-                                        "Virtual Undefined Sex" => $others_vs,
+                            //         array_push($b, array(
+                            //             "Region" => $value->region,
+                            //             "Province" => $value->province,
+                            //             "Municipality" => $value->municipality,
+                            //             "PSA code" => $psa_code,
+                            //             "Virtual Stocks Added" => $total_bags_vs,
+                            //             "Virtual Stocks Deducted" => $accepted_vs_deducted,
+                            //             "Virtual Distributed" => $total_bags_vs,
+                            //             "Virtual Claimed Area" => $claimed_area_vs,
+                            //             "Virtual Registered Area" => $final_area_vs,
+                            //             "Virtual Total Farmers" => $total_farmer_vs,
+                            //             "Virtual Total Male" => $male_vs,
+                            //             "Virtual Total Female" => $female_vs,
+                            //             "Virtual Undefined Sex" => $others_vs,
                                         
-                                    ));
+                            //         ));
                     
                                 
                             
@@ -1714,49 +1675,30 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                     
                     
                     
-                            } catch (\Throwable $th) {
-                                //throw $th;
+                            // } catch (\Throwable $th) {
+                            //     //throw $th;
                                 
                                 
-                            }
-                    
-
-
-
-
-
-
-
-
-
-
-
-
+                            // }
 
                     }
-
-
-
-
-
-
-
 
                 }
                 
             
                 $path = public_path("reports//excel_export//");
                 $excel_data = json_decode(json_encode($a), true); //convert collection to associative array to be converted to excel
-                $excel_data_vs = json_decode(json_encode($b), true); //convert collection to associative array to be converted to excel
+                // $excel_data_vs = json_decode(json_encode($b), true); //convert collection to associative array to be converted to excel
                 
-                Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data, $excel_data_vs) {
+                // Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data, $excel_data_vs) {
+                Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data) {
                     $excel->sheet("Municipal Data", function($sheet) use ($excel_data) {
                         $sheet->fromArray($excel_data);
                     }); 
 
-                    $excel->sheet("Virtual Stock Data", function($sheet) use ($excel_data_vs) {
-                        $sheet->fromArray($excel_data_vs);
-                    }); 
+                    // $excel->sheet("Virtual Stock Data", function($sheet) use ($excel_data_vs) {
+                    //     $sheet->fromArray($excel_data_vs);
+                    // }); 
                 })
                 ->save('xlsx',$path);
                 // ->download('xlsx');
