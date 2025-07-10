@@ -270,56 +270,56 @@ class virtual_encodingController extends Controller
             ->orderBy("region_sort", 'ASC')
             ->get();
         }else{
-            $provinceList = ["LEYTE","NEGROS OCCIDENTAL","BULACAN","NUEVA ECIJA","AURORA","BATAAN","PAMPANGA","TARLAC","ZAMBALES","LAGUNA","LA UNION"];
-            $user_provinces = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
-            ->select('lib_prv.province')
-            ->whereIn("province", $provinceList)
-            ->groupBy("lib_prv.province")
-            ->orderBy("region_sort", 'ASC')
-            ->get();
+            // $provinceList = ["LEYTE","NEGROS OCCIDENTAL","BULACAN","NUEVA ECIJA","AURORA","BATAAN","PAMPANGA","TARLAC","ZAMBALES","LAGUNA","LA UNION"];
+            // $user_provinces = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+            // ->select('lib_prv.province')
+            // ->whereIn("province", $provinceList)
+            // ->groupBy("lib_prv.province")
+            // ->orderBy("region_sort", 'ASC')
+            // ->get();
 
-            // if(Auth::user()->stationId == ""){
-            //     $mss = "No Station Tagged";
-            //     return view("utility.pageClosed")
-            //         ->with("mss",$mss);
-            // }else{
+            if(Auth::user()->stationId == ""){
+                $mss = "No Station Tagged";
+                return view("utility.pageClosed")
+                    ->with("mss",$mss);
+            }else{
 
 
 
-            //     $user_provinces =  DB::table($GLOBALS['season_prefix'].'sdms_db_dev.lib_station')
-            //         ->select("province")
-            //         ->where("stationID", Auth::user()->stationId)
-            //         ->groupBy("province")
-            //         ->get();
+                $user_provinces =  DB::table($GLOBALS['season_prefix'].'sdms_db_dev.lib_station')
+                    ->select("province")
+                    ->where("stationID", Auth::user()->stationId)
+                    ->groupBy("province")
+                    ->get();
            
               
                 
 
 
-            //     foreach($user_provinces as $key=> $pr){
+                foreach($user_provinces as $key=> $pr){
              
 
                     
 
-            //         $prv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
-            //         ->where("province", $pr->province)
-            //         ->value("prv_code");
+                    $prv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+                    ->where("province", $pr->province)
+                    ->value("prv_code");
                   
-            //         $schema_check = DB::table("information_schema.TABLES")
-            //         ->where("TABLE_SCHEMA", $GLOBALS['season_prefix'].'prv_'.$prv)
-            //         ->where("TABLE_NAME", 'farmer_information_final')
-            //         ->first();
+                    $schema_check = DB::table("information_schema.TABLES")
+                    ->where("TABLE_SCHEMA", $GLOBALS['season_prefix'].'prv_'.$prv)
+                    ->where("TABLE_NAME", 'farmer_information_final')
+                    ->first();
           
-            //         if($schema_check == null){
-            //             unset($user_provinces[$key]);
-            //         }
+                    if($schema_check == null){
+                        unset($user_provinces[$key]);
+                    }
 
                   
 
 
-            //     }
+                }
            
-            // }
+            }
         }
  
         $user_provinces = json_decode(json_encode($user_provinces), true);
