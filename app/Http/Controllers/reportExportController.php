@@ -1896,11 +1896,11 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
         
     
         
-                } catch (\Throwable $th) {
-                    //throw $th;
+                // } catch (\Throwable $th) {
+                //     //throw $th;
                     
                     
-                }
+                // }
 
         }
 
