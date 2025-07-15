@@ -1833,7 +1833,10 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 			@if(Auth::user()->username == "rs.jandoc")
 			<li><a><i class="fa fa-cogs"></i> Utility <span class="fa fa-chevron-down"></span></a>
 						<ul class="nav child_menu">
-						<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li> 
+						<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li>
+						<li class="sub_menu"><a href="{{route('deletePreReg')}}">Delete Pre-Registration Data</a></li> 
+						<li class="sub_menu"><a href="{{route('bepToReg')}}">BeP to Conventional Profile Tagging</a></li> 
+
 
 			@endif
 			@if(Auth::user()->username == "NUEVAECIJA_Jhoemar")
