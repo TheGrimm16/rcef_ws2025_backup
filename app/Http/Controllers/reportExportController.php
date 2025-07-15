@@ -1912,7 +1912,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
 
     $path = public_path("reports\\excel_export\\");
     $excel_data = json_decode(json_encode($a), true); //convert collection to associative array to be converted to excel
-    $excel_data_vs = json_decode(json_encode($b), true); //convert collection to associative array to be converted to excel
+    // $excel_data_vs = json_decode(json_encode($b), true); //convert collection to associative array to be converted to excel
     
     Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data) {
     // Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data, $excel_data_vs) {
