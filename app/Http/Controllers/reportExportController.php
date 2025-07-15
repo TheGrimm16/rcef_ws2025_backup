@@ -1512,7 +1512,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                 ->where("municipality", $value->municipality)
                 ->where("category", "INBRED")
                 ->whereRaw("SUBSTR(sex, 1,1) Like 'M'")
-                ->where("remarks",'NOT LIKE','%claimed in home address%') 
+                ->whereRaw("remarks NOT LIKE '%claimed in home address%'") 
                 ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
                 ->groupby("content_rsbsa")
                 ->groupby("birthdate")
@@ -1523,7 +1523,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             ->where("municipality", $value->municipality)
             ->where("category", "INBRED")
             ->whereRaw("SUBSTR(sex, 1,1) Like 'F'")
-            ->where("remarks",'NOT LIKE','%claimed in home address%') 
+            ->whereRaw("remarks NOT LIKE '%claimed in home address%'") 
             ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
             ->groupby("content_rsbsa")
             ->groupby("birthdate")
@@ -1533,7 +1533,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             $total_farmer = count(DB::table($prv_tbl)
             ->where("municipality", $value->municipality)
             ->where("category", "INBRED")
-            ->where("remarks",'NOT LIKE','%claimed in home address%') 
+            ->whereRaw("remarks NOT LIKE '%claimed in home address%'") 
             ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
             ->groupby("content_rsbsa")
             ->groupby("birthdate")
@@ -1914,14 +1914,15 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
     $excel_data = json_decode(json_encode($a), true); //convert collection to associative array to be converted to excel
     $excel_data_vs = json_decode(json_encode($b), true); //convert collection to associative array to be converted to excel
     
-    Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data, $excel_data_vs) {
+    Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data) {
+    // Excel::create("ms"."_".$date_from."_".$date_to, function($excel) use ($excel_data, $excel_data_vs) {
         $excel->sheet("Municipal Data", function($sheet) use ($excel_data) {
             $sheet->fromArray($excel_data);
         }); 
 
-        $excel->sheet("Virtual Stock Data", function($sheet) use ($excel_data_vs) {
-            $sheet->fromArray($excel_data_vs);
-        }); 
+        // $excel->sheet("Virtual Stock Data", function($sheet) use ($excel_data_vs) {
+        //     $sheet->fromArray($excel_data_vs);
+        // }); 
     })
     ->save('xlsx',$path);
     // ->download('xlsx');
