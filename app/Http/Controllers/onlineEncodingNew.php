@@ -16,11 +16,11 @@ use DateTime;
 class onlineEncodingNew extends Controller {
     public function index(){
 
-        if(Auth::user()->roles->first()->name != "rcef-programmer"){
-            $mss = "Under Development";
-                return view("utility.pageClosed")
-            ->with("mss",$mss);
-        }
+        // if(Auth::user()->roles->first()->name != "rcef-programmer"){
+        //     $mss = "Under Development";
+        //         return view("utility.pageClosed")
+        //     ->with("mss",$mss);
+        // }
         
         return view('onlineEncodingNew.index');
     }
