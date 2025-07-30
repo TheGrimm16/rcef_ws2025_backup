@@ -709,8 +709,8 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 									<li><a href="{{route('encoding_vs')}}">Online Encoding (from Verifier)</a></li>
 									<li><a href="{{route('encoding_vs_fca')}}">Online Encoding (FCA Member)</a></li>
 									<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
-									<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li> -->
-									{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
+									<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
+									
 									
 								@endif
 							</ul>
@@ -1197,8 +1197,11 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('encoding_vs')}}">Online Encoding (from Verifier)</a></li>
 								<li><a href="{{route('encoding_vs_fca')}}">Online Encoding (FCA Member)</a></li>
 								<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
-								<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li> -->
-								{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
+								@if(Auth::user()->roles->first()->name == "system-encoder" || Auth::user()->stationId != 11010)
+								<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
+								<li><a href="{{route('onlineEncodingNew')}}">Online Encoding for New Farmers</a></li>
+								@endif
+								
 								<!-- <li><a href="{{route('farmerVerification')}}">Farmer KYC</a></li> -->
 								<!-- <li><a href="{{route('FarmerKYCMonitoring_index')}}">Farmer KYC Monitoring</a></li> -->
 
@@ -1352,9 +1355,9 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('encoding_vs')}}">Online Encoding (from Verifier)</a></li>
 								<li><a href="{{route('encoding_vs_fca')}}">Online Encoding (FCA Member)</a></li>
 								<li><a href="{{route('encoding_vs_lowland')}}">Online Encoding (Small Landholding)</a></li>
-								<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li> -->
-								<!-- <li><a href="{{route('onlineEncodingNew')}}">Online Encoding for New Farmers</a></li> -->
-								{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
+								<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Online Encoding (Home Address Claims)</a></li>
+								<li><a href="{{route('onlineEncodingNew')}}">Online Encoding for New Farmers</a></li>
+								
 							@endif
 							  @if(Auth::user()->roles->first()->name == "rcef-programmer" ||  Auth::user()->username == "mt.garcia" ||  Auth::user()->username == "jpalileo" || Auth::user()->username == "aquino.rr" || Auth::user()->username == "jragos_pc" || Auth::user()->username == "p.landasan" || Auth::user()->roles->first()->name == "administrator")
 							  <li><a>Encoding <span class="fa fa-chevron-down"></span></a>
@@ -1362,9 +1365,9 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 										<li><a href="{{route('encoding_vs')}}">From Verifier</a></li>
 										<li><a href="{{route('encoding_vs_fca')}}">FCA Member</a></li>
 										<li><a href="{{route('encoding_vs_lowland')}}">Small Landholding</a></li>
-										<!-- <li><a href="{{route('encoding_vs_homeAddressClaim')}}">Home Address Claims</a></li> -->
-										<!-- <li><a href="{{route('onlineEncodingNew')}}">New Farmers</a></li> -->
-										{{-- <li><a href="{{route('new_farmer_vs')}}">New Farmer Encoded</a></li> --}}
+										<li><a href="{{route('encoding_vs_homeAddressClaim')}}">Home Address Claims</a></li>
+										<li><a href="{{route('onlineEncodingNew')}}">New Farmers</a></li>
+										
 									</ul>
 								</li>
 
