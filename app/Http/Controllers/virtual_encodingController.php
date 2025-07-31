@@ -2649,7 +2649,7 @@ class virtual_encodingController extends Controller
                                     $remarks = '';
 
                                     if($farmer_data->is_replacement == 1){
-                                        $remarks = "Replacement Seeds"
+                                        $remarks = "Replacement Seeds";
                                     }
                                     $release_ref_id =  DB::table($GLOBALS['season_prefix']."prv_".$prv_code_released.".".$releases)
                                     ->insertGetId([
