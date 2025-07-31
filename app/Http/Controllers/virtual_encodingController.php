@@ -2646,6 +2646,11 @@ class virtual_encodingController extends Controller
 
                                 }
                                 else{
+                                    $remarks = '';
+
+                                    if($farmer_data->is_replacement == 1){
+                                        $remarks = "Replacement Seeds"
+                                    }
                                     $release_ref_id =  DB::table($GLOBALS['season_prefix']."prv_".$prv_code_released.".".$releases)
                                     ->insertGetId([
                                         "id" =>  "111111111",
@@ -2664,6 +2669,7 @@ class virtual_encodingController extends Controller
                                         "claimed_area" => $claimed_area,
                                         "bags_claimed" => $bags_claimed,
                                         "seed_variety" => $variety,
+                                        "remarks" => $remarks,
                                         "recipient_ls" => "-",
                                         "planted_rcvd_seeds_ls" => "-",
                                         "reason_not_planted_rcvd_seeds_ls" => "-",
