@@ -1168,7 +1168,7 @@
 
         globalInfo.final_area = parseFloat($("#farm_area").val());
         globalInfo.final_claimable = Math.ceil(parseFloat($("#farm_area").val()) * 2) > 10? 10 : Math.ceil(parseFloat($("#farm_area").val()) * 2);
-        globalInfo.mother_lname = $("#mother_name").val()? ($("#mother_name").val()).toUpperCase() : "-";
+        globalInfo.mother_name = $("#mother_name").val()? ($("#mother_name").val()).toUpperCase() : "-";
         globalInfo.geo_code = $("#farm_bgy").val();
         globalInfo.claiming_brgy = $("#farm_bgy").val();
         globalInfo.is_ip = $("#isIp").prop("checked")? 1 : 0;
