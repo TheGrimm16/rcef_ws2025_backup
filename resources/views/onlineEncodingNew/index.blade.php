@@ -552,20 +552,7 @@
 
     getInitialProvinces();
 
-    $("#rsbsa-ctrl-no").on('input', (event) => {
-        let currVal = $("#rsbsa-ctrl-no").val();
-        
-        // Define the positions where you want to insert hyphens
-        const positions = [2, 5, 8, 12];
-
-        // Loop through positions and add hyphens
-        for (const pos of positions) {
-            if (currVal.length > pos && currVal.charAt(pos) !== '-') {
-                currVal = currVal.slice(0, pos) + '-' + currVal.slice(pos);
-                $("#rsbsa-ctrl-no").val(currVal);
-            }
-        }
-    });
+    
 
 
     function getInitialProvinces(){
