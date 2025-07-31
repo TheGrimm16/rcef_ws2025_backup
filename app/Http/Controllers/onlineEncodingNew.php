@@ -175,7 +175,6 @@ class onlineEncodingNew extends Controller {
     }
 
     public function saveDistribution(Request $request){
-        dd($request->all());
         $profile = $request->profile;
         $release = $request->release;
         $working_prv = $profile["claiming_prv"];

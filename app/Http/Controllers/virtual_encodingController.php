@@ -2416,7 +2416,17 @@ class virtual_encodingController extends Controller
 
                                                 }
                                                 else{
-                                                    DB::table($GLOBALS['season_prefix']."prv_".$prv_code_parcel.".".$conn)
+                                                    if($farmer_data->is_replacement == 1)
+                                                    {
+                                                        DB::table($GLOBALS['season_prefix']."prv_".$prv_code_parcel.".farmer_information_final")
+                                                            ->where("db_ref", $db_ref)
+                                                            ->update([
+                                                                "replacement_bags_claimed" => $bags_claimed,
+                                                                "replacement_area_claimed" => $claimed_area,
+                                                            ]);
+                                                    }
+                                                    else{
+                                                    DB::table($GLOBALS['season_prefix']."prv_".$prv_code_parcel.".farmer_information_final")
                                                         ->where("db_ref", $db_ref)
                                                         ->update([
                                                             "da_intervention_card" => $da_intervention_card,
@@ -2431,6 +2441,7 @@ class virtual_encodingController extends Controller
                                                             "is_ip" => $ip,
                                                             "tribe_name" => $ip_name,
                                                         ]);
+                                                    }
                                                 }
                         
                                                 //GET CURRENT FARMER ON CLAIMING PRV
@@ -2521,21 +2532,33 @@ class virtual_encodingController extends Controller
                                                         ]);
                                                 }
                                                 else{
-                                                    DB::table($GLOBALS['season_prefix']."prv_".$prv_code_parcel.".".$conn)
-                                                        ->where("db_ref", $db_ref)
-                                                        ->update([
-                                                            "da_intervention_card" => $da_intervention_card,
-                                                            "birthdate" => $birthdate,
-                                                            "is_claimed" => 1,
-                                                            "fca_name" => $fca_name,
-                                                            "total_claimed" => $farmer_data->total_claimed + $bags_claimed,
-                                                            "total_claimed_area" => $farmer_data->total_claimed_area + $claimed_area,
-                                                            "mother_name" => $mother_last_name,
-                                                            "tel_no" => $tel_no,
-                                                            "is_pwd" => $pwd,
-                                                            "is_ip" => $ip,
-                                                            "tribe_name" => $ip_name,
-                                                        ]);
+
+                                                    if($farmer_data->is_replacement == 1)
+                                                    {
+                                                        DB::table($GLOBALS['season_prefix']."prv_".$prv_code_parcel.".farmer_information_final")
+                                                            ->where("db_ref", $db_ref)
+                                                            ->update([
+                                                                "replacement_bags_claimed" => $bags_claimed,
+                                                                "replacement_area_claimed" => $claimed_area,
+                                                            ]);
+                                                    }
+                                                    else{
+                                                        DB::table($GLOBALS['season_prefix']."prv_".$prv_code_parcel.".farmer_information_final")
+                                                            ->where("db_ref", $db_ref)
+                                                            ->update([
+                                                                "da_intervention_card" => $da_intervention_card,
+                                                                "birthdate" => $birthdate,
+                                                                "is_claimed" => 1,
+                                                                "fca_name" => $fca_name,
+                                                                "total_claimed" => $farmer_data->total_claimed + $bags_claimed,
+                                                                "total_claimed_area" => $farmer_data->total_claimed_area + $claimed_area,
+                                                                "mother_name" => $mother_last_name,
+                                                                "tel_no" => $tel_no,
+                                                                "is_pwd" => $pwd,
+                                                                "is_ip" => $ip,
+                                                                "tribe_name" => $ip_name,
+                                                            ]);
+                                                    }
                                                 }
                                             }else{
                                                 return json_encode("Cannot Find Farmer Info");
@@ -2980,8 +3003,17 @@ public function get_all_parcel2(Request $request){
                    //     ->where("db_ref", $may_data->db_ref)
                    //     ->sum("claimed_area");
 
-                   $release = $may_data->total_claimed;
-                   $release_area = $may_data->total_claimed_area;
+                   if($may_data->is_replacement == 1)
+                   {
+                       $release = $may_data->replacement_bags_claimed;
+                       $release_area = $may_data->replacement_area_claimed;
+                   }
+                   else{
+                       $release = $may_data->total_claimed;
+                       $release_area = $may_data->total_claimed_area;
+                   }
+                //    $release = $may_data->total_claimed;
+                //    $release_area = $may_data->total_claimed_area;
 
                    $final_area = $may_data->final_area;
                    $remaining = ceil($final_area * 2) - $release;
