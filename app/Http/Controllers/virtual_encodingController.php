@@ -2693,7 +2693,8 @@ class virtual_encodingController extends Controller
                                         "sex" => $sex,
                                         "list_version" => $list_version,
                                         "status" => $status_vs,
-                                        "process_report_status" => "not process"
+                                        "process_report_status" => "not process",
+                                        "is_replacement" => $farmer_data->is_replacement
                                     ]);
                                 }
                                
