@@ -9395,7 +9395,7 @@ public function generateLiveMunicipalReportDataPy(Request $request){
                 $accepted_transfer .= "Transferred: ".number_format($data['totalBagCount_sum_p'])." </i><br>";
 
                 $ebinhi_tag = 0;
-                $distributed_text = "<strong> Total: ".number_format($data['ebinhi_distri']+$data['bags_claimed'])." bag(s)"."</strong>";//$data['distributed']
+                $distributed_text = "<strong> Total: ".number_format($data['ebinhi_distri']+$data['bags_claimed']+$data['parcel_dist'])." bag(s)"."</strong>";
                 $distributed_text .= "<br> Regular: ". number_format($data['bags_claimed']);
                 $distributed_text .= "<br> BeP: " .number_format($data['ebinhi_distri']);
 
