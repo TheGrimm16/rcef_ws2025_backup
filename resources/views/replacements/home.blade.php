@@ -204,9 +204,10 @@
                             </div>
                         </div>
                 </section>
+                <div style="display: none;" id="farmers_datatable">
                     <table
                     class="table table-hover table-striped table-bordered"
-                    id="farmers_tbl"
+                    id="farmers_tbl" 
                     >
                     <thead>
                         <th></th>
@@ -222,6 +223,7 @@
                     </thead>
                     <tbody></tbody>
                     </table>
+                </div>
             </div>
 
         </div>
@@ -365,6 +367,7 @@
                 alert('Please select municipality.');
             }
             else{
+                $("#farmers_datatable").show();
                 $("#farmers_tbl").DataTable().clear();
                 $("#farmers_tbl").DataTable({
                 bDestroy: true,
