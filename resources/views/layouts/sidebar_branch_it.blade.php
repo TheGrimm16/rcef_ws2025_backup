@@ -439,8 +439,9 @@
 								</ul>
 							</li>
 							<li><a href="{{route('HistoryMonitoring.index')}}"> Transfer Data List </a></li>
-
+							
 							<li><a href="#" data-toggle="modal" data-target="#iar_print_log">Reset printed IAR</a></li>
+							<li><a href="{{route('replacements')}}"> Replacement Seeds Tagging </a></li>
 							@if(Auth::user()->username == "kavin04")
 							<li class="sub_menu"><a href="{{route('fcaTagging')}}">Farmer Profile Tagging</a></li>
 							@endif
