@@ -85,18 +85,22 @@ class ReplacementsController extends Controller
     
     public function getFarmers(Request $request)
     {
+
         $getPrv = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
-        ->select('prv_code')
+        ->select('prv_code','prv')
         ->where('province', 'LIKE',$request->prov)
+        ->where('municipality', 'LIKE', $request->muni)
         ->groupBy('prv_code')
         ->first();
         
+        // dd($getPrv);
         $prv = $getPrv->prv_code;
+        $muni = $getPrv->prv;
 
         $getFarmerInfo = DB::table($GLOBALS['season_prefix'].'prv_'.$prv.'.farmer_information_final')
-        ->where('is_replacement','!=',1)
-        ->where('total_claimed','!=',1)
-        ->where('total_claimed_area','!=',0)
+        ->whereRaw("REPLACE(claiming_prv, '-', '') LIKE ?", [$muni])
+        ->where('is_claimed', 1)
+        ->where('is_replacement', 0)
         ->get();
         // dd($getFarmerInfo);
 

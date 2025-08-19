@@ -2154,10 +2154,6 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('/KPDistribution/api/exportKPDistribution/{reg}/{prv}/{mun}/{ssn}', ['as' => 'export_KPDistribution', 'uses' => 'KPDistributionController@exportKPDistribution']);
     Route::get('/KPDistribution/addCode', ['as' => 'addCode', 'uses' => 'KPDistributionController@addCode']);
 
-    //Replacement Tagging
-    Route::get('/ReplacementTagging/home', ['as' => 'ReplacementTagging_index', 'uses' => 'ReplacementTaggingController@home_ui']);
-    Route::post('/ReplacementTagging/getProvinces', ['as' => 'ReplacementTagging_getProvinces', 'uses' => 'ReplacementTaggingController@getProvinces']);
-
     //Distribution Data
     Route::get('/DistributionData/home', ['as' => 'DistributionData_index', 'uses' => 'DistributionDataController@home_ui']);
     Route::post('/DistributionData/getDistributionDataReg', ['as' => 'getDistributionDataReg', 'uses' => 'DistributionDataController@getDistributionDataReg']);
