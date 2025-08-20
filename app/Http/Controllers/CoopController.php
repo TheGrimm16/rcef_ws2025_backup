@@ -1275,7 +1275,7 @@ class CoopController extends Controller
 					
 					$lab_number = preg_replace('/[^0-9]/', '', $value->laboratory_number);
 					$lot_number_string = trim($value->lot_number);
-					$lot_number_string = str_replace(' ', '', $lot_number_string);
+					// $lot_number_string = str_replace(' ', '', $lot_number_string);
 					$lot_number_string = preg_replace('/[^A-Za-z0-9\-]/', '', $lot_number_string);
 
                     $excel_row = array(
@@ -1850,7 +1850,7 @@ class CoopController extends Controller
             }else{           
 
 				$lot_number_string = trim($request->lot_number);
-				$lot_number_string = str_replace(' ', '', $lot_number_string);
+				// $lot_number_string = str_replace(' ', '', $lot_number_string);
 				$lot_number_string = preg_replace('/[^A-Za-z0-9\-]/', '', $lot_number_string);
 			
                 //insert to rla_requests table
