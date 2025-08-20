@@ -549,7 +549,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							</ul>
 						</li>
                     @elseif(Auth::user()->roles->first()->name == "coop-operator")
-					  <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Coop Dashboard </a></li>
+					  <!-- <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Coop Dashboard </a></li> -->
 					  <li><a href="{{route('coop_operator.deliveries')}}"><i class="fa fa-truck"></i> Coop Deliveries </a></li>
 					  <li><a href="{{route('coop_operator.sg_enrollment')}}"><i class="fa fa-legal"></i> SG Enrollment</a></li>
 					  <li><a href="{{route('coop_operator.sg_matrix')}}"><i class="fa fa-cubes"></i> SG Matrix</a></li>
@@ -581,7 +581,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('yieldCount.home')}}"> Yield Report</a></li>
 								<li><a href="{{route('palaysikatan.dashboard.index')}}"> Palaysikatan Dashboard </a></li>
 								<li><a href="{{route('payment_dashboard.home')}}">Payment Dashboard</a></li>
-								<li><a href="{{route('coop.dashboard')}}">Coop Dashboard</a></li>
+								<!-- <li><a href="{{route('coop.dashboard')}}">Coop Dashboard</a></li> -->
 								<li><a href="{{route('station_report.home')}}">Station Dashboard </a></li>
 								<li><a href="{{route('planting_calendar_index')}}">Seed Variety Performance Dashboard</a></li>
 								@endif
@@ -1224,7 +1224,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							</ul>
 						</li>
                     @elseif(Auth::user()->roles->first()->name == "coop-operator")
-					  <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Coop Dashboard </a></li>
+					  <!-- <li><a href="{{url('/')}}"><i class="fa fa-dashboard"></i> Coop Dashboard </a></li> -->
 					  <li><a href="{{route('coop_operator.deliveries')}}"><i class="fa fa-truck"></i> Coop Deliveries </a></li>
 					  <li><a href="{{route('coop_operator.sg_enrollment')}}"><i class="fa fa-legal"></i> SG Enrollment</a></li>
 					  <li><a href="{{route('coop_operator.sg_matrix')}}"><i class="fa fa-cubes"></i> SG Matrix</a></li>
@@ -1257,7 +1257,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li><a href="{{route('palaysikatan.dashboard.index')}}"> Palaysikatan Dashboard </a></li>
 								<li><a href="{{route('payment_dashboard.home')}}">Payment Dashboard</a></li>
 								<li><a href="{{route('station_report.home')}}">Station Dashboard </a></li>
-								<li><a href="{{route('coop.dashboard')}}">Coop Dashboard</a></li>
+								<!-- <li><a href="{{route('coop.dashboard')}}">Coop Dashboard</a></li> -->
 								<li><a href="{{route('planting_calendar_index')}}">Seed Variety Performance Dashboard</a></li>
 								@endif
 								<li><a href="{{route('dashboard.gad.view')}}">GAD Dashboard</a></li>

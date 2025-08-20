@@ -259,11 +259,11 @@ Route::group(['middleware' => ['auth','logMw']], function() {
 	/**
      * SEED COOP DASHBOARD
      */
-    Route::get('cooperatives/dashboard', ['as' => 'coop.dashboard', 'uses'=>'CoopController@coop_dashboard_home']);
-    Route::post('cooperatives/dashboard/confirmed_delivery', ['as' => 'load.coop.deliveries', 'uses'=>'CoopController@confirmed_delivery_tbl']);
-    Route::post('cooperatives/dashboard/seeds', ['as' => 'load.coop.seeds', 'uses'=>'CoopController@coop_seeds_tbl']);
+    // Route::get('cooperatives/dashboard', ['as' => 'coop.dashboard', 'uses'=>'CoopController@coop_dashboard_home']);
+    // Route::post('cooperatives/dashboard/confirmed_delivery', ['as' => 'load.coop.deliveries', 'uses'=>'CoopController@confirmed_delivery_tbl']);
+    // Route::post('cooperatives/dashboard/seeds', ['as' => 'load.coop.seeds', 'uses'=>'CoopController@coop_seeds_tbl']);
 	
-    Route::post('cooperatives/dashboard/regional', ['as' => 'load.coop.regional', 'uses'=>'CoopController@coop_regional_tbl']);
+    // Route::post('cooperatives/dashboard/regional', ['as' => 'load.coop.regional', 'uses'=>'CoopController@coop_regional_tbl']);
 
 
     //COMMITMENT LOGS

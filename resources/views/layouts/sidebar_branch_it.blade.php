@@ -70,7 +70,7 @@
 								<li><a href="{{route('cssDashboard')}}">CSS Dashboard</a></li>
 								<li><a href="{{url('/DeliveryDashboard')}}">Delivery Dashboard </a></li>
 								<li><a href="{{route('station_report.home')}}">Station Dashboard </a></li>
-								<li><a href="{{route('coop.dashboard')}}">Coop Dashboard</a></li>
+								<!-- <li><a href="{{route('coop.dashboard')}}">Coop Dashboard</a></li> -->
 								<li><a href="{{route('dashboard.gad.view')}}">GAD Dashboard</a></li>
 								<li><a href="{{route('preregDashboard')}}">Pre-registration Dashboard</a></li>
 								
