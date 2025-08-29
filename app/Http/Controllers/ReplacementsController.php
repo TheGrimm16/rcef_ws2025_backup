@@ -130,12 +130,17 @@ class ReplacementsController extends Controller
         foreach($toBeReplaced as $row)
         { 
             DB::table($GLOBALS['season_prefix'].'prv_'.$prv.'.farmer_information_final')
-            ->where('rsbsa_control_no','LIKE', $row['rsbsa'])
-            ->where('db_ref','LIKE', $row['dbref'])
+            ->where('rsbsa_control_no', 'LIKE', $row['rsbsa'])
+            ->where('db_ref', 'LIKE', $row['dbref'])
             ->update([
-                "is_replacement" => 1,
-                "replacement_reason" => $request->reason
+                "is_replacement"      => 1,
+                "replacement_reason"  => $request->reason,
+                "replacement_bags"    => DB::raw('total_claimed'),
+                "replacement_area" => DB::raw('total_claimed_area'),
+                "replacement_bags_claimed" => 0,
+                "replacement_area_claimed" => 0.00,
             ]);
+
         }
 
         return 1;
