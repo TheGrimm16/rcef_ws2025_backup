@@ -2280,6 +2280,10 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('/api/bm/getStations', ['as' => 'bm.getStations', 'uses' => 'bmAPIController@getStations']);
     Route::post('/api/bm/updateCommitment', ['as' => 'bm.updateCommitment', 'uses' => 'bmAPIController@updateCommitment']);
     Route::post('/api/bm/addCommitment', ['as' => 'bm.addCommitment', 'uses' => 'bmAPIController@addCommitment']);
+
+    //Delivery Status
+    Route::get('/DeliveryStatus/home', ['as' => 'deliveryStatus.home', 'uses' => 'DeliveryStatusController@index']);
+    Route::post('/DeliveryStatus/getCoopData', ['as' => 'deliveryStatus.getCoopData', 'uses' => 'DeliveryStatusController@getCoopData']);
     
     //Add Seed Grower
     Route::get('/addSeedGrower/home', ['as' => 'addSeedGrower', 'uses' => 'bmAPIController@addSeedGrower_index']);
@@ -2289,7 +2293,7 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('/deletePreReg/home', ['as' => 'deletePreReg', 'uses' => 'bmAPIController@deletePreReg_index']);
     Route::POST('/deletePreReg/deletePreRegProfile', ['as' => 'deletePreRegProfile', 'uses' => 'bmAPIController@deletePreRegProfile']);
 
-    //Bep to Regulard
+    //Bep to Regular
     Route::get('/bepToReg/home', ['as' => 'bepToReg', 'uses' => 'bmAPIController@bepToReg_index']);
     Route::POST('/bepToReg/bepToRegUpdate', ['as' => 'bepToRegUpdate', 'uses' => 'bmAPIController@bepToRegUpdate']);
     
