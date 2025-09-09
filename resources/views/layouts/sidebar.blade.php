@@ -909,6 +909,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 												 @if(Auth::user()->roles->first()->name == "rcef-programmer")
 												 	<li><a href="{{route('sg.list')}}">Blacklist SG</a></li>		
 												 @endif
+												 <li><a href="{{route('deliveryStatus.home')}}">DOP Balance</a></li>
 											</ul>
 										</li>
 								
@@ -1471,12 +1472,13 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 							<ul class="nav child_menu">
 								 <li><a href="{{route('coop.commitment')}}">Commitment</a></li>
 								 @if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "lei.malubag" || Auth::user()->username == "mcrmercado")
-	 								<li><a href="{{route('rsis.rla.dashboard')}}">(RSIS) Result of Lab Analysis </a></li>
-	 								<li><a href="{{route('rsis.rs_distri.dashboard')}}">RS - CS Seed Production </a></li>
-	 								<li><a href="{{route('api.coop.logs')}}">Commitment Adjustment Logs</a></li>
-
-									 
+								 <li><a href="{{route('rsis.rla.dashboard')}}">(RSIS) Result of Lab Analysis </a></li>
+								 <li><a href="{{route('rsis.rs_distri.dashboard')}}">RS - CS Seed Production </a></li>
+								 <li><a href="{{route('api.coop.logs')}}">Commitment Adjustment Logs</a></li>
+								 
+								 
 								 @endif
+								 <li><a href="{{route('deliveryStatus.home')}}">DOP Balance</a></li>
 							
 
 							</ul>

@@ -2284,6 +2284,7 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     //Delivery Status
     Route::get('/DeliveryStatus/home', ['as' => 'deliveryStatus.home', 'uses' => 'DeliveryStatusController@index']);
     Route::post('/DeliveryStatus/getCoopData', ['as' => 'deliveryStatus.getCoopData', 'uses' => 'DeliveryStatusController@getCoopData']);
+    Route::get('/DeliveryStatus/downloadCoopData/{coop}', ['as' => 'deliveryStatus.downloadCoopData', 'uses' => 'DeliveryStatusController@downloadCoopData']);
     
     //Add Seed Grower
     Route::get('/addSeedGrower/home', ['as' => 'addSeedGrower', 'uses' => 'bmAPIController@addSeedGrower_index']);

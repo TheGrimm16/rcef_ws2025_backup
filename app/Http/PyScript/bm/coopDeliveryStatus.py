@@ -77,15 +77,17 @@ for index,commitment in getCommitments_df.iterrows():
     else:
         inspectedDeliveries = 0
     
+    remainingBalance = totalCommitments - (pendingDeliveries + confirmedDeliveries + inspectedDeliveries)
     coopData.append({
         'coopName': coopName,
         'accreditation_no': accreditation_no,
         'moa_no': moa,
-        'region': region,
+        'region': region if region and region.strip() else "ANY REGION",
         'totalCommitments': totalCommitments,
         'pendingDeliveries': pendingDeliveries,
         'confirmedDeliveries': confirmedDeliveries,
-        'inspectedDeliveries': inspectedDeliveries
+        'inspectedDeliveries': inspectedDeliveries,
+        'remainingBalance': remainingBalance
     })
 
 cursor.close()

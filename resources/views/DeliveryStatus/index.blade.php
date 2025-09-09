@@ -145,7 +145,7 @@
     <div class="col-md-12">
         <div class="x_panel">
             <div class="x_title">
-                <h1>Cooperative Delivery Status</h1>
+                <h1>DOP - Balance</h1>
             </div>
             <div class="x_content">
                 <div>
@@ -173,11 +173,13 @@
                                     <th>Pending Deliveries</th>
                                     <th>Confirmed Deliveries</th>
                                     <th>Inspected Deliveries</th>
+                                    <th>Remaining Balance</th>
                                 </thead>
                                 <tbody>
                               
                                 </tbody>
                             </table>
+                            <button id="download_btn" class="btn btn-success" style="display: none"> Download </button>
                         </div>
                     </div>
                 </div>
@@ -200,6 +202,19 @@
     <script src="public/js/HoldOn.min.js"></script>
 
     <script>
+
+        $('#download_btn').on('click', function(){
+            var coop = $('#coop').val();
+            console.log(coop); 
+            if(coop){
+                coop = coop.replace(/\//g, '*'); 
+                var url = '{{ route("deliveryStatus.downloadCoopData", ["coop" => ":coop"]) }}';
+                url = url.replace(':coop', encodeURIComponent(coop));
+                window.open(url);
+            } else {
+                alert('Please select a Seed Cooperative.');
+            }
+        });
 
         $('#coop').select2({
             placeholder: "Select Seed Cooperative",
@@ -236,8 +251,16 @@
                         { data: "totalCommitments"},
                         { data: "pendingDeliveries" },
                         { data: "confirmedDeliveries" },
-                        { data: "inspectedDeliveries" }
+                        { data: "inspectedDeliveries" },
+                        { data: "remainingBalance"}
                     ],
+                    initComplete: function(settings, json) {
+                        if (json.data && json.data.length > 0) {
+                            $('#download_btn').show();
+                        } else {
+                            $('#download_btn').hide();
+                        }
+                    }
                 });
             } else {
                 $("#coopData_tbl").DataTable().clear();
