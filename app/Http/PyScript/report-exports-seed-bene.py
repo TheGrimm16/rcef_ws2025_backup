@@ -51,6 +51,8 @@ def main(ssn, prv, mun, cat, province):
 
         # Merge the two tables based on the 'farmer_id' column
         merged_df = pd.merge(released, profiles, on='db_ref', how='left')
+        if "is_replacement_x" in merged_df.columns:
+            merged_df["is_replacement_x"] = merged_df["is_replacement_x"].map({1: "YES", 0: "NO"})
         merged_df = merged_df[report_headers]
         #print(merged_df.head(0))
         merged_df = extract_yield(merged_df)
