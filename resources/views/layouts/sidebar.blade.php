@@ -1815,6 +1815,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li class="sub_menu"><a href="{{route('station.monitoring')}}">Server Monitoring</a></li> 
 								<li class="sub_menu"><a href="{{route('icts-farmer-finder-rsbsa')}}">Farmer Verifier</a></li> 
 								<li class="sub_menu"><a href="{{route('replacements')}}">Replacement Seeds Tagging</a></li> 
+								<li class="sub_menu"><a href="{{route('muni.replacements')}}">Municipal Replacement Seeds Tagging</a></li> 
 								<li class="sub_menu"><a href="{{route('fcaTagging')}}">Farmer Profile Tagging</a></li> 
 								<li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li> 
 								<li class="sub_menu"><a href="{{route('deletePreReg')}}">Delete Pre-Registration Data</a></li> 

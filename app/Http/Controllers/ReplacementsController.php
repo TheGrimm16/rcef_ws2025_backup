@@ -146,5 +146,85 @@ class ReplacementsController extends Controller
         return 1;
     }
 
+    public function muni_home()
+    {
+        $regionNames = array();
+        $regionCodes = array();
+        $regionsArray = array();
+        $munArray = array();
+        $provArray = array();
+
+        $getRegions = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
+        ->select('region')
+        ->groupBy('region')
+        ->get();
+
+        // dd($getRegions);
+        
+        foreach($getRegions as $reg){
+            $regions = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+                                ->select('regCode')
+                                ->where('regionName', $reg->region)
+                                ->limit(1)
+                                ->get();
+                            array_push($regionNames, $reg->region);
+                            array_push($regionCodes, $regions[0]->regCode);
+        }
+        return view('replacements.muni',
+         compact(
+            'regionNames',
+            'regionCodes'
+         ));
+
+    }
+    public function getMuniReplacementProvinces(Request $request)
+    {
+        $getProvinces = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
+        ->select('province')
+        ->where('region',$request->reg)
+        ->groupBy('province')
+        ->get();
+        return $getProvinces;
+    }
+    public function getMuniReplacementMunicipalities(Request $request)
+    {
+        $getMunicipalities = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
+        ->select('municipality')
+        ->where('province',$request->prov)
+        ->groupBy('municipality')
+        ->get();
+        return $getMunicipalities;
+    }
+    public function tagMuniReplacements(Request $request)
+    {
+        $getLibPrv =  DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+        ->select('regCode','provCode','munCode')
+        ->where('regionName',$request->reg)
+        ->where('province',$request->prov)
+        ->where('municipality',$request->muni)
+        ->first();
+
+        $prvTable = $getLibPrv->regCode.$getLibPrv->provCode;
+        $claimingPrv = $getLibPrv->regCode.'-'.$getLibPrv->provCode.'-'.$getLibPrv->munCode;
+        
+        $tagReplacements = DB::table($GLOBALS['season_prefix'].'prv_'.$prvTable.'.farmer_information_final')
+        ->where('claiming_prv',$claimingPrv)
+        ->where('is_claimed',1)
+        ->where('is_replacement',0)
+        ->update([
+                "is_replacement"      => 1,
+                "replacement_reason"  => $request->reason,
+                "replacement_bags"    => DB::raw('total_claimed'),
+                "replacement_area" => DB::raw('total_claimed_area'),
+                "replacement_bags_claimed" => 0,
+                "replacement_area_claimed" => 0.00,
+            ]);
+
+        return response()->json([
+            'updated_rows' => $tagReplacements
+        ]);
+
+    }
+
     
 }

@@ -2183,6 +2183,12 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::post('/Replacements/api/getReplacementMunicipalities', ['as' => 'getReplacementMunicipalities', 'uses' => 'ReplacementsController@getReplacementMunicipalities']);
     Route::post('/Replacements/api/getFarmers', ['as' => 'getFarmers', 'uses' => 'ReplacementsController@getFarmers']);
     Route::post('/Replacements/api/tagReplacements', ['as' => 'tagReplacements', 'uses' => 'ReplacementsController@tagReplacements']);
+    
+    //Municipal Replacements Seeds
+    Route::get('/Municipal/Replacements/home', ['as' => 'muni.replacements', 'uses' => 'ReplacementsController@muni_home']);
+    Route::post('/Municipal/Replacements/api/getMuniReplacementProvinces', ['as' => 'muni.getReplacementProvinces', 'uses' => 'ReplacementsController@getMuniReplacementProvinces']);
+    Route::post('/Municipal/Replacements/api/getMuniReplacementMunicipalities', ['as' => 'muni.getReplacementMunicipalities', 'uses' => 'ReplacementsController@getMuniReplacementMunicipalities']);
+    Route::post('/Municipal/Replacements/api/tagReplacements', ['as' => 'muni.tagReplacements', 'uses' => 'ReplacementsController@tagMuniReplacements']);
 
     //FCA Member Tagging
     Route::get('/fcaTagging/home', ['as' => 'fcaTagging', 'uses' => 'fcaTaggingController@home_ui']);
