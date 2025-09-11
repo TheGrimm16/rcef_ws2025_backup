@@ -60,8 +60,10 @@ if(getCoopInDelivery):
             "coopAccred": coopAccred,
             "coopName": coopName,
             "regionName": regionName,
-            "totalCommitments": int(totalCommitments),
-            "totalInspected": int(totalInspected)})
+            "totalCommitments": int(totalCommitments) if totalCommitments else 0,
+            "totalInspected": int(totalInspected) if totalInspected else 0
+        })
+
 else:
     getCoopInDelivery_query = f"SELECT DISTINCT(coopAccreditation) FROM {season}rcep_delivery_inspection.tbl_delivery WHERE prv_dropoff_id LIKE '{prv_dropoff_id}' AND is_cancelled = 0"
     cursor.execute(getCoopInDelivery_query)
@@ -96,8 +98,8 @@ else:
             "coopAccred": coopAccred,
             "coopName": coopName,
             "regionName": regionName,
-            "totalCommitments": int(totalCommitments),
-            "totalInspected": int(totalInspected)})
+            "totalCommitments": int(totalCommitments) if totalCommitments else 0,
+            "totalInspected": int(totalInspected)}) if totalInspected else 0
 
 cursor.close()
 connection.close()
