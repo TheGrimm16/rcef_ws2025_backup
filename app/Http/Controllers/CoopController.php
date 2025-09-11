@@ -504,7 +504,7 @@ class CoopController extends Controller
                 ->whereIn('seedTag',$getDelivery)
                 ->where('seedVariety',$tbl_commitment->commitment_variety)
                 ->where('region',$request->orig_region)
-                ->whereNot("isBuffer",9)
+                ->where("isBuffer","!=",9)
                 ->first();
                 
                 if($getActualDelivery)
