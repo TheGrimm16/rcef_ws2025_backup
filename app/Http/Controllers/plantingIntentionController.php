@@ -22,8 +22,7 @@ class plantingIntentionController extends Controller
 		// dd($GLOBALS['season_prefix']);
 		$season = $GLOBALS['season_prefix'];
 
-		$pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+		$pythonPath = $GLOBALS['python_path'];
 
 		$scriptPath = base_path('app//Http//PyScript//API//plantingIntentionStatistics.py');
 

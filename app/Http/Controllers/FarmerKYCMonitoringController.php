@@ -40,11 +40,9 @@ class FarmerKYCMonitoringController extends Controller
 		$clustersPercentage = 0;
 		$profilesPercentage = 0;
 
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
 		$scriptPath = base_path('app//Http//PyScript//farmerKYC//statistics.py');
-
 
 		$command = "$pythonPath \"$scriptPath\" ";
 		
@@ -92,8 +90,7 @@ class FarmerKYCMonitoringController extends Controller
         $today = Carbon::now();
         $dateToday = $today->format('Y-m-d');
 
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
 		$scriptPath = base_path('app//Http//PyScript//farmerKYC//monitoring.py');
 
@@ -127,8 +124,7 @@ class FarmerKYCMonitoringController extends Controller
     {
         $date = $request->date;
 
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
 		$scriptPath = base_path('app//Http//PyScript//farmerKYC//monitoring.py');
 

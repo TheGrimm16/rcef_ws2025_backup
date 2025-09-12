@@ -50,9 +50,7 @@ class preregDashboardController extends Controller
             array_push($regArr, 0);
         }
 
-        // $pythonPath = 'C://Python312//python.exe';
-
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/prereg.scripts/prereg_dashboard_index.py');
 
@@ -122,10 +120,7 @@ class preregDashboardController extends Controller
     public function loadChartDataDefault(){
         $taggedRegion = Auth::user()->stationId;
         
-        // $pythonPath = 'C://Python312//python.exe';
-
-        //production
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/prereg.scripts/prereg_dashboard_regions.py');
 
@@ -399,11 +394,7 @@ class preregDashboardController extends Controller
 
     public function getPrv(){
         
-        //uncomment for development
-        // $pythonPath = 'C://Python312//python.exe';
-
-        //production
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/prereg.scripts/prereg_dashboard.py');
 

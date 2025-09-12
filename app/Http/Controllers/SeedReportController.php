@@ -121,11 +121,7 @@ class SeedReportController extends Controller
 
     public function seed_report_overall(){
 
-        //uncomment for development
-        //$pythonPath = 'C://Users//admin//AppData//Local//Programs//Python//Python312//python.exe';
-
-        //production
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/seed-variety-report/seed_variety_report.py');
 
@@ -279,11 +275,7 @@ class SeedReportController extends Controller
 
         $prv = $query->limit(1)->value('prv');
         
-        //local
-        //$pythonPath = 'C://Users//admin//AppData//Local//Programs//Python//Python312//python.exe';
-
-        //production
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/seed-variety-report/seed_variety_filter.py');
 

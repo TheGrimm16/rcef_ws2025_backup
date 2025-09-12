@@ -30,9 +30,7 @@ class calendarController extends Controller
         
         return view('palaysikatan.calendar')
         ->with("barangay", $barangay);
-       }
-
-      
+    }
 
        /* public function calendarData(){
            $cropStab=[

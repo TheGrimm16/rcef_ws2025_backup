@@ -5,6 +5,7 @@ import json
 import time
 
 season = sys.argv[1] if len(sys.argv) > 1 else "ws2025_"
+start_time = time.time()  # start timer
 
 uri = "mysql://json:%s@192.168.10.44:3306/information_schema" % quote('Zeijan@13')
 
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     # paymaya_beneficiaries_female = len(glbl['tbl_beneficiaries'].filter(pl.col("sex").str.starts_with('F'), pl.col("paymaya_code").is_in(glbl['tbl_claim'].select(pl.col("paymaya_code")))))
     paymaya_delivery = tbl_actual_delivery.filter(pl.col("qrValStart").ne("")).select(pl.col("totalBagCount")).sum().item()
 
-    time.sleep(3)
+    # time.sleep(3)
     json_string = json.dumps({
         "paymaya_beneficiaries": paymaya_beneficiaries,
         "paymaya_bags": paymaya_bags,
@@ -28,3 +29,6 @@ if __name__ == "__main__":
         "paymaya_delivery": paymaya_delivery
     })
     print(json_string)
+    # Print final process time separately
+process_time = round(time.time() - start_time, 3)
+print("process_time_sec:", process_time)

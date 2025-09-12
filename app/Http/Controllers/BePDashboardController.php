@@ -29,7 +29,7 @@ class BePDashboardController extends Controller
 {
     public function home_ui(){
         $season = $GLOBALS['season_prefix'];
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
 		$scriptPath = base_path('app//Http//PyScript//bepDashboard//bepDashboardIndex.py');
@@ -1114,7 +1114,7 @@ class BePDashboardController extends Controller
 
         // $getInfo = array_merge($getInfo,$getInfo2);
         foreach($getInfo as $row)
-        { 
+        {
             $getBags = count(DB::table($GLOBALS['season_prefix'].'rcep_paymaya.tbl_claim')
             ->where('paymaya_code',$row->eBinhiCode)
             ->where('coopAccreditation','=', $row->Cooperative_Name)

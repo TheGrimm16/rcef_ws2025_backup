@@ -5,6 +5,7 @@ namespace App\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
+
 class Kernel extends ConsoleKernel
 {
     /**
@@ -14,6 +15,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         // Commands\Inspire::class,
+        // \App\Console\Commands\AggregateDashboardMetrics::class,
     ];
 
     /**
@@ -26,5 +28,8 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
+        // $schedule->command('dashboard:aggregate-metrics')->dailyAt('12:30');
+        //$schedule->command('dashboard:aggregate-metrics')->everyMinute();
+
     }
 }

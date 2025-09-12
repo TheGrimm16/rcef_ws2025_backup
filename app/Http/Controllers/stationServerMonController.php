@@ -14,12 +14,9 @@ class stationServerMonController extends Controller
 
         $nrp_data_release = DB::table("station_domain.lib_station_domain")/* ->where('id',6) */->get();
         $arrayData = array();
-    foreach ($nrp_data_release as $key => $value) {   
+        foreach ($nrp_data_release as $key => $value) {   
                
-          $host = $value->sub_domain_name;
-
-
-        
+            $host = $value->sub_domain_name;
             $handle = curl_init($host);
             curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
             $response = curl_exec($handle);

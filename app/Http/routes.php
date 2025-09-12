@@ -12,6 +12,10 @@
  */
 Route::auth();
 
+// Test
+Route::get('/test', ['as' => 'test', 'uses' => 'TestController@index']);
+Route::get('/testPolars', ['as' => 'testPolars', 'uses' => 'TestPolarsController@index']);
+
 Route::get('clear_config', ['as' => 'utility.clear.cache', 'uses' => 'UtilityController@clear_cache']);
 
 //EBINHI Survey    
@@ -35,8 +39,16 @@ Route::get('clear_config', ['as' => 'utility.clear.cache', 'uses' => 'UtilityCon
 /* start of middleware */
 
 /*WEBSITE API*/ 
+
 Route::group(['middleware' => ['auth','logMw']], function() {
-	
+
+    Route::get('/', ['as' => 'dashboard.index', 'uses' => 'DashboardController@index']);//->middleware('techno');
+    Route::get('/pageClosed', ['as' => 'pageClosed', 'uses' => 'DashboardController@pageClosed']);
+
+    Route::get('/IAR_util', ['as' => 'IAR_util.index', 'uses' => 'IARUtilController@index']);
+    Route::post('/IAR_util/save_person', ['as' => 'IAR_util.save_person', 'uses' => 'IARUtilController@savePerson']);
+    Route::post('/IAR_util/delete_person', ['as' => 'iar_util.delete_person', 'uses' => 'IARUtilController@deletePerson']);
+
 	Route::get('insp_monitoring', ['as' => 'monitoring_insp.index', 'uses' => 'InspmonitoringController@index']);
     Route::get('insp_monitoring/get_muni/{province}', ['as' => 'monitoring_insp.get_muni', 'uses' => 'InspmonitoringController@get_muni']);
     Route::get('insp_monitoring/get_dropoff/{province}/{municipality}', ['as' => 'monitoring_insp.get_muni', 'uses' => 'InspmonitoringController@get_dropoff_points']);
@@ -49,9 +61,6 @@ Route::group(['middleware' => ['auth','logMw']], function() {
     Route::post('insp_monitoring/iar/re_upload', ['as' => 'inspector.iar.re_upload', 'uses' => 'InspmonitoringController@reupload_signed_iar']);
     Route::post('insp_monitoring/inspection_data', ['as' => 'inspector.excel.data', 'uses' => 'InspmonitoringController@inspection_data']);
 	
-    Route::get('/', ['as' => 'dashboard.index', 'uses' => 'DashboardController@index'])->middleware('techno');
-    Route::get('/pageClosed', ['as' => 'pageClosed', 'uses' => 'DashboardController@pageClosed']);
-    
     Route::get('upcoming_harvest_10days', ['as' => 'dashboard.upcoming_harvest_10days', 'uses' => 'DashboardController@upcoming_harvest_10days']);
     Route::get('upcoming_harvest_30days', ['as' => 'dashboard.upcoming_harvest_30days', 'uses' => 'DashboardController@upcoming_harvest_30days']);
     Route::get('upcoming_harvest_weekly', ['as' => 'dashboard.upcoming_harvest_weekly', 'uses' => 'DashboardController@upcoming_harvest_weekly']);
@@ -76,7 +85,7 @@ Route::group(['middleware' => ['auth','logMw']], function() {
 
 
 
-
+	
 	/**
      * DELIVERY DASHBOARD NEW ROUTES
      */
@@ -1439,8 +1448,8 @@ Route::group(['middleware' => ['logMw']], function() {
     //Route::get('fargeneration', ['as' => 'FarGeneration.index', 'uses' => 'FarGenerationController@pageClose'])->middleware('auth');
     Route::get('fargeneration/get_municipalities/{province}', ['as' => 'FarGeneration.get_municipalities', 'uses' => 'FarGenerationController@get_municipalities']);
     Route::get('fargeneration/get_region/{province}', ['as' => 'FarGeneration.get_region', 'uses' => 'FarGenerationController@get_region']);
-      Route::get('fargeneration/get_report_beneficiary/{region}/{province}/{municipality}/{checkbox}', ['as' => 'FarGeneration.get_report_beneficiary', 'uses' => 'FarGenerationController@get_report_beneficiary']);
-      Route::get('fargeneration/pre_list/all/{region}/{province}/{municipality}/{rowFrom}/{rowTo}/{maxRow}/{checkbox}', ['as' => 'pre_list.all.beneficiary', 'uses' => 'FarGenerationController@generate_Provincemunicipality_serverSide'])->middleware('auth');
+    Route::get('fargeneration/get_report_beneficiary/{region}/{province}/{municipality}/{checkbox}', ['as' => 'FarGeneration.get_report_beneficiary', 'uses' => 'FarGenerationController@get_report_beneficiary']);
+    Route::get('fargeneration/pre_list/all/{region}/{province}/{municipality}/{rowFrom}/{rowTo}/{maxRow}/{checkbox}', ['as' => 'pre_list.all.beneficiary', 'uses' => 'FarGenerationController@generate_Provincemunicipality_serverSide'])->middleware('auth');
 
     // Route::get('fargeneration/get_report_beneficiary/{region}/{province}/{municipality}/{checkbox}', ['as' => 'FarGeneration.get_report_beneficiary', 'uses' => 'FarGenerationController@pageClose']);
     // Route::get('fargeneration/pre_list/all/{region}/{province}/{municipality}/{rowFrom}/{rowTo}/{maxRow}/{checkbox}', ['as' => 'pre_list.all.beneficiary', 'uses' => 'FarGenerationController@pageClose'])->middleware('auth');
@@ -2153,7 +2162,7 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::post('/KPDistribution/api/loadKPDistribution', ['as' => 'load_KPDistribution', 'uses' => 'KPDistributionController@loadKPDistribution']);
     Route::get('/KPDistribution/api/exportKPDistribution/{reg}/{prv}/{mun}/{ssn}', ['as' => 'export_KPDistribution', 'uses' => 'KPDistributionController@exportKPDistribution']);
     Route::get('/KPDistribution/addCode', ['as' => 'addCode', 'uses' => 'KPDistributionController@addCode']);
-
+    
     //Distribution Data
     Route::get('/DistributionData/home', ['as' => 'DistributionData_index', 'uses' => 'DistributionDataController@home_ui']);
     Route::post('/DistributionData/getDistributionDataReg', ['as' => 'getDistributionDataReg', 'uses' => 'DistributionDataController@getDistributionDataReg']);

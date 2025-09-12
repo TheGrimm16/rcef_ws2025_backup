@@ -201,6 +201,23 @@ class DeliveryInspect
 
         return $ad;
     }
+
+    public function gad_total_batch($batchTicketNumbers){
+        $totals = array();
+        if(empty($batchTicketNumbers)) return $totals;
+
+        $rows = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery as ad')
+            ->select('ad.batchTicketNumber', DB::raw('SUM(ad.totalBagCount) as total'))
+            ->whereIn('ad.batchTicketNumber', $batchTicketNumbers)
+            ->groupBy('ad.batchTicketNumber')
+            ->get();
+
+        foreach($rows as $r){
+            $totals[$r->batchTicketNumber] = $r->total;
+        }
+
+        return $totals;
+    }
 /*    uncomment if inspection table is populated
 		function inspection_date($batch){
         $insp = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_inspection as insp')
@@ -497,6 +514,174 @@ class DeliveryInspect
                 ->get();
 
         return $municipalities;
+    }
+
+    public function prepare_iar_data($id)
+    {
+        $datenow = date('Y-m-d');// m/d/Y format
+
+        // Consolidated delivery and coop query
+        $delivery = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_delivery as d')
+            ->select(
+                'd.*',
+                'dt.seed_distribution_mode',
+                'c.coopName',
+                'c.current_moa',
+                'c.provinceId',
+                'c.municipalityId',
+                'c.full_address',
+                'p.provDesc',
+                'm.citymunDesc'
+            )
+            ->leftJoin($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_delivery_transaction as dt', 'd.batchTicketNumber', '=', 'dt.batchTicketNumber')
+            ->leftJoin($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives as c', 'c.accreditation_no', '=','d.coopAccreditation')
+            ->leftJoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_provinces as p', 'p.id', '=', 'c.provinceId')
+            ->leftJoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_municipalities as m', 'm.id', '=', 'c.municipalityId')
+
+            ->where('d.batchTicketNumber', $id)
+            ->first();
+        
+        
+        // Fallback if no result
+        if (!$delivery) {
+            return null;
+        }
+        $coopAdd = (empty($delivery->provinceId) || empty($delivery->municipalityId))
+            ? $delivery->full_address
+            : (
+                empty($delivery->citymunDesc) && empty($delivery->provDesc)
+                    ? ''
+                    : (empty($delivery->citymunDesc) ? $delivery->provDesc
+                    : (empty($delivery->provDesc) ? $delivery->citymunDesc
+                        : $delivery->citymunDesc . ', ' . $delivery->provDesc))
+            );
+
+        // dd($coopAdd);
+                
+        // Get delivery batch list (multiple rows, same batchTicketNumber)
+        $deliveryList = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_delivery as delivery')
+            ->select('*')
+            ->where('delivery.batchTicketNumber', $id)
+            ->get();
+        
+        // IAR Code generation and logging
+        $existingLog = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.iar_print_logs')
+            ->where('batchTicketNumber', $id)
+            ->first();
+
+        if ($existingLog) {
+            DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.iar_print_logs')
+                ->where('batchTicketNumber', $id)
+                ->update(['is_printed' => 1]);
+
+            $iarCode = $existingLog->iarCode;
+        } else {
+            $log_id = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.iar_print_logs')
+                ->insertGetId([
+                    'iarCode' => '',
+                    'batchTicketNumber' => $id,
+                    'dateCreated' => $datenow,
+                    'is_printed' => 1
+                ]);
+
+            $iarCode = date('Y') . '-' . date('m') . '-' . str_pad($log_id, 4, '0', STR_PAD_LEFT);
+
+            DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.iar_print_logs')
+                ->where('logsId', $log_id)
+                ->update(['iarCode' => $iarCode]);
+        }
+
+        // Log print metadata
+        DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.iar_print_logs_info')
+            ->insert([
+                'iar_code_fk' => $iarCode,
+                'userd_id_fk' => Auth::id(),
+                'ip_address' => Request::ip(),
+            ]);
+        
+        $deliveryDateFormatted = date('D, M d, Y', strtotime($delivery->deliveryDate));
+        
+        // dd($delivery);
+        $provCode = isset($delivery->prv) ? substr($delivery->prv, 0, 4) : null;
+
+        $rawSignatories = DB::table($GLOBALS['season_prefix'].'sdms_db_dev.lib_signatories_person_provinces as a')
+            ->select(
+                'b.id','b.honorific_prefix','b.complete_name','b.post_nominal','b.sex','b.civil_status',
+                'c.name as position_name','b.cell_number','b.email','b.is_right'
+            )
+            ->leftJoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_signatories_person as b', 'a.person_id', '=', 'b.id')
+            ->leftJoin($GLOBALS['season_prefix'].'sdms_db_dev.lib_signatories_position as c', 'b.position_id', '=', 'c.id')
+            ->where('a.provCode', $provCode)
+            ->where('b.is_active', 1)
+            ->get();
+
+        // Initialize slots
+        $leftData  = null;
+        $rightData = null;
+
+        // Manually separate into left/right
+        foreach ($rawSignatories as $sig) {
+            if ($sig->is_right == 0 && $leftData === null) {
+                $leftData = $sig;
+            }
+            if ($sig->is_right == 1 && $rightData === null) {
+                $rightData = $sig;
+            }
+        }
+
+        // safeName helper
+        $safeName = function($prefix, $name, $postNominal) {
+            $parts = [];
+            if (!empty($prefix)) $parts[] = $prefix;
+            if (!empty($name)) $parts[] = $name;
+            if (!empty($postNominal)) $parts[] = $postNominal;
+            return implode(' ', $parts);
+        };
+
+        // Defaults (placeholders to keep alignment intact)
+        $sigNameLeft  = 'Name and Signature';
+        $sigNameRight = 'Name and Signature';
+        $sigPosLeft   = '';
+        $sigPosRight  = '';
+
+        // Fill left if available
+        if (!empty($leftData)) {
+            $sigNameLeft = $safeName($leftData->honorific_prefix, $leftData->complete_name, $leftData->post_nominal);
+            if (empty($sigNameLeft)) $sigNameLeft = 'Name and Signature';
+            $sigPosLeft = !empty($leftData->position_name) ? $leftData->position_name : '';
+        }
+
+        // Fill right if available
+        if (!empty($rightData)) {
+            $sigNameRight = $safeName($rightData->honorific_prefix, $rightData->complete_name, $rightData->post_nominal);
+            if (empty($sigNameRight)) $sigNameRight = 'Name and Signature';
+            $sigPosRight = !empty($rightData->position_name) ? $rightData->position_name : '';
+        }
+
+        // return as before
+        return [
+            'coop-name'      => $delivery->coopName,
+            'coop-address'   => $coopAdd,
+            'region'         => $delivery->region,
+            'province'       => $delivery->province,
+            'municipality'   => $delivery->municipality,
+            'drop_off_point' => $delivery->dropOffPoint,
+            'IAR_no'         => $iarCode,
+            'Date'           => $datenow,
+            'MOA'            => $delivery->current_moa,
+            'seed-type'      => $delivery->seed_distribution_mode,
+            'coopName'       => $delivery->coopName,
+            'dop'            => $delivery->dropOffPoint,
+            'delivery'       => $deliveryList,
+            'date'           => $deliveryDateFormatted,
+            'ticket'         => $id,
+
+            'sig-name-left'  => $sigNameLeft,
+            'sig-name-right' => $sigNameRight,
+            'sig-pos-left'   => $sigPosLeft,
+            'sig-pos-right'  => $sigPosRight,
+        ];
+
     }
 
 }

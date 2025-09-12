@@ -885,8 +885,7 @@ class CoopController extends Controller
         $accred_number = $request->accred_number;
 
         $season = $GLOBALS['season_prefix'];
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app//Http//PyScript//cooperatives//accredUpdate.py');
 
@@ -918,8 +917,7 @@ class CoopController extends Controller
 
         $coop_id = $request->coop_id;
 
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app//Http//PyScript//cooperatives//moaUpdate.py');
 

@@ -20,7 +20,7 @@ class InspmonitoringController extends Controller {
     public function index() {
 
         $model = new Inspmonitoring();
-        
+
         if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->username == "rm.capiroso" || Auth::user()->username == "kruz" || Auth::user()->username == "jc.tizon"|| Auth::user()->username == "ddc.espiritu" || Auth::user()->username == "renaida_pascual" || Auth::user()->username == "arfulgencio" || Auth::user()->username == "dra.jardinez" || Auth::user()->username == "rs.jandoc"){
             $inspected_provinces = $model->_inspected_provinces();
         }else{
@@ -174,7 +174,7 @@ class InspmonitoringController extends Controller {
     public function table_data(Request $request) {
         $model = new Inspmonitoring();
         $input = $request->all();
-        
+
         $batches = $model->_get_batches($input['drop_id'],$input["prv_name"]);
         $table_data = array();
         $i = 1;
@@ -237,9 +237,9 @@ class InspmonitoringController extends Controller {
              }
 
 
-             $g = 0;
-             $g += intval($inspection_details->inspected);
-             if(count($partialTransfer)>0){
+            $g = 0;
+            $g += intval($inspection_details->inspected);
+            if(count($partialTransfer)>0){
                 $prv_arr = array();
                 $prv_muni = array();
                 if($dv->isBuffer == 1){
@@ -269,10 +269,10 @@ class InspmonitoringController extends Controller {
 
            
                 foreach ($prv_arr as $key => $value) {
-                         $status_partial = '<span class="badge badge-info" style="color:#fff;">Transferred</span>';
-                         $status_chk_partial = 'transfered';
-                 $insp_data .="<br>".number_format($value)."     ".$status_partial." <font size=2> (".$prv_muni[$key].") </font>";
-            }
+                    $status_partial = '<span class="badge badge-info" style="color:#fff;">Transferred</span>';
+                    $status_chk_partial = 'transfered';
+                    $insp_data .="<br>".number_format($value)."     ".$status_partial." <font size=2> (".$prv_muni[$key].") </font>";
+                }
 
 
 
@@ -310,14 +310,14 @@ class InspmonitoringController extends Controller {
                     }    
                 }
 
-                if($g>intval($inspection_details->inspected)){
-                    $insp_data .= "<br> <b> Total:  ".number_format($g)."</b>";
-                }
+            if($g>intval($inspection_details->inspected)){
+                $insp_data .= "<br> <b> Total:  ".number_format($g)."</b>";
+            }
 
 
-                if($is_replacement == 1 || $is_partial_replacement == 1){
-                    $status .= '<span class="badge badge-info" style="color:#fff;">Replacement</span>';
-                }
+            if($is_replacement == 1 || $is_partial_replacement == 1){
+                $status .= '<span class="badge badge-info" style="color:#fff;">Replacement</span>';
+            }
 
           
 
@@ -388,7 +388,7 @@ class InspmonitoringController extends Controller {
                         /*return '
                             <a for="' . $table_data['batch'] . '" class="btn btn-primary btn-xs view_batchdetails" data-toggle="modal" data-target="#inspection_details_modal" data-id="' . $table_data['batch'] . '"><i class="fa fa-eye"></i> View Details </a>
                         ';*/ 
-                    }
+                    }               
                                       
                 }else{
                     return '<a for="' . $table_data['batch'] . '" class="btn btn-primary btn-xs view_batchdetails" data-toggle="modal" data-target="#inspection_details_modal" data-id="' . $table_data['batch'] . '"><i class="fa fa-eye"></i> View Details </a>';
@@ -396,7 +396,7 @@ class InspmonitoringController extends Controller {
                 
             })
             ->make(true);
-    }
+        }
 
 
 
@@ -544,16 +544,14 @@ class InspmonitoringController extends Controller {
         $prv_dropoff_id = $request->myData['drop_id'];
         $season = $GLOBALS['season_prefix'];
 
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
-
+        $pythonPath = $GLOBALS['python_path'];
 		$scriptPath = base_path('app//Http//PyScript//inspMonitoring//getCoopData.py');
 
 		$escapedPrv_dropoff_id = escapeshellarg($prv_dropoff_id);
 		$escapedSeason = escapeshellarg($season);
 
 		$command = "$pythonPath \"$scriptPath\" $escapedSeason $escapedPrv_dropoff_id";
-		
+
 		$process = new Process($command);
 
 		try {

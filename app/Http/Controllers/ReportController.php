@@ -9353,12 +9353,7 @@ public function generateLiveMunicipalReportDataPy(Request $request){
         ->groupBy("municipality")
         ->first();
 
-        //uncomment for development
-        //$pythonPath = 'C://Users//Admin//AppData//Local//Programs//Python//Python312//python.exe';
-
-        //production
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/load_live_data.py');
 
@@ -9396,7 +9391,7 @@ public function generateLiveMunicipalReportDataPy(Request $request){
                 $accepted_transfer .= "Transferred: ".number_format($data['totalBagCount_sum_p'])." </i><br>";
 
                 $ebinhi_tag = 0;
-                $distributed_text = "<strong> Total: ".number_format($data['ebinhi_distri']+$data['bags_claimed']+$data['parcel_dist'])." bag(s)"."</strong>";
+                $distributed_text = "<strong> Total: ".number_format($data['ebinhi_distri']+$data['bags_claimed'])." bag(s)"."</strong>";//$data['distributed']
                 $distributed_text .= "<br> Regular: ". number_format($data['bags_claimed']);
                 $distributed_text .= "<br> BeP: " .number_format($data['ebinhi_distri']);
 
@@ -9462,7 +9457,6 @@ public function generateLiveMunicipalReportDataPy(Request $request){
 /* --------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
 
 
-
 //original code of 
 public function generateLiveMunicipalReportData(Request $request){
     dd($request);
@@ -9510,9 +9504,6 @@ public function generateLiveMunicipalReportData(Request $request){
                     ->where("isRejected", 0)
                     ->sum("totalBagCount");
                     
-
-
-
                 $transfered_batches2 = DB::connection("delivery_inspection_db")->table("tbl_actual_delivery")
                     ->select( DB::raw("CONCAT('transferred from batch: ',batchTicketNumber) as batchTicketNumber"))   
                     ->where("transferCategory", "P") 
@@ -9537,7 +9528,6 @@ public function generateLiveMunicipalReportData(Request $request){
                     ->where("isRejected", 0)
                     ->sum("totalBagCount");
                 $transferred = $add_transferred + $transfer ;
-
 
                 $total_accept = $transferred + $accepted + $re_transfer;
 
@@ -9575,7 +9565,6 @@ public function generateLiveMunicipalReportData(Request $request){
 
                 $ebinhi_claim_code = json_decode(json_encode($ebinhi_claim_code), true);
 
-
                 $ebinhi_bene_data_male = count(DB::table($GLOBALS["season_prefix"]."rcep_paymaya.tbl_beneficiaries")
                 // ->select(DB::raw("SUM(IF(,1,0)) as total_male"), DB::raw("SUM(IF(UPPER(SUBSTR(sex,1,1))='F',1,0)) as total_female"),
                 // DB::raw("SUM(area) as area"))
@@ -9589,8 +9578,6 @@ public function generateLiveMunicipalReportData(Request $request){
                 ->where(DB::raw("UPPER(SUBSTR(sex,1,1))"), "F")
                 ->whereIn("paymaya_code", $ebinhi_claim_code)
                 ->get());
-
-
 
                 $ebinhi_bene_data = DB::table($GLOBALS["season_prefix"]."rcep_paymaya.tbl_beneficiaries")
                 ->select(DB::raw("SUM(area) as area"))
@@ -9864,12 +9851,6 @@ public function generateLiveMunicipalReportData(Request $request){
                       
 
                 }
-
-
-
-
-
-
 
                 $btn = "";
                 // if(Auth::user()->roles->first()->name == "rcef-programmer"){

@@ -1771,43 +1771,28 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 
 
 							 @if(Auth::user()->roles->first()->name == "rcef-programmer")
-                             
-                           	
-
-                        	<!-- <li class="sub_menu"><a href="{{route('process.report.index')}}">Report Reconcilation</a></li> 	-->
-							
-							<li><a href="{{route('sg.list')}}"><i class="fa fa-tags"></i> Blacklist SG</a></li> 		
-					
-
-                            <li class="sub_menu"><a href="{{route('farmer.profile.puller.index')}}">Farmer Profile (Area Update) </a></li>
-
-							
-
-
-
-
-
-							<li> <a><i class=""></i> Import <span class="fa fa-chevron-down"></span></a>
-								<ul class="nav child_menu">
-									<li class="sub_menu"><a href="{{route('import.seed_growers')}}">Seed Growers</a></li> 
-									<li class="sub_menu"><a href="{{route('import.rla')}}">RLA</a></li> 							
-									<li class="sub_menu"><a href="{{route('import.ebinhi')}}">E-Binhi</a></li> 							
-									<li class="sub_menu"><a href="{{route('import.ebinhi.update.status')}}">E-Binhi update status</a></li> 							
-							
-							
-									@if(Auth::user()->roles->first()->name == "rcef-programmer" )
-									<li class="sub_menu"><a href="{{route('import.release_uploader')}}">Distribution Data </a></li> 							
-									@endif
-								</ul>
+								<!-- <li class="sub_menu"><a href="{{route('process.report.index')}}">Report Reconcilation</a></li> 	-->
+								<li><a href="{{route('sg.list')}}"><i class="fa fa-tags"></i> Blacklist SG</a></li> 		
+								<li class="sub_menu"><a href="{{route('farmer.profile.puller.index')}}">Farmer Profile (Area Update) </a></li>
+								<li> <a><i class=""></i> Import <span class="fa fa-chevron-down"></span></a>
+									<ul class="nav child_menu">
+										<li class="sub_menu"><a href="{{route('import.seed_growers')}}">Seed Growers</a></li> 
+										<li class="sub_menu"><a href="{{route('import.rla')}}">RLA</a></li> 							
+										<li class="sub_menu"><a href="{{route('import.ebinhi')}}">E-Binhi</a></li> 							
+										<li class="sub_menu"><a href="{{route('import.ebinhi.update.status')}}">E-Binhi update status</a></li> 							
+								
+								
+										@if(Auth::user()->roles->first()->name == "rcef-programmer" )
+										<li class="sub_menu"><a href="{{route('import.release_uploader')}}">Distribution Data </a></li> 							
+										@endif
+									</ul>
 							</li>
-
-
 							<li class="sub_menu"><a href="{{route('farmer_profile.with.contact.nationwide')}}">Farmer W/ Contact Counter Nationwide process</a></li> 
                             
 							@endif
 
 							@if(Auth::user()->roles->first()->name == "administrator")
-							<li class="sub_menu"><a href="{{route('replacements')}}">Replacement Seeds Tagging</a></li> 
+								<li class="sub_menu"><a href="{{route('replacements')}}">Replacement Seeds Tagging</a></li> 
 							@endif
 							@if(Auth::user()->roles->first()->name == "rcef-programmer")
 								<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li> 
@@ -1821,24 +1806,14 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li class="sub_menu"><a href="{{route('deletePreReg')}}">Delete Pre-Registration Data</a></li> 
 								<li class="sub_menu"><a href="{{route('bepToReg')}}">BeP to Conventional Profile Tagging</a></li> 
 								<li class="sub_menu"><a href="{{route('deliveryStatus.home')}}">Cooperative Delivery Status</a></li> 
+							@elseif(Auth::user()->username == "NUEVAECIJA_Jhoemar")
 								
-								
-			
-								@elseif(Auth::user()->username == "NUEVAECIJA_Jhoemar")
-								
-								@endif
-
+						@endif
+						<li class="sub_menu"><a href="{{route('IAR_util.index')}}">IAR Signatories</a></li>
 						
-
-
-
 				</ul>
 			</li>
 			@endif
-
-
-
-
 
 			@if(Auth::user()->username == "rs.jandoc")
 			<li><a><i class="fa fa-cogs"></i> Utility <span class="fa fa-chevron-down"></span></a>
@@ -1847,7 +1822,6 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 						<li class="sub_menu"><a href="{{route('deletePreReg')}}">Delete Pre-Registration Data</a></li> 
 						<li class="sub_menu"><a href="{{route('bepToReg')}}">BeP to Conventional Profile Tagging</a></li> 
 
-
 			@endif
 			@if(Auth::user()->username == "NUEVAECIJA_Jhoemar")
 			<li><a><i class="fa fa-cogs"></i> Utility <span class="fa fa-chevron-down"></span></a>
@@ -1855,11 +1829,6 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 						<li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li>
 
 			@endif
-
-
-
-
-
 					
                 </ul>
             </div>

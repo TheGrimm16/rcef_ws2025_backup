@@ -22,6 +22,8 @@ use Carbon\Carbon;
 use PDFTIM;
 use DB;
 use Excel;
+use App\Helpers\DeliveryPdfHelper;
+
 
 class DeliveryDashboardController extends Controller
 {
@@ -70,9 +72,11 @@ class DeliveryDashboardController extends Controller
     public function getCoop_in_region(Request $request){
         $coop_list = $this->get_coops($request->region);
         $delivery = new DeliveryInspect();
-        // dd($coop_list);
         $data_array = array();
+
         foreach($coop_list as $row){
+
+            // Total confirmed deliveries
             $coop_confirmed_deliveries = DB::connection('delivery_inspection_db')->table("tbl_delivery")
                 ->select(DB::raw('SUM(tbl_delivery.totalBagCount) as total_confirmed'))
                 ->where('tbl_delivery.is_cancelled', '=', '0')
@@ -80,6 +84,7 @@ class DeliveryDashboardController extends Controller
                 ->where('tbl_delivery.isBuffer', 0)
                 ->value('total_confirmed');
 
+            // Coop delivery batches
             $coop_delivery_batches = DB::connection('delivery_inspection_db')->table("tbl_delivery")
                 ->select('batchTicketNumber', 'seedVariety')
                 ->where('tbl_delivery.is_cancelled', '=', '0')
@@ -87,75 +92,39 @@ class DeliveryDashboardController extends Controller
                 ->where('tbl_delivery.isBuffer', 0)
                 ->groupBy('batchTicketNumber')
                 ->get();
-                
 
+            $batchTicketNumbers = array_map(function($b){ return $b->batchTicketNumber; }, $coop_delivery_batches);
 
+            // Batch-fetch gad_totals for normal batches
+            $gad_totals = $delivery->gad_total_batch($batchTicketNumbers);
 
-            
+            // Batch-fetch transfer totals
+            $transfer_totals = array();
+            if(!empty($batchTicketNumbers)){
+                $transfer_data = DB::connection('delivery_inspection_db')
+                    ->table('tbl_actual_delivery')
+                    ->select('batchTicketNumber', DB::raw('SUM(totalBagCount) as total'))
+                    ->whereIn('batchTicketNumber', $batchTicketNumbers)
+                    ->where('is_transferred', 1)
+                    ->where('transferCategory', 'T')
+                    ->groupBy('batchTicketNumber')
+                    ->get();
 
-        
-                // dd($coop_delivery_batches);
+                foreach($transfer_data as $t){
+                    $transfer_totals[$t->batchTicketNumber] = $t->total;
+                }
+            }
+
             $total_inspected = 0;
-        
             $total_forwarded = 0;
             foreach($coop_delivery_batches as $batch_row){
-                $total_inspected += $delivery->gad_total($batch_row->batchTicketNumber);
-
-                $is_transfer_T = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
-                        // ->select('batchTicketNumber')
-                        ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
-                        ->where('is_transferred', 1)
-                        ->where('transferCategory', 'T')
-                        ->sum('totalBagCount');
-                $total_inspected += $is_transfer_T;
-
-                if($is_transfer_T>0){
-                    $t_of_t =  DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
-                        ->select('batchTicketNumber')
-                        ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
-                        ->where('transferCategory', 'T')
-                        ->groupby("batchTicketNumber")
-                        ->get();
-
-                    foreach($t_of_t as $trans){
-                        $re_trans = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
-                        // ->select('batchTicketNumber')
-                        ->where('remarks','like', '%'.$trans->batchTicketNumber.'%')
-                        ->where('is_transferred', 1)
-                        ->where('transferCategory', 'T')
-                        ->sum('totalBagCount');
-
-                         $total_inspected += $re_trans;
-                         
-                    }
-
-
-                       
+                $total_inspected += isset($gad_totals[$batch_row->batchTicketNumber]) ? $gad_totals[$batch_row->batchTicketNumber] : 0;
+                if(isset($transfer_totals[$batch_row->batchTicketNumber])){
+                    $total_inspected += $transfer_totals[$batch_row->batchTicketNumber];
                 }
-
-                
-                
-                
-                
-                
-                
-                
-                
-                // $nxt_season_data = DB::connection("nxt_inspection_db")->table("tbl_actual_delivery")
-                //     ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
-                //     ->where('is_transferred', 1)
-                //     ->sum("totalBagCount");
-                
-                $nxt_season_data = 0;
-                
-                $total_forwarded += $nxt_season_data;
-                
             }
-            // dd($total_inspected,$total_inspected2);
-            
 
-
-            
+            // Replacement batches
             $coop_delivery_replacement = DB::connection('delivery_inspection_db')->table("tbl_delivery")
                 ->select('batchTicketNumber', 'seedVariety')
                 ->where('tbl_delivery.is_cancelled', '=', '0')
@@ -164,34 +133,34 @@ class DeliveryDashboardController extends Controller
                 ->groupBy('batchTicketNumber')
                 ->get();
 
-        
-            $total_inspected_replacement = 0;
-            $total_forwarded_replacement = 0;
-            foreach($coop_delivery_replacement as $batch_row_replacement){
-                $total_inspected_replacement += $delivery->gad_total($batch_row_replacement->batchTicketNumber);
+            $replacementTicketNumbers = array_map(function($b){ return $b->batchTicketNumber; }, $coop_delivery_replacement);
 
-                $is_transfer_T = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
-                        ->select('batchTicketNumber')
-                        ->where('remarks','like', '%'.$batch_row_replacement->batchTicketNumber.'%')
-                        ->where('is_transferred', 1)
-                        //->where('transferCategory', 'T')
-                        ->sum('totalBagCount');
-                $total_inspected_replacement += $is_transfer_T;
-            
-                
-                // $nxt_season_data = DB::connection("nxt_inspection_db")->table("tbl_actual_delivery")
-                //     ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
-                //     ->where('is_transferred', 1)
-                //     ->sum("totalBagCount");
+            // Batch-fetch gad_totals for replacements
+            $replacement_gad_totals = $delivery->gad_total_batch($replacementTicketNumbers);
 
-                $nxt_season_data = 0;
+            // Batch-fetch replacement transfer totals
+            $replacement_transfer_totals = array();
+            if(!empty($replacementTicketNumbers)){
+                $replacement_data = DB::connection('delivery_inspection_db')
+                    ->table('tbl_actual_delivery')
+                    ->select('batchTicketNumber', DB::raw('SUM(totalBagCount) as total'))
+                    ->whereIn('batchTicketNumber', $replacementTicketNumbers)
+                    ->where('is_transferred', 1)
+                    ->groupBy('batchTicketNumber')
+                    ->get();
 
-                $total_forwarded += $nxt_season_data;
-            
+                foreach($replacement_data as $t){
+                    $replacement_transfer_totals[$t->batchTicketNumber] = $t->total;
+                }
             }
 
-
-
+            $total_inspected_replacement = 0;
+            foreach($coop_delivery_replacement as $batch_row_replacement){
+                $total_inspected_replacement += isset($replacement_gad_totals[$batch_row_replacement->batchTicketNumber]) ? $replacement_gad_totals[$batch_row_replacement->batchTicketNumber] : 0;
+                if(isset($replacement_transfer_totals[$batch_row_replacement->batchTicketNumber])){
+                    $total_inspected_replacement += $replacement_transfer_totals[$batch_row_replacement->batchTicketNumber];
+                }
+            }
 
             $coop_arr = array(
                 "cop_id" => $row->coopId,
@@ -203,11 +172,120 @@ class DeliveryDashboardController extends Controller
                 "total_forwarded" => number_format($total_forwarded),
                 "confirmed_replacement" => number_format($total_inspected_replacement)
             );
+
             array_push($data_array, $coop_arr);
         }
 
         return $data_array;
     }
+
+    //OLD 2025/09/05
+    // public function getCoop_in_region(Request $request){
+    //     $coop_list = $this->get_coops($request->region);
+    //     $delivery = new DeliveryInspect();
+    //     // dd($coop_list);
+    //     $data_array = array();
+    //     foreach($coop_list as $row){
+    //         $coop_confirmed_deliveries = DB::connection('delivery_inspection_db')->table("tbl_delivery")
+    //             ->select(DB::raw('SUM(tbl_delivery.totalBagCount) as total_confirmed'))
+    //             ->where('tbl_delivery.is_cancelled', '=', '0')
+    //             ->where('tbl_delivery.coopAccreditation', '=', $row->accreditation_no)
+    //             ->where('tbl_delivery.isBuffer', 0)
+    //             ->value('total_confirmed');
+
+    //         $coop_delivery_batches = DB::connection('delivery_inspection_db')->table("tbl_delivery")
+    //             ->select('batchTicketNumber', 'seedVariety')
+    //             ->where('tbl_delivery.is_cancelled', '=', '0')
+    //             ->where('tbl_delivery.coopAccreditation', '=', $row->accreditation_no)
+    //             ->where('tbl_delivery.isBuffer', 0)
+    //             ->groupBy('batchTicketNumber')
+    //             ->get();
+                
+    //             // dd($coop_delivery_batches);
+    //         $total_inspected = 0;
+        
+    //         $total_forwarded = 0;
+    //         foreach($coop_delivery_batches as $batch_row){
+    //             $total_inspected += $delivery->gad_total($batch_row->batchTicketNumber);
+
+    //             $is_transfer_T = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+    //                     // ->select('batchTicketNumber')
+    //                     ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
+    //                     ->where('is_transferred', 1)
+    //                     ->where('transferCategory', 'T')
+    //                     ->sum('totalBagCount');
+    //             $total_inspected += $is_transfer_T;
+
+    //             if($is_transfer_T>0){
+    //                 $t_of_t =  DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+    //                     ->select('batchTicketNumber')
+    //                     ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
+    //                     ->where('transferCategory', 'T')
+    //                     ->groupby("batchTicketNumber")
+    //                     ->get();
+
+    //                 foreach($t_of_t as $trans){
+    //                     $re_trans = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+    //                     // ->select('batchTicketNumber')
+    //                     ->where('remarks','like', '%'.$trans->batchTicketNumber.'%')
+    //                     ->where('is_transferred', 1)
+    //                     ->where('transferCategory', 'T')
+    //                     ->sum('totalBagCount');
+
+    //                      $total_inspected += $re_trans;
+                         
+    //                 }
+
+    //             }
+
+    //             $nxt_season_data = 0;
+                
+    //             $total_forwarded += $nxt_season_data;
+                
+    //         }
+
+    //         $coop_delivery_replacement = DB::connection('delivery_inspection_db')->table("tbl_delivery")
+    //             ->select('batchTicketNumber', 'seedVariety')
+    //             ->where('tbl_delivery.is_cancelled', '=', '0')
+    //             ->where('tbl_delivery.coopAccreditation', '=', $row->accreditation_no)
+    //             ->where('tbl_delivery.isBuffer', 9)
+    //             ->groupBy('batchTicketNumber')
+    //             ->get();
+
+    //         $total_inspected_replacement = 0;
+    //         $total_forwarded_replacement = 0;
+    //         foreach($coop_delivery_replacement as $batch_row_replacement){
+    //             $total_inspected_replacement += $delivery->gad_total($batch_row_replacement->batchTicketNumber);
+
+    //             $is_transfer_T = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
+    //                     ->select('batchTicketNumber')
+    //                     ->where('remarks','like', '%'.$batch_row_replacement->batchTicketNumber.'%')
+    //                     ->where('is_transferred', 1)
+    //                     //->where('transferCategory', 'T')
+    //                     ->sum('totalBagCount');
+    //             $total_inspected_replacement += $is_transfer_T;
+            
+    //             $nxt_season_data = 0;
+
+    //             $total_forwarded += $nxt_season_data;
+            
+    //         }
+
+    //         $coop_arr = array(
+    //             "cop_id" => $row->coopId,
+    //             "coop_name" => $row->coopName,
+    //             "coop_accre" => $row->accreditation_no,
+    //             "total_commit" => number_format($row->total_value),
+    //             "total_confirmed" => number_format($coop_confirmed_deliveries),
+    //             "total_inspected" => number_format($total_inspected),
+    //             "total_forwarded" => number_format($total_forwarded),
+    //             "confirmed_replacement" => number_format($total_inspected_replacement)
+    //         );
+    //         array_push($data_array, $coop_arr);
+    //     }
+
+    //     return $data_array;
+    // }
 
     public function get_delivery_list_old(Request $request){
         $batch_deliveries = DB::connection('delivery_inspection_db')->table('tbl_delivery')
@@ -1585,54 +1663,87 @@ class DeliveryDashboardController extends Controller
 
         return $data;
     }
+    // old gen_iar_pdf 2025/08/01
 
-    public function gen_iar_pdf($id){
-        $delivery = new DeliveryInspect();
+    // public function gen_iar_pdf($id){
+    //     $delivery = new DeliveryInspect();
         
-        $datenow = date('Y-m-d');
-        $dv = $delivery->get_delivery($id);
-        $coop = $delivery->get_coop($dv->coopAccreditation);
-		//dd($dv);
-        $coopAdd = $coop->citymunDesc . " " . $coop->provDesc;
+    //     $datenow = date('Y-m-d');
+    //     $dv = $delivery->get_delivery($id);
+    //     $coop = $delivery->get_coop($dv->coopAccreditation);
+	// 	//dd($dv);
+    //     $coopAdd = $coop->citymunDesc . " " . $coop->provDesc;
 
-        $dv_all = $delivery->get_delivery_batch($id);
-        $date = strtotime( $dv->deliveryDate );
-        $date = date('D, M d Y', $date);
+    //     $dv_all = $delivery->get_delivery_batch($id);
+    //     $date = strtotime( $dv->deliveryDate );
+    //     $date = date('D, M d Y', $date);
         
-        //$logs = $delivery->check_iar_logs2();
-        //$logCount = count($logs);
+    //     //$logs = $delivery->check_iar_logs2();
+    //     //$logCount = count($logs);
 
-         $logs = $delivery->check_iar_logs();
-        //$logCount = $logs->logsId;
-        //$code = date('Y'). "-" .date('m'). "-" .str_pad($logCount + 1, 4, '0', STR_PAD_LEFT);
+    //      $logs = $delivery->check_iar_logs();
+    //     //$logCount = $logs->logsId;
+    //     //$code = date('Y'). "-" .date('m'). "-" .str_pad($logCount + 1, 4, '0', STR_PAD_LEFT);
 
-        $code = $delivery->insert_logs($id);
+    //     $code = $delivery->insert_logs($id);
     
-        $data = [
-            'CoopName' => $coop->coopName,
-            'coopAddress' => $coopAdd,
-            'region' => $dv->region,
-            'province' => $dv->province,
-            'municipality' => $dv->municipality,
-            'drop_off_point' => $dv->dropOffPoint,
-            'IAR_no' => $code,
-            'Date' => $datenow,
-            'MOA' => $coop->current_moa,
-            'seedType' => $dv->seed_distribution_mode,
-            'coopName' => $coop->coopName,
-            'dop' => $dv->dropOffPoint,
-            'delivery' => $dv_all,
-            'date' => $date,
-            "ticket" => $id
-        ];
+    //     $data = [
+    //         'CoopName' => $coop->coopName,
+    //         'coopAddress' => $coopAdd,
+    //         'region' => $dv->region,
+    //         'province' => $dv->province,
+    //         'municipality' => $dv->municipality,
+    //         'drop_off_point' => $dv->dropOffPoint,
+    //         'IAR_no' => $code,
+    //         'Date' => $datenow,
+    //         'MOA' => $coop->current_moa,
+    //         'seedType' => $dv->seed_distribution_mode,
+    //         'coopName' => $coop->coopName,
+    //         'dop' => $dv->dropOffPoint,
+    //         'delivery' => $dv_all,
+    //         'date' => $date,
+    //         "ticket" => $id
+    //     ];
 
-        //dd($data);
+    //     //dd($data);
 
-        $pdf = PDFTIM::loadView('DeliveryDashboard/pdf', $data);
+    //     $pdf = PDFTIM::loadView('DeliveryDashboard/pdf', $data);
 
-        return $pdf->download('RCEP-SMS IAR '.$dv->municipality.' ('.$id.')'.'.pdf');
-        // return $pdf->stream("sample.pdf", array("Attachment" => false));
+    //     return $pdf->download('RCEP-SMS IAR '.$dv->municipality.' ('.$id.')'.'.pdf');
+    //     // return $pdf->stream("sample.pdf", array("Attachment" => false));
+    // }
+
+    /////// old gen_iar_pdf 2025/08/01 end
+
+    //v2
+
+    public function gen_iar_pdf($id)
+    {
+        $deliveryService = new DeliveryInspect();
+        // Use the raw data method
+        $data = $deliveryService->prepare_iar_data($id);
+        // dd($data);
+
+        if (!$data) {
+            abort(404, 'Delivery not found.');
+        }elseif($data['seed-type']===""){
+            //prompt an error here
+            $url = route('deliverydashboard.iar_table');
+            return redirect()->route('deliverydashboard.iar_table');
+        }
+        else{
+            $pdfContent = \App\Helpers\DeliveryPdfHelper::generateDeliveryPDF($data);
+
+            // return response($pdfContent, 200)
+            //     ->header('Content-Type', 'application/pdf')
+            //     ->header('Content-Disposition', 'inline; filename="RCEP-SMS_IAR_' . $data['municipality'] . '_' . $id . '.pdf"');
+
+            return response($pdfContent, 200)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="RCEP-SMS_IAR_' . $data['municipality'] . '_' . $id . '.pdf"');
+        }
     }
+
 /*
      public function gen_blank_iar_pdf(){
         $id = 1;
@@ -1943,10 +2054,6 @@ class DeliveryDashboardController extends Controller
                             array_push($return_arr, $batch_data);
 
                     }
-
-
-
-
 
             }  
         
@@ -4132,11 +4239,7 @@ class DeliveryDashboardController extends Controller
 
     public function export_coop_deliveriesPy(Request $request){
         
-        //uncomment for development
-        // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
-
-        //production
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+        $pythonPath = $GLOBALS['python_path'];
 
         $scriptPath = base_path('app/Http/PyScript/delivery_dashboard.py');
 

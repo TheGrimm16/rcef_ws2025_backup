@@ -41,10 +41,7 @@ class DeliveryStatusController extends Controller
         $season = $GLOBALS['season_prefix'];
         $coop = $request->coop;
 
-
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
-
+        $pythonPath = $GLOBALS['python_path'];
 		$scriptPath = base_path('app//Http//PyScript//bm//coopDeliveryStatus.py');
 
 		$escapedSeason = escapeshellarg($season);
@@ -71,10 +68,7 @@ class DeliveryStatusController extends Controller
         $coop = $coop;
         $coop = str_replace('*', '/', $coop);
 
-
-        $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
-		// $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
-
+        $pythonPath = $GLOBALS['python_path'];
 		$scriptPath = base_path('app//Http//PyScript//bm//coopDeliveryStatusBreakdown.py');
 
 		$escapedSeason = escapeshellarg($season);

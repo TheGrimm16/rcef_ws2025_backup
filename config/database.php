@@ -2,7 +2,7 @@
 
 return [
 
-    /*
+    /*f
     |--------------------------------------------------------------------------
     | PDO Fetch Style
     |--------------------------------------------------------------------------
@@ -54,11 +54,11 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'ws2025_sdms_db_dev',
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -71,11 +71,11 @@ return [
         
         'survey_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DATABASE_SURVEY', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -85,11 +85,11 @@ return [
 
         'seed_grower_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DATABASE_SEED_GROWERS', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -99,11 +99,11 @@ return [
 
         'seed_coop_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_SEED_COOPERATIVES', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -113,11 +113,11 @@ return [
 
         'geotag_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DATABASE_GEOTAG', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -127,11 +127,11 @@ return [
 
         'registry_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DATABASE_REGISTRY', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -141,11 +141,11 @@ return [
 
         'seeds_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_SEEDS', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -155,11 +155,11 @@ return [
 		
        'hris_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.17',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'ds2024_hris',
-            'username' => 'efoi_hris',
-            'password' => '3CVD7hHqcwVTZm9v',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -168,11 +168,11 @@ return [
         ],
         'rcep_farmers_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_RCEP_FARMERS', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -181,11 +181,11 @@ return [
         ],
 		  'rcep_transfers_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DELIVERY', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -195,11 +195,11 @@ return [
         
         'table_creator' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
 			'port' => '3306',
             'database' => 'ds2024_final_uniquelist',
-            'username' => 'json',
-			'password' => 'Zeijan@13',
+            'username' => 'root',
+			'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -209,11 +209,11 @@ return [
 
         'ls_rcep_transfers_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
 			'port' => '3306',
-            'database' => 'ds2025_rcep_transfers_ws',
-            'username' => 'json',
-			'password' => 'Zeijan@13',
+            'database' => 'ws2025_rcep_delivery_inspection',
+            'username' => 'root',
+			'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -223,11 +223,11 @@ return [
 		
         'history_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
 			'port' => '3306',
             'database' => 'ds2024_rcep_delivery_inspection',
-            'username' => 'json',
-			'password' => 'Zeijan@13',
+            'username' => 'root',
+			'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -237,11 +237,11 @@ return [
 
 		'ls_inspection_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
 			'port' => '3306',
             'database' => 'ds2025_rcep_delivery_inspection',
-            'username' => 'json',
-			'password' => 'Zeijan@13',
+            'username' => 'root',
+			'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -251,11 +251,11 @@ return [
 
         'ls_seed_coop' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
 			'port' => '3306',
             'database' => 'ds2025_rcep_seed_cooperatives',
-            'username' => 'json',
-			'password' => 'Zeijan@13',
+            'username' => 'root',
+			'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -265,11 +265,11 @@ return [
 
         'extension_connector' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'ws2025_rcep_seed_cooperatives',
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -279,11 +279,11 @@ return [
 
         'pre_registration_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'ws2025_rcep_farmer_registration',
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -293,11 +293,11 @@ return [
 
         'delivery_inspection_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DELIVERY', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -306,11 +306,11 @@ return [
         ],
         'paymaya_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_PAYMAYA', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -320,11 +320,11 @@ return [
 
         'distribution_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DISTRIBUTION', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -334,11 +334,11 @@ return [
 
         'inspector_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_INSPECTOR', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -348,7 +348,7 @@ return [
 
         'central_delivery_inspection_db' => [
             'driver' => 'mysql',
-            'host' => env('CENTRAL_HOST', '192.168.10.44'),
+            'host' => env('CENTRAL_HOST', '127.0.0.1'),
             'port' => env('CENTRAL_PORT', '3306'),
             'database' => env('DB_DELIVERY', 'forge'),
             'username' => env('CENTRAL_USERNAME', 'forge'),
@@ -362,7 +362,7 @@ return [
 
         'central_distribution_db' => [
             'driver' => 'mysql',
-            'host' => env('CENTRAL_HOST', '192.168.10.44'),
+            'host' => env('CENTRAL_HOST', '127.0.0.1'),
             'port' => env('CENTRAL_PORT', '3306'),
             'database' => env('DB_DISTRIBUTION', 'forge'),
             'username' => env('CENTRAL_USERNAME', 'forge'),
@@ -376,11 +376,11 @@ return [
 		
         'farmer_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_FARMER', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -390,11 +390,11 @@ return [
 
         'farmer_id_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_FARMER_ID', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -404,11 +404,11 @@ return [
 
         'distribution_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_DISTRIBUTION', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -417,11 +417,11 @@ return [
         ],
 		    'allocations_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_ALLOCATIONS', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -431,7 +431,7 @@ return [
 
         'reports_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => 'ws2025_',
             'username' => 'rcef_web',
@@ -445,11 +445,11 @@ return [
 		
 		'rcep_reports_db' => [
             'driver' => 'mysql',
-            'host' => '192.168.10.44',
+            'host' => '127.0.0.1',
             'port' => '3306',
             'database' => env('DB_REPORTS', 'forge'),
-            'username' => 'json',
-            'password' => 'Zeijan@13',
+            'username' => 'root',
+            'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -518,11 +518,11 @@ return [
 
         'ds2023' => [
             'driver' => 'mysql',
-            'host' =>  '192.168.10.44',
+            'host' =>  '127.0.0.1',
             'port' => '3306',
             'database' => "ds2023_rcep_delivery_inspection",
             'username' => "json",
-            'password' => "Zeijan@13",
+            'password' => "",
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -534,11 +534,11 @@ return [
         ],
         'ws2025' => [
             'driver' => 'mysql',
-            'host' =>  '192.168.10.44',
+            'host' =>  '127.0.0.1',
             'port' => '3306',
             'database' => "ws2025_rcep_delivery_inspection",
             'username' => "json",
-            'password' => "Zeijan@13",
+            'password' => "",
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -550,11 +550,11 @@ return [
         ],
         'ds2024' => [
             'driver' => 'mysql',
-            'host' =>  '192.168.10.44',
+            'host' =>  '127.0.0.1',
             'port' => '3306',
             'database' => "ds2024_rcep_delivery_inspection",
             'username' => "json",
-            'password' => "Zeijan@13",
+            'password' => "",
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -566,11 +566,11 @@ return [
         ],
         'ws2022' => [
             'driver' => 'mysql',
-            'host' =>  '172.16.10.41',
+            'host' =>  '127.0.0.1',
             'port' => '3306',
             'database' => "rcep_delivery_inspection",
-            'username' => "rcef_user4",
-            'password' => "lciz]eYhSaUbTcpF",
+            'username' => "root",
+            'password' => "",
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
             'prefix' => '',
@@ -584,7 +584,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'host' => env('DB_HOST', '192.168.10.44'),
+            'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '5432'),
             'database' => env('DB_DATABASE', 'forge'),
             'username' => env('DB_USERNAME', 'forge'),
@@ -625,7 +625,7 @@ return [
         'cluster' => false,
 
         'default' => [
-            'host' => env('REDIS_HOST', '192.168.10.44'),
+            'host' => env('REDIS_HOST', '127.0.0.1'),
             'password' => env('REDIS_PASSWORD', null),
             'port' => env('REDIS_PORT', 6379),
             'database' => 0,

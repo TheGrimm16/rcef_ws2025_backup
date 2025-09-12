@@ -2,6 +2,9 @@
 
 return [
 
+    'debug' => env('APP_DEBUG', true),
+
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -120,6 +123,8 @@ return [
     | this array to grant expanded functionality to your applications.
     |
     */
+    
+    'season_prefix' => env('SEASON_PREFIX', 'ws2025_'),
 
     'providers' => [
 
