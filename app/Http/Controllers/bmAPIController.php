@@ -835,16 +835,10 @@ class bmAPIController extends Controller
 
     public function getFARs()
     {
-        $path = base_path('../../rcef_unique_checker/public/rcef_id_generator/public/FLSAR');
-        // $path = realpath($path); // normalize to C:\xampp\rcef_unique_checker\public\rcef_id_generator\public\FLSAR
-
-        if (!$path || !is_dir($path)) {
-            dd("Folder not found: " . $path);
-        }
-
+        $path = __DIR__ . '/../../../../rcef_unique_checker/public/rcef_id_generator/public/FLSAR';
         $files = scandir($path);
         dd($files);
-    }
 
+    }
 
 }
