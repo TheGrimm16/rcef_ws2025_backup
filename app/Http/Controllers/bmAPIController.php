@@ -852,16 +852,22 @@ class bmAPIController extends Controller
             ], 404);
         }
 
-        // List files & folders
-        $files = File::files($targetPath);
-        $folders = File::directories($targetPath);
+        // List files & folders (use old PHP closures)
+        $files = array_map(function ($f) {
+            return $f->getFilename();
+        }, File::files($targetPath));
+
+        $folders = array_map(function ($d) {
+            return basename($d);
+        }, File::directories($targetPath));
 
         return response()->json([
             'target' => $targetPath,
-            'files' => array_map(fn($f) => $f->getFilename(), $files),
-            'folders' => array_map(fn($d) => basename($d), $folders),
+            'files' => $files,
+            'folders' => $folders,
         ]);
     }
+
 
 
 
