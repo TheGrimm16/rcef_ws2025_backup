@@ -1820,7 +1820,8 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 								<li class="sub_menu"><a href="{{route('addSeedGrower')}}">Add Seed Grower</a></li> 
 								<li class="sub_menu"><a href="{{route('deletePreReg')}}">Delete Pre-Registration Data</a></li> 
 								<li class="sub_menu"><a href="{{route('bepToReg')}}">BeP to Conventional Profile Tagging</a></li> 
-								<li class="sub_menu"><a href="{{route('deliveryStatus.home')}}">Cooperative Delivery Status</a></li> 
+								<li class="sub_menu"><a href="{{route('deliveryStatus.home')}}">Cooperative Delivery Status</a></li>
+								<li class="sub_menu"><a href="{{route('deleteGeneratedFAR')}}">Delete Generated FAR</a></li>
 								
 								
 			
