@@ -14,6 +14,7 @@ use Auth;
 use Excel;
 use Carbon\Carbon;
 use Hash;
+use Illuminate\Support\Facades\File;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -832,5 +833,26 @@ class bmAPIController extends Controller
 		}
 
     }
+
+    public function get_far()
+    {
+        // base_path() = C:/xampp/htdocs/rcef_ws2025
+        $xamppPath = dirname(dirname(base_path())); 
+        
+        // $xamppPath = "C:/Apache24";
+
+        // append your folder
+        $targetPath = $xamppPath . '/rcef_unique_checker';
+
+        $files = File::files($targetPath);   // only files
+        $folders = File::directories($targetPath); // only folders
+
+        dd([
+            'files' => $files,
+            'folders' => $folders
+        ]);
+    }
+
+
 
 }
