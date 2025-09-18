@@ -833,12 +833,4 @@ class bmAPIController extends Controller
 
     }
 
-    public function getFARs()
-    {
-        $path = __DIR__ . '/../../../../rcef_unique_checker/public/rcef_id_generator/public/FLSAR';
-        $files = scandir($path);
-        dd($files);
-
-    }
-
 }
