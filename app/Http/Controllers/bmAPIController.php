@@ -14,7 +14,6 @@ use Auth;
 use Excel;
 use Carbon\Carbon;
 use Hash;
-use Illuminate\Support\Facades\File;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
@@ -833,42 +832,5 @@ class bmAPIController extends Controller
 		}
 
     }
-
-    public function get_far()
-    {
-        // Laravel project root (works everywhere)
-        $base = base_path(); // e.g. C:/Apache24/htdocs/rcef_ws2025 OR /var/www/html/rcef_ws2025
-
-        // Go up 2 levels: /htdocs/rcef_ws2025 → /Apache24 OR /var/www
-        $root = dirname(dirname($base));
-
-        // Target folder beside htdocs/html
-        $targetPath = $root . DIRECTORY_SEPARATOR . 'rcef_unique_checker';
-
-        // Make sure it exists
-        if (!File::exists($targetPath)) {
-            return response()->json([
-                'error' => "Path not found: {$targetPath}"
-            ], 404);
-        }
-
-        // List files & folders (use old PHP closures)
-        $files = array_map(function ($f) {
-            return $f->getFilename();
-        }, File::files($targetPath));
-
-        $folders = array_map(function ($d) {
-            return basename($d);
-        }, File::directories($targetPath));
-
-        return response()->json([
-            'target' => $targetPath,
-            'files' => $files,
-            'folders' => $folders,
-        ]);
-    }
-
-
-
 
 }
