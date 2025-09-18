@@ -836,20 +836,30 @@ class bmAPIController extends Controller
 
     public function get_far()
     {
-        // base_path() = C:/xampp/htdocs/rcef_ws2025
-        $xamppPath = dirname(dirname(base_path())); 
-        dd($xamppPath);
-        // $xamppPath = "C:/Apache24";
+        // Laravel project root (works everywhere)
+        $base = base_path(); // e.g. C:/Apache24/htdocs/rcef_ws2025 OR /var/www/html/rcef_ws2025
 
-        // append your folder
-        $targetPath = $xamppPath . '/rcef_unique_checker';
+        // Go up 2 levels: /htdocs/rcef_ws2025 → /Apache24 OR /var/www
+        $root = dirname(dirname($base));
 
-        $files = File::files($targetPath);   // only files
-        $folders = File::directories($targetPath); // only folders
+        // Target folder beside htdocs/html
+        $targetPath = $root . DIRECTORY_SEPARATOR . 'rcef_unique_checker';
 
-        dd([
-            'files' => $files,
-            'folders' => $folders
+        // Make sure it exists
+        if (!File::exists($targetPath)) {
+            return response()->json([
+                'error' => "Path not found: {$targetPath}"
+            ], 404);
+        }
+
+        // List files & folders
+        $files = File::files($targetPath);
+        $folders = File::directories($targetPath);
+
+        return response()->json([
+            'target' => $targetPath,
+            'files' => array_map(fn($f) => $f->getFilename(), $files),
+            'folders' => array_map(fn($d) => basename($d), $folders),
         ]);
     }
 
