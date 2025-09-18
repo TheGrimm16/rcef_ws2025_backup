@@ -2189,6 +2189,11 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::post('/Municipal/Replacements/api/getMuniReplacementProvinces', ['as' => 'muni.getReplacementProvinces', 'uses' => 'ReplacementsController@getMuniReplacementProvinces']);
     Route::post('/Municipal/Replacements/api/getMuniReplacementMunicipalities', ['as' => 'muni.getReplacementMunicipalities', 'uses' => 'ReplacementsController@getMuniReplacementMunicipalities']);
     Route::post('/Municipal/Replacements/api/tagReplacements', ['as' => 'muni.tagReplacements', 'uses' => 'ReplacementsController@tagMuniReplacements']);
+    
+    //Delete Generated FAR
+    Route::get('/deleteGeneratedFAR/home', ['as' => 'deleteGeneratedFAR', 'uses' => 'UtilityController@delete_far_index']);
+    Route::post('/deleteGeneratedFAR/getMuni', ['as' => 'deleteGeneratedFAR.getMuni', 'uses' => 'UtilityController@delete_far_muni']);
+    Route::post('/deleteGeneratedFAR/resetStatus', ['as' => 'deleteGeneratedFAR.resetStatus', 'uses' => 'UtilityController@reset_far_status']);
 
     //FCA Member Tagging
     Route::get('/fcaTagging/home', ['as' => 'fcaTagging', 'uses' => 'fcaTaggingController@home_ui']);
@@ -2197,7 +2202,7 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::post('/fcaTagging/api/getFCAFarmers', ['as' => 'getFCAFarmers', 'uses' => 'fcaTaggingController@getFCAFarmers']);
     Route::post('/fcaTagging/api/tagFCA', ['as' => 'tagFCA', 'uses' => 'fcaTaggingController@tagFCA']);
     Route::post('/fcaTagging/api/tagHomeClaim', ['as' => 'tagHomeClaim', 'uses' => 'fcaTaggingController@tagHomeClaim']);
-
+    
     //DQ Tagging
     Route::get('/dqTagging/home', ['as' => 'dqTagging', 'uses' => 'dqTaggingController@home_ui']);
     Route::post('/dqTagging/api/getDQProvinces', ['as' => 'getDQProvinces', 'uses' => 'dqTaggingController@getDQProvinces']);
@@ -2276,6 +2281,7 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('/api/bm/unlinkExcelExport', ['as' => 'unlinkExcelExport', 'uses' => 'bmAPIController@unlinkExcelExport']);
     Route::get('/api/bm/updateMoa', ['as' => 'bm.updateMoa', 'uses' => 'bmAPIController@updateMoa']);
     Route::get('/api/bm/updateKPdata/{season}', ['as' => 'bm.updateKPdata', 'uses' => 'bmAPIController@updateKPdata']);
+
 
     //coopApp
     Route::get('/api/bm/coopAppLogin/{login_id}/{password}', ['as' => 'bm.coopAppLogin', 'uses' => 'bmAPIController@coopAppLogin']);

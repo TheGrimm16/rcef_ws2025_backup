@@ -3766,6 +3766,34 @@ $db = $GLOBALS['season_prefix'].'prv_'.$request->prv;
 
 
     }
+
+
+    public function delete_far_index()
+    {
+        $provinces = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')->groupBy('province')->get();
+        // dd($provinces);
+        return view('utility.delete_far', compact('provinces'));
+    }
+
+    public function delete_far_muni(Request $request)
+    {
+        $getMunicipalities = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+        ->select('municipality')
+        ->where('province',$request->prov)
+        ->groupBy('municipality')
+        ->get();
+        return $getMunicipalities;
+    }
+
+    public function reset_far_status(Request $request)
+    {
+        $resetStatus = DB::table('temp_db._running_flsar')
+        ->where('prv',$request->prov)
+        ->where('mun',$request->muni)
+        ->update(['status' => 'finished']);
+
+        return $resetStatus;
+    }
     // 
     
 
