@@ -49,7 +49,7 @@ class DistMonitoringController extends Controller
             $actualData = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                     ->where('province', 'like', '%'.$province)
                     ->where('municipality', 'like', '%'.$municipality)
-                    ->where('isBuffer', '1')
+                    ->where('isBuffer', $status)
                     //->where('is_transferred', '1')
                     ->groupBy('batchTicketNumber')
                     ->get();
