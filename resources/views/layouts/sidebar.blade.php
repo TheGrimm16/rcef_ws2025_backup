@@ -1808,6 +1808,7 @@ if($_SERVER['REQUEST_URI']!="/rcef_ds2024/pre_reg/view_farmer"){
 
 							@if(Auth::user()->roles->first()->name == "administrator")
 							<li class="sub_menu"><a href="{{route('replacements')}}">Replacement Seeds Tagging</a></li> 
+							<li class="sub_menu"><a href="{{route('fcaTagging')}}">Farmer Profile Tagging</a></li>
 							@endif
 							@if(Auth::user()->roles->first()->name == "rcef-programmer")
 								<li class="sub_menu"><a href="{{route('customExportUI')}}">Custom Export UI</a></li> 
