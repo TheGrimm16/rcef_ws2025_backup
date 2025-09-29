@@ -641,6 +641,7 @@ class virtual_encodingController extends Controller
             ->groupBy("lastName")
             ->groupBy("midName")
             ->groupBy("birthdate")
+            ->groupBy("claiming_prv")
             // ->limit(10)
             ->get();
 
