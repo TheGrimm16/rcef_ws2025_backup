@@ -2072,10 +2072,8 @@ class DeliveryDashboardController extends Controller
 
     public function export_coop_deliveries_FMD(Request $request){
         
-
         $coop_accreditation = $request->coop_accreditation;
         $coop_acr = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')->where('accreditation_no', $coop_accreditation)->value('coopName');
-        
         
         $batch_deliveries = DB::connection('delivery_inspection_db')->table('tbl_delivery')
             ->select('batchTicketNumber', 'coopAccreditation', 'seedVariety', 'deliveryDate', 'dropOffPoint', 'region', 'province', 'municipality', 'seedTag', 'isBuffer','sg_id')
@@ -2092,7 +2090,6 @@ class DeliveryDashboardController extends Controller
 
         $return_arr = array();
         foreach($batch_deliveries as $batch_row){
-
             
             $binhi_padala = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
             ->where('batchTicketNumber', $batch_row->batchTicketNumber)
@@ -2104,7 +2101,6 @@ class DeliveryDashboardController extends Controller
             if($binhi_padala != null){
                     continue;
             }
-
 
             //get seed grower profile
             //1. clean seed tag to link RLA details
@@ -2196,10 +2192,6 @@ class DeliveryDashboardController extends Controller
                 $label = "";
             }
 
-
-
-            
-
              $is_transfer_W = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
                 ->select('transferCategory')
                 ->where('batchTicketNumber', $batch_row->batchTicketNumber)
@@ -2214,8 +2206,6 @@ class DeliveryDashboardController extends Controller
                 ->where('transferCategory', 'T')
                 ->first();
                 
-
-
             //   $is_transfer_N = DB::connection('nxt_inspection_db')->table('tbl_actual_delivery')
             //     ->select('batchTicketNumber')
             //     ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
@@ -2227,8 +2217,6 @@ class DeliveryDashboardController extends Controller
                 $wholeCount = count($is_transfer_W);
                 $partialCount = count($is_transfer_T);              
                 $nxt_season = count($is_transfer_N);
-
-
 
              if($wholeCount > 0 ){
                      $arr = $this->getWholeData($batch_row->batchTicketNumber,"",$batch_row->seedVariety,$batch_row->seedTag);
@@ -2280,10 +2268,6 @@ class DeliveryDashboardController extends Controller
                             $or_municipality = "N/A";
                             $or_dropoff = "N/A";
                         }
-
-                            
-
-
                         $batch_data = array(
                             'batchTicketNumber' => $bt,
                             'province' => $or_province.' => '.$dt_province,
@@ -2305,10 +2289,8 @@ class DeliveryDashboardController extends Controller
                             'dropOffPoint' => $or_dropoff.' => '.$dt_dropoff,
                             'region' => $or_region.' => '.$dt_region,
                         );
-
                         array_push($return_arr, $batch_data);
                         $inspected_bags += $bg;
-
                       }
                     }
              }  //WHOLE COUNT 
@@ -2361,7 +2343,6 @@ class DeliveryDashboardController extends Controller
                         $dc = $arr[$key]['dateCreated'];
                         $tt = $arr[$key]['transferType'];
 
-
                           if($dt != ""){
                             $dt = str_replace(",", "|", $dt);
                             $dt = str_replace("->", "|", $dt);
@@ -2408,7 +2389,6 @@ class DeliveryDashboardController extends Controller
                         }else{
                             $label = "";
                         }  
-
                              $batch_data = array(
                             'batchTicketNumber' => $batch_row->batchTicketNumber,
                             'province' => $or_province.' => '.$dt_province,
@@ -2429,7 +2409,6 @@ class DeliveryDashboardController extends Controller
                             'seedVariety2' => $batch_row->seedVariety,
                             'dropOffPoint' => $or_dropoff.' => '.$dt_dropoff,
                             'region' => $or_region.' => '.$dt_region,
-                           
                     );
 
                     array_push($return_arr, $batch_data);   
@@ -2446,7 +2425,6 @@ class DeliveryDashboardController extends Controller
                                     }else{
                                         $tt = "";
                                     }
-
                                     $batch_data = array(
                                             'batchTicketNumber' => $par->batchTicketNumber,
                                             'province' => $dt_province.' => '.$par->province,
@@ -2469,13 +2447,10 @@ class DeliveryDashboardController extends Controller
                                             'region' => $dt_region.' => '.$par->region,
                                             
                                     );
-
                                     array_push($return_arr, $batch_data);   
                                     $inspected_bags += $bg;
                                 }
-
                             }
-                    
              }
          } //PARTIAL COUNT
 
@@ -2566,24 +2541,6 @@ class DeliveryDashboardController extends Controller
 
         // dd($total_inspected);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
          //PREVIOUS SEASON 
     $prevBatch = DB::table($GLOBALS['season_prefix'].'rcep_transfers_ps.transfer_logs')
                 ->where('coop_accreditation', $coop_accreditation)
@@ -2645,7 +2602,6 @@ class DeliveryDashboardController extends Controller
                                     ->sum('totalBagCount');
                                 }
 
-
                                 $labLot = explode("/", $actualRow->seedTag);
                                 $sg =DB::connection("ls_inspection_db")->table("tbl_rla_details")
                                     ->where("labNo", $labLot[0])
@@ -2680,8 +2636,6 @@ class DeliveryDashboardController extends Controller
                                     'dropOffPoint' => $actualRow->dropOffPoint,
                                     'region' => $actualRow->region,
                                 );
-
-                       
 
                                 array_push($return_arr, $batch_data);
 
@@ -2736,8 +2690,6 @@ class DeliveryDashboardController extends Controller
                                             $or_dropoff = "N/A";
                                         }
 
-                                        
-
                                         $batch_data = array(
                                             'batchTicketNumber' => $ls_batchNumber,
                                             'province' => $or_province.' => '.$dt_province,
@@ -2760,16 +2712,12 @@ class DeliveryDashboardController extends Controller
                                             'region' => $or_region.' => '.$dt_region,
                                         );
 
-
-
-
                                         array_push($return_arr, $batch_data);
                                         $inspected += $bg;
                                       }
                                     }
 
                                 }
-
 
                                 if(count($checkIfPartial)>0){
                                        $arr = $this->getPartialData($prevBatch->new_batch_number,$actualRow->seedVariety,$actualRow->seedTag);
@@ -2784,7 +2732,6 @@ class DeliveryDashboardController extends Controller
                                             $bg = $arr[$key]['bags'];
                                             $dc = $arr[$key]['dateCreated'];
                                             $tt = $arr[$key]['transferType'];
-
 
                                               if($dt != ""){
                                                 $dt = str_replace(",", "|", $dt);
@@ -2842,14 +2789,9 @@ class DeliveryDashboardController extends Controller
                                                 'region' => $or_region.' => '.$dt_region,
                                         );
 
-
-
                                         array_push($return_arr, $batch_data);
                                         $inspected += $bg;
                                  
-
-
-
                                     $retransferred = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')->where("remarks", "LIKE", "%".$bt."%")->where("seedTag", $st)->get();
                                         if(count($retransferred)>0){
                                             foreach ($retransferred as $in => $par) {
@@ -2889,16 +2831,11 @@ class DeliveryDashboardController extends Controller
                                                 $inspected_bags += $bg;
                                             }
 
-
                                         }
-
-
 
                                  }
                                 }
-
                                    $total_inspected += $inspected;
-
                             }
                 } 
 
@@ -2923,8 +2860,7 @@ class DeliveryDashboardController extends Controller
             'seedVariety2' => '',
             'dropOffPoint' => '',
             'region' => '',
-           
-           
+
         );
 
         array_push($return_arr, $last_row);
@@ -2952,7 +2888,6 @@ class DeliveryDashboardController extends Controller
             if($dlist['batch_status'] != "Passed"){
                 continue;
             }
-
 
                 if(!isset($iar_checker[$dList_iar])){
                     $get_sum = DB::connection("delivery_inspection_db")->table("tbl_actual_delivery")
@@ -3000,7 +2935,6 @@ class DeliveryDashboardController extends Controller
                 continue;
             }
 
-
                 if(!isset($iar_checker[$dList_iar])){
                     $get_sum = DB::connection("delivery_inspection_db")->table("tbl_actual_delivery")
                     ->where("batchTicketNumber", $dlist["batchTicketNumber"])
@@ -3019,8 +2953,6 @@ class DeliveryDashboardController extends Controller
                     continue;
                 }
         }
-
-
 
         $buffer_arr = $this->bufferList_FMD($coop_accreditation);
         $iar_checker = array();
@@ -3046,7 +2978,6 @@ class DeliveryDashboardController extends Controller
             if($dlist['batch_status'] != "Passed"){
                 continue;
             }
-
 
                 if(!isset($iar_checker[$dList_iar])){
                     $get_sum = DB::connection("delivery_inspection_db")->table("tbl_actual_delivery")
@@ -3092,7 +3023,6 @@ class DeliveryDashboardController extends Controller
                 // continue;
             }
 
-
                 if(!isset($iar_checker[$dList_iar])){
                     $get_sum = DB::connection("delivery_inspection_db")->table("tbl_actual_delivery")
                     ->where("batchTicketNumber", $dlist["batchTicketNumber"])
@@ -3111,8 +3041,6 @@ class DeliveryDashboardController extends Controller
                     continue;
                 }
         }
-
-
 
         $myFile = Excel::create('SEED_COOP_DELIVERIES_FMD', function($excel) use ($return_arr, $iar_totals, $replacement_arr, $iar_totals_replacement, $buffer_arr,$iar_totals_buffer, $bep_arr,$iar_totals_bep) {
             $excel->sheet("DELIVERY_LIST", function($sheet) use ($return_arr,$iar_totals) {
@@ -3240,34 +3168,23 @@ class DeliveryDashboardController extends Controller
     
     }
 
-
-
-    
     public function export_coop_deliveries(Request $request){
 
         $coop_accreditation = $request->coop_accreditation;
         $coop_acr = DB::table($GLOBALS['season_prefix'].'rcep_seed_cooperatives.tbl_cooperatives')->where('accreditation_no', $coop_accreditation)->value('coopName');
-        
-        
-/*         $batch_deliveries = DB::connection('delivery_inspection_db')->table('tbl_delivery')
-            ->select('batchTicketNumber', 'coopAccreditation', 'seedVariety', 'deliveryDate', 'dropOffPoint', 'region', 'province', 'municipality', 'seedTag', 'isBuffer','sg_id')
-            ->where('is_cancelled', 0)
-            ->where('coopAccreditation', $coop_accreditation)
-            ->where('isBuffer', "=", 0)
-            ->groupBy('batchTicketNumber', 'seedVariety', 'seedTag')
-            ->orderBy('deliveryDate', 'DESC')
-            ->get(); */
-            $batch_deliveries = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.view_coop_delivery')
-            ->select('batchTicketNumber', 'coopAccreditation', 'seedVariety', 'deliveryDate', 'dropOffPoint',
-            'region', 'province', 'municipality', 'seedTag', 'isBuffer','sg_id', 'seed_distribution_mode')
-            ->where('coopAccreditation', $coop_accreditation)
-            ->orderBy('deliveryDate', 'DESC')
-            ->get();
+
+        $batch_deliveries = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.view_coop_delivery')
+        ->select('batchTicketNumber', 'coopAccreditation', 'seedVariety', 'deliveryDate', 'dropOffPoint',
+        'region', 'province', 'municipality', 'seedTag', 'isBuffer','sg_id', 'seed_distribution_mode')
+        ->where('coopAccreditation', $coop_accreditation)
+        ->orderBy('deliveryDate', 'DESC')
+        ->get();
 
         $total_confirmed = 0;
         $total_inspected = 0;
 
         $return_arr = array();
+        $return_arr_cancelled = array();
         $return_arr_nrp = array();
         $return_arr_gqs = array();
         foreach($batch_deliveries as $batch_row){
@@ -3278,11 +3195,8 @@ class DeliveryDashboardController extends Controller
             ->where("qrValStart", "!=", "")
             ->first();
             if($binhi_padala != null){
-                    continue;
+                continue;
             }
-
-            //get seed grower profile
-            //1. clean seed tag to link RLA details
             $str = explode("/", $batch_row->seedTag);
             $seedtag_offset = $this->my_ofset($str[0]);
 
@@ -3303,7 +3217,6 @@ class DeliveryDashboardController extends Controller
             $check_inspected = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
                 ->where('batchTicketNumber', $batch_row->batchTicketNumber)
                 ->first();
-
 
             if($check_inspected != null){
                 $inspected_bags = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
@@ -3351,8 +3264,6 @@ class DeliveryDashboardController extends Controller
                     ->first();
                 
             }
-            
-            //get IAR number based on batch ticket number
             $iar_number = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.iar_print_logs')->where('batchTicketNumber',$batch_row->batchTicketNumber)->orderBy('logsId', 'DESC')->first();
             if(count($iar_number) > 0){
                 $iar_number_str = $iar_number->iarCode;
@@ -3384,22 +3295,11 @@ class DeliveryDashboardController extends Controller
                 ->where('is_transferred', 1)
                 ->where('transferCategory', 'T')
                 ->first();
-                
-
-
-            //   $is_transfer_N = DB::connection('nxt_inspection_db')->table('tbl_actual_delivery')
-            //     ->select('batchTicketNumber')
-            //     ->where('remarks','like', '%'.$batch_row->batchTicketNumber.'%')
-            //     ->where('transferCategory', 'p')
-            //     ->first(); 
-
             $is_transfer_N = array();
 
                 $wholeCount = count($is_transfer_W);
                 $partialCount = count($is_transfer_T);              
                 $nxt_season = count($is_transfer_N);
-
-
 
              if($wholeCount > 0 ){
                      $arr = $this->getWholeData($batch_row->batchTicketNumber,"",$batch_row->seedVariety,$batch_row->seedTag);
@@ -3478,7 +3378,6 @@ class DeliveryDashboardController extends Controller
                         }else{
                             array_push($return_arr, $batch_data);
                         }
-                        //array_push($return_arr, $batch_data);
                         $inspected_bags += $bg;
 
                       }
@@ -3493,35 +3392,33 @@ class DeliveryDashboardController extends Controller
                         $batch_status = $inspected_remarks->remarks;
                     }
                 }
-            $batch_data = array(
-                'iar_number' => $iar_number_str,
-                'batchTicketNumber' => $batch_row->batchTicketNumber,
-                'coopAccreditation' => $batch_row->coopAccreditation,
-                'seedVariety' => $batch_row->seedVariety,
-                'dropOffPoint' => $batch_row->dropOffPoint,
-                'region' => $batch_row->region,
-                'province' => $batch_row->province,
-                'municipality' => $batch_row->municipality,
-                'seedtag' => $batch_row->seedTag,
-                'seed_grower' => $seed_grower == '' ? 'N/A' : $seed_grower,
-                'confirmed' => number_format($confirmed_bags),
-                'inspected' => number_format($inspected_bags),
-                'deliveryDate' => date("Y-m-d", strtotime($batch_row->deliveryDate)),
-                'batch_status' => $batch_status,
-                'remarks' => $label,
-                'category' => $batch_row->seed_distribution_mode == 'NRP' ? 'SEED RESERVE' : $batch_row->seed_distribution_mode
-            );
+                $batch_data = array(
+                    'iar_number' => $iar_number_str,
+                    'batchTicketNumber' => $batch_row->batchTicketNumber,
+                    'coopAccreditation' => $batch_row->coopAccreditation,
+                    'seedVariety' => $batch_row->seedVariety,
+                    'dropOffPoint' => $batch_row->dropOffPoint,
+                    'region' => $batch_row->region,
+                    'province' => $batch_row->province,
+                    'municipality' => $batch_row->municipality,
+                    'seedtag' => $batch_row->seedTag,
+                    'seed_grower' => $seed_grower == '' ? 'N/A' : $seed_grower,
+                    'confirmed' => number_format($confirmed_bags),
+                    'inspected' => number_format($inspected_bags),
+                    'deliveryDate' => date("Y-m-d", strtotime($batch_row->deliveryDate)),
+                    'batch_status' => $batch_status,
+                    'remarks' => $label,
+                    'category' => $batch_row->seed_distribution_mode == 'NRP' ? 'SEED RESERVE' : $batch_row->seed_distribution_mode
+                );
 
-            if($batch_row->seed_distribution_mode == 'NRP'){
-                array_push($return_arr_nrp, $batch_data);
-            }elseif($batch_row->seed_distribution_mode == 'Good Quality Seeds'){
-                array_push($return_arr_gqs, $batch_data);
-            }else{
-                array_push($return_arr, $batch_data);
+                if($batch_row->seed_distribution_mode == 'NRP'){
+                    array_push($return_arr_nrp, $batch_data);
+                }elseif($batch_row->seed_distribution_mode == 'Good Quality Seeds'){
+                    array_push($return_arr_gqs, $batch_data);
+                }else{
+                    array_push($return_arr, $batch_data);
+                }
             }
-            //array_push($return_arr, $batch_data);
-
-         }
 
               if($partialCount > 0){
                     $arr = $this->getPartialData($batch_row->batchTicketNumber,$batch_row->seedVariety,$batch_row->seedTag);
@@ -3536,7 +3433,6 @@ class DeliveryDashboardController extends Controller
                         $bg = $arr[$key]['bags'];
                         $dc = $arr[$key]['dateCreated'];
                         $tt = $arr[$key]['transferType'];
-
 
                           if($dt != ""){
                             $dt = str_replace(",", "|", $dt);
@@ -3573,7 +3469,6 @@ class DeliveryDashboardController extends Controller
                             $or_dropoff = "N/A";
                         }
 
-                        //transferred from batch: 519-BCH-1618556643
                          if($batch_row->isBuffer == 1){
                             $is_replacement = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
                                 ->where("remarks", 'transferred from batch: '.$batch_row->batchTicketNumber)
@@ -3612,7 +3507,6 @@ class DeliveryDashboardController extends Controller
                     }else{
                         array_push($return_arr, $batch_data);
                     }
-                    //array_push($return_arr, $batch_data);   
                     $inspected_bags += $bg;
 
                         $retransferred = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')->where("remarks", "LIKE", "%".$bt."%")->where("seedTag", $st)->get();
@@ -3676,7 +3570,6 @@ class DeliveryDashboardController extends Controller
                         $bg = $arr[$key]['bags'];
                         $dc = $arr[$key]['dateCreated'];
                         $tt = $arr[$key]['transferType'];
-
 
                           if($dt != ""){
                             $dt = str_replace(",", "|", $dt);
@@ -3744,16 +3637,16 @@ class DeliveryDashboardController extends Controller
                     }
                     //array_push($return_arr, $batch_data);   
                     $inspected_bags += $bg;
-             }
-         } //NEXT SEASON COUNT
+                }
+            } //NEXT SEASON COUNT
 
             $total_confirmed += $confirmed_bags;
             $total_inspected += $inspected_bags;
 
         }
 
-         //PREVIOUS SEASON 
-    $prevBatch = DB::table($GLOBALS['season_prefix'].'rcep_transfers_ps.transfer_logs')
+            //PREVIOUS SEASON 
+            $prevBatch = DB::table($GLOBALS['season_prefix'].'rcep_transfers_ps.transfer_logs')
                 ->where('coop_accreditation', $coop_accreditation)
                 ->groupBy('new_batch_number')
                 ->get();
@@ -3775,7 +3668,6 @@ class DeliveryDashboardController extends Controller
                                         ->where('transferCategory', 'P')
                                         ->where('is_transferred', 1)
                                         ->sum('totalBagCount');
-
 
                                $checkIfPartial = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
                                     ->where('remarks', 'like', '%transferred from batch: '.$prevBatch->new_batch_number.'%')
@@ -3813,7 +3705,6 @@ class DeliveryDashboardController extends Controller
                                     ->sum('totalBagCount');
                                 }
 
-
                                 $labLot = explode("/", $actualRow->seedTag);
                                 $sg =DB::connection("ls_inspection_db")->table("tbl_rla_details")
                                     ->where("labNo", $labLot[0])
@@ -3825,7 +3716,6 @@ class DeliveryDashboardController extends Controller
                                 }else{
                                     $sg = "N/A";
                                 }
-
 
                                 $batch_data = array(
                                     'iar_number' => "Previous Season: ".$ls_batchNumber,
@@ -3906,8 +3796,6 @@ class DeliveryDashboardController extends Controller
                                             $or_dropoff = "N/A";
                                         }
 
-                                        
-
                                         $batch_data = array(
                                             'iar_number' => "Previous Season",
                                             'batchTicketNumber' => $ls_batchNumber,
@@ -3940,7 +3828,6 @@ class DeliveryDashboardController extends Controller
                                     }
 
                                 }
-
 
                                 if(count($checkIfPartial)>0){
                                        $arr = $this->getPartialData($prevBatch->new_batch_number,$actualRow->seedVariety,$actualRow->seedTag);
@@ -4020,9 +3907,6 @@ class DeliveryDashboardController extends Controller
                                         //array_push($return_arr, $batch_data);
                                         $inspected += $bg;
                                  
-
-
-
                                     $retransferred = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')->where("remarks", "LIKE", "%".$bt."%")->where("seedTag", $st)->get();
                                         if(count($retransferred)>0){
                                             foreach ($retransferred as $in => $par) {
@@ -4090,16 +3974,36 @@ class DeliveryDashboardController extends Controller
             'deliveryDate' => '',
             'batch_status' => ''
         );
+ 
+        //Added by Jayvee 03/10/2025
+        $cancelled_query = DB::table('ws2025_rcep_delivery_inspection.tbl_delivery as a')
+            ->selectRaw('b.iarCode, a.batchTicketNumber, c.updated_accreditation_no AS coopAccreditation, a.seedVariety, a.dropOffPoint, a.region, a.province, a.municipality, a.seedTag, d.full_name AS seed_grower,
+                CASE a.is_cancelled
+                    WHEN 0 THEN "NO"
+                    WHEN 1 THEN "YES"
+                END AS is_cancelled,
+                a.cancelled_by, a.reason as cancelled_reason')
+            ->leftJoin('ws2025_rcep_delivery_inspection.iar_print_logs as b','a.batchTicketNumber','=','b.batchTicketNumber')
+            ->leftJoin('ws2025_rcep_seed_cooperatives.tbl_cooperatives as c','a.coopAccreditation','=','c.updated_accreditation_no')
+            ->leftJoin('ws2025_rcep_delivery_inspection.tbl_seed_grower as d','a.sg_id','=','d.sg_id')
+            ->where('a.coopAccreditation', $coop_accreditation)
+            ->where('a.is_cancelled', 1)
+            ->get();
+
+        // Convert objects into arrays
+        $return_arr_cancelled = array_map(function($row){
+            return (array) $row;
+        }, $cancelled_query);
+        //Added by Jayvee 03/10/2025 END
 
         //COMMENTED DUE TOINCONSISTENCY
         // array_push($return_arr, $last_row);
-
 
         $replacement_arr = $this->ReplacementList($coop_accreditation);
         $buffer_arr = $this->bufferList($coop_accreditation);
         $bep_arr = $this->bep_list($coop_accreditation);
 
-        $myFile = Excel::create('SEED_COOP_DELIVERIES', function($excel) use ($return_arr, $return_arr_nrp, $return_arr_gqs, $replacement_arr, $buffer_arr, $bep_arr) {
+        $myFile = Excel::create('SEED_COOP_DELIVERIES', function($excel) use ($return_arr, $return_arr_nrp, $return_arr_gqs, $replacement_arr, $buffer_arr, $bep_arr, $return_arr_cancelled) {
             $excel->sheet("DELIVERY_LIST", function($sheet) use ($return_arr) {
                 $sheet->fromArray($return_arr);
             });
@@ -4118,6 +4022,11 @@ class DeliveryDashboardController extends Controller
             $excel->sheet("BINHI_E_PADALA", function($sheet) use ($bep_arr) {
                 $sheet->fromArray($bep_arr);
             });
+            //Added by Jayvee 03/10/2025
+            $excel->sheet("DELIVERY_LIST_CANCELLED", function($sheet) use ($return_arr_cancelled) {
+                $sheet->fromArray($return_arr_cancelled);
+            });
+            //Added by Jayvee 03/10/2025 END
         });
 
         $file_name = $coop_acr."_".date("Y-m-d H:i:s").".xlsx";
@@ -4129,6 +4038,7 @@ class DeliveryDashboardController extends Controller
 
         return response()->json($response);
     }
+
 
     public function export_coop_deliveriesPy(Request $request){
         
@@ -4276,12 +4186,6 @@ class DeliveryDashboardController extends Controller
                 $iar_number_str = "N/A";
             }    
 
-
-
-            
-         
-            
-
              $is_transfer_W = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
                 ->select('transferCategory')
                 ->where('batchTicketNumber', $batch_row->batchTicketNumber)
@@ -4350,9 +4254,6 @@ class DeliveryDashboardController extends Controller
                             $or_dropoff = "N/A";
                         }
 
-                            
-
-
                         $batch_data = array(
                             'batchTicketNumber' => $bt,
                             'province' => $or_province.' => '.$dt_province,
@@ -4374,11 +4275,7 @@ class DeliveryDashboardController extends Controller
                             'dropOffPoint' => $or_dropoff.' => '.$dt_dropoff,
                             'region' => $or_region.' => '.$dt_region,
                           
-                           
-                           
                         );
-
-
 
                         array_push($return_arr, $batch_data);
                       }
@@ -4410,7 +4307,6 @@ class DeliveryDashboardController extends Controller
             array_push($return_arr, $batch_data);
              }
 
-
              if($partialCount > 0){
                     $arr = $this->getPartialData($batch_row->batchTicketNumber,$batch_row->seedVariety,$batch_row->seedTag);
 
@@ -4424,7 +4320,6 @@ class DeliveryDashboardController extends Controller
                         $bg = $arr[$key]['bags'];
                         $dc = $arr[$key]['dateCreated'];
                         $tt = $arr[$key]['transferType'];
-
 
                           if($dt != ""){
                             $dt = str_replace(",", "|", $dt);
@@ -4460,7 +4355,6 @@ class DeliveryDashboardController extends Controller
                             $or_municipality = "N/A";
                             $or_dropoff = "N/A";
                         }
-
                         //transferred from batch: 519-BCH-1618556643
                          
                             $is_replacement = DB::connection('delivery_inspection_db')->table('tbl_actual_delivery')
@@ -4472,7 +4366,6 @@ class DeliveryDashboardController extends Controller
                                     continue;
                                 }
 
-                           
                          $batch_data = array(
                             'batchTicketNumber' => $batch_row->batchTicketNumber,
                             'province' => $or_province.' => '.$dt_province,
@@ -4501,12 +4394,8 @@ class DeliveryDashboardController extends Controller
             $total_confirmed += $confirmed_bags;
             $total_inspected += $inspected_bags;
             
-                    
-
-
             }
         }
-
 
             $last_row = array(
             'batchTicketNumber' => '',
@@ -4539,7 +4428,7 @@ class DeliveryDashboardController extends Controller
                   
 
 
-    
+
         return $return_arr;
 
     
@@ -4556,7 +4445,6 @@ class DeliveryDashboardController extends Controller
             ->groupBy('batchTicketNumber', 'seedVariety', 'seedTag')
             ->orderBy('deliveryDate', 'DESC')
             ->get();
-
 
         $total_confirmed = 0;
         $total_inspected = 0;
