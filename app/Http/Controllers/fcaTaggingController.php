@@ -90,11 +90,14 @@ class fcaTaggingController extends Controller
         
         $prv = $getPrv->prv_code;
 
-        $getFarmerInfo = DB::table($GLOBALS['season_prefix'].'prv_'.$prv.'.farmer_information_final')
+        $getFarmerInfo = DB::table($GLOBALS['season_prefix'].'prv_'.$prv.'.farmer_information_final as a')
+        ->select('a.*','b.province as parcel_province','b.municipality as parcel_municipality')
+        ->join($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv as b', function($join) {
+            $join->on(DB::raw("REPLACE(a.claiming_prv, '-', '')"), '=', DB::raw('b.prv'));
+        })
         // ->where('is_new','!=',9)
         // ->where('is_new','!=',7)
         ->get();
-        // dd($getFarmerInfo);
 
         $getFarmerInfo = collect($getFarmerInfo);
 

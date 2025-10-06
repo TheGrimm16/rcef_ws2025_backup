@@ -219,6 +219,10 @@
                         <th>First Name</th>
                         <th>Middle Name</th>
                         <th>Ext Name</th>
+                        <th>Parcel Province</th>
+                        <th>Parcel Municipality</th>
+                        <th>Farmer Province</th>
+                        <th>Farmer Municipality</th>
                         <th>Final Area</th>
                     </thead>
                     <tbody></tbody>
@@ -379,6 +383,10 @@
                     { data: "firstName" },
                     { data: "midName" },
                     { data: "extName" },
+                    { data: "parcel_province" },
+                    { data: "parcel_municipality" },
+                    { data: "province" },
+                    { data: "municipality" },
                     { data: "final_area" },
                 ],
                 });
