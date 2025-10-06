@@ -3184,7 +3184,6 @@ class DeliveryDashboardController extends Controller
         $total_inspected = 0;
 
         $return_arr = array();
-        $return_arr_cancelled = array();
         $return_arr_nrp = array();
         $return_arr_gqs = array();
         foreach($batch_deliveries as $batch_row){
@@ -3976,16 +3975,16 @@ class DeliveryDashboardController extends Controller
         );
  
         //Added by Jayvee 03/10/2025
-        $cancelled_query = DB::table('ws2025_rcep_delivery_inspection.tbl_delivery as a')
+        $cancelled_query = DB::table($GLOBALS['season_prefix'] . 'rcep_delivery_inspection.tbl_delivery as a')
             ->selectRaw('b.iarCode, a.batchTicketNumber, c.updated_accreditation_no AS coopAccreditation, a.seedVariety, a.dropOffPoint, a.region, a.province, a.municipality, a.seedTag, d.full_name AS seed_grower,
                 CASE a.is_cancelled
                     WHEN 0 THEN "NO"
                     WHEN 1 THEN "YES"
                 END AS is_cancelled,
                 a.cancelled_by, a.reason as cancelled_reason')
-            ->leftJoin('ws2025_rcep_delivery_inspection.iar_print_logs as b','a.batchTicketNumber','=','b.batchTicketNumber')
-            ->leftJoin('ws2025_rcep_seed_cooperatives.tbl_cooperatives as c','a.coopAccreditation','=','c.updated_accreditation_no')
-            ->leftJoin('ws2025_rcep_delivery_inspection.tbl_seed_grower as d','a.sg_id','=','d.sg_id')
+            ->leftJoin($GLOBALS['season_prefix'] . 'rcep_delivery_inspection.iar_print_logs as b','a.batchTicketNumber','=','b.batchTicketNumber')
+            ->leftJoin($GLOBALS['season_prefix'] . 'rcep_seed_cooperatives.tbl_cooperatives as c','a.coopAccreditation','=','c.updated_accreditation_no')
+            ->leftJoin($GLOBALS['season_prefix'] . 'rcep_delivery_inspection.tbl_seed_grower as d','a.sg_id','=','d.sg_id')
             ->where('a.coopAccreditation', $coop_accreditation)
             ->where('a.is_cancelled', 1)
             ->get();
