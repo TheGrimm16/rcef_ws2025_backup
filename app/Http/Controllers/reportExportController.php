@@ -1288,15 +1288,11 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
         
     $date_1 = explode("-",$date_from);
     $date_from = $date_1[0].'-'.$date_1[1].'-'.$date_1[2];
-
     $date_2 = explode("-",$date_to);
     $date_to = $date_2[0].'-'.$date_2[1].'-'.$date_2[2];
-
-
     $date_from = date("Y-m-d", strtotime($date_from));
     $date_to = date("Y-m-d", strtotime($date_to));
     
-
     // //BUILD VIRTUAL RELEASE
     // $release_vs_tbl = DB::table("information_schema.TABLES")
     //     ->where("TABLE_SCHEMA", "LIKE",$GLOBALS['season_prefix']."prv_%")
@@ -1343,20 +1339,13 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
     //         }
     // }
 
-
-
-
-
-
-
     if($region == "all"){
         $region = "%";
     }
 
     $region_list = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.lib_dropoff_point") 
     ->where("region", "LIKE", $region."%")
-
-        ->where("prv", "!=", "999999")
+    ->where("prv", "!=", "999999")
     ->groupBy("region")
     ->orderBy("prv")
     ->get();        
@@ -1378,80 +1367,55 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
         foreach ($data as $key => $value) {
             $eBinhi_claim = 0;
             
-
-
-
-
-        $accepted = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
-            ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-            ->where('province', $value->province)
-            ->where('municipality', $value->municipality)
-            ->where('is_transferred', '!=', 1)
-            ->where('qrStart', '<=', 0)
-            ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-            ->value('total_bags');
-    
-        
             $accepted = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
-            ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-            ->where('province', $value->province)
-            ->where('municipality', $value->municipality)
-            ->where('is_transferred', '!=', 1)
-            ->where('qrStart', '<=', 0)
-            ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                ->select(DB::raw('SUM(totalBagCount) as total_bags'))
+                ->where('province', $value->province)
+                ->where('municipality', $value->municipality)
+                ->where('is_transferred', '!=', 1)
+                ->where('qrStart', '<=', 0)
+                ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                //->where('batchSeries', '=', '')
+                ->value('total_bags');
+    
+            $transferred = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
+                ->select(DB::raw('SUM(totalBagCount) as total_bags'))
+                ->where('province', $value->province)
+                ->where('municipality', $value->municipality)
+                ->where('transferCategory', "P")
+                ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                //->where('qrStart', '<=', 0)
+                //->where('batchSeries', '=', '')
+                ->value('total_bags');
             
-            //->where('batchSeries', '=', '')
-            ->value('total_bags');
-    
-        
-
-        $transferred = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
-            ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-            ->where('province', $value->province)
-            ->where('municipality', $value->municipality)
-            ->where('transferCategory', "P")
-            ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-            //->where('qrStart', '<=', 0)
-            //->where('batchSeries', '=', '')
-            ->value('total_bags');
-        
-    
-
-        $transferred_curr = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
-            ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-            ->where('province', $value->province)
-            ->where('municipality', $value->municipality)
-            ->where('transferCategory', "!=","P")
-            ->where('is_transferred', 1)
-            ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-            //->where('qrStart', '<=', 0)
-            //->where('batchSeries', '=', '')
-            ->value('total_bags');
-        
-
-        $ebinhi = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
-            ->select(DB::raw('SUM(totalBagCount) as total_bags'))
-            ->where('province', $value->province)
-            ->where('municipality', $value->municipality)
-            ->where('is_transferred', "!=",1)
-            ->where('qrStart', '>', 0)
-            ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+            $transferred_curr = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
+                ->select(DB::raw('SUM(totalBagCount) as total_bags'))
+                ->where('province', $value->province)
+                ->where('municipality', $value->municipality)
+                ->where('transferCategory', "!=","P")
+                ->where('is_transferred', 1)
+                ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                //->where('qrStart', '<=', 0)
+                //->where('batchSeries', '=', '')
+                ->value('total_bags');
             
-            //->where('batchSeries', '=', '')
-            ->value('total_bags');
-    
+            $ebinhi = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.tbl_actual_delivery')
+                ->select(DB::raw('SUM(totalBagCount) as total_bags'))
+                ->where('province', $value->province)
+                ->where('municipality', $value->municipality)
+                ->where('is_transferred', "!=",1)
+                ->where('qrStart', '>', 0)
+                ->whereRaw("STR_TO_DATE(dateCreated, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                
+                //->where('batchSeries', '=', '')
+                ->value('total_bags');
         
-
-        //EBINHI ----------------------
+            //EBINHI ----------------------
 
             $binhi_male = 0;
             $binhi_female = 0;
             $binhi_farmer = 0;
-
             $binhi_claimed_area = 0;
             $binhi_actual_area = 0;
-
-
 
             $eBinhi_data = DB::table($GLOBALS['season_prefix']."rcep_paymaya.tbl_beneficiaries")
                 ->select("tbl_beneficiaries.*")
@@ -1474,29 +1438,19 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                 }
             $binhi_other = $binhi_farmer - $binhi_male - $binhi_female;
 
-
         $eBinhi_claim = count(DB::table($GLOBALS['season_prefix']."rcep_paymaya.tbl_claim")
                 ->where('province', $value->province)
                 ->where('municipality', $value->municipality)
                 ->whereRaw("STR_TO_DATE(date_created, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
-            
                 ->get());
         
-        
-
-
-
                 // dd($transferred_curr);
                 if($eBinhi_claim <= 0 && $transferred <= 0 && $accepted <=0 && $transferred_curr <=0){
                     continue;
                 }
                 
-            
-        
         $prv_tbl = $GLOBALS['season_prefix']."prv_".substr($value->prv,0,4).".new_released";
 
-
-            
         $check_final = DB::table("information_schema.TABLES")
                 ->where("TABLE_SCHEMA", $GLOBALS['season_prefix']."prv_".substr($value->prv,0,4))
                 ->where("TABLE_NAME", "farmer_information_final")
@@ -1513,7 +1467,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                 ->where("category", "INBRED")
                 ->whereRaw("SUBSTR(sex, 1,1) Like 'M'")
                 ->whereRaw("(remarks NOT LIKE '%claimed in home address%' OR remarks IS NULL)") 
-                ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+                ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")
                 ->groupby("content_rsbsa")
                 ->groupby("birthdate")
                 ->groupby("sex")
@@ -1524,7 +1478,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             ->where("category", "INBRED")
             ->whereRaw("SUBSTR(sex, 1,1) Like 'F'")
             ->whereRaw("(remarks NOT LIKE '%claimed in home address%' OR remarks IS NULL)") 
-            ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")
             ->groupby("content_rsbsa")
             ->groupby("birthdate")
             ->groupby("sex")
@@ -1534,19 +1488,17 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             ->where("municipality", $value->municipality)
             ->where("category", "INBRED")
             ->whereRaw("(remarks NOT LIKE '%claimed in home address%' OR remarks IS NULL)") 
-            ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")
+            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")
             ->groupby("content_rsbsa")
             ->groupby("birthdate")
             ->groupby("sex")
             ->get());
 
-        
         $total_other = $total_farmer - ($total_male + $total_female);
 
-        
         $total_bags = DB::table($prv_tbl)
             ->where("municipality", $value->municipality)
-            ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")        
+            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")    
             ->where("category", "INBRED")      
             ->sum("bags_claimed");
 
@@ -1554,7 +1506,7 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
         // $getHomeClaims = DB::table('ds2024_prv_0517.new_released')
             // ->where("municipality", 'TINAMBAC')
             ->where("municipality", $value->municipality)
-            ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")        
+            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")     
             ->where("category", "INBRED")
             ->where("remarks",'LIKE','%intended%')      
             ->get();
@@ -1621,31 +1573,28 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             // }
         }
 
-        
-
         // dd($total_bags_home,
         // $total_claimed_area_home,
         // $total_farmer_home);
 
             $id_released =DB::table($prv_tbl)
-                                ->select("new_released_id")
-                                ->where("municipality", $value->municipality)
-                                ->where("category", "INBRED")
-                                ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')") 
-                                ->groupby("content_rsbsa")
-                                ->groupby("birthdate")
-                                ->groupby("sex")
-                                ->get();
+                ->select("new_released_id")
+                ->where("municipality", $value->municipality)
+                ->where("category", "INBRED")
+                ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")
+                ->groupby("content_rsbsa")
+                ->groupby("birthdate")
+                ->groupby("sex")
+                ->get();
             $id_released = json_decode(json_encode($id_released), true);
                     
         $total_actual_area = DB::table($prv_tbl)
             ->whereIn("new_released_id",$id_released)
             ->sum("final_area");
         
-
         $total_claimed_area = DB::table($prv_tbl)
             ->where("municipality", $value->municipality)
-            ->whereRaw("STR_TO_DATE(date_released, '%Y-%m-%d') BETWEEN  STR_TO_DATE('".$date_from."', '%Y-%m-%d')  AND STR_TO_DATE('".$date_to."', '%Y-%m-%d')")    
+            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')") 
             ->where("category", "INBRED")               
             ->sum("claimed_area");
 
@@ -1659,16 +1608,10 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             $total_claimed_area = 0;
         }
     
-    
         if($accepted==null)$accepted=0;
         if($transferred==null)$transferred=0;
         if($ebinhi==null)$ebinhi=0;
         if($transferred_curr==null)$transferred_curr=0;
-
-
-
-
-
 
             $prv = DB::table($GLOBALS['season_prefix']."rcep_delivery_inspection.lib_dropoff_point")->where("province", $value->province)->where("municipality", $value->municipality)->value('prv');
             if($prv != null){
@@ -1683,8 +1626,6 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                     $updated_psa_code = $getUpdatedPsaCode->updated_psa_code;
                 }
 
-
-        
             array_push($a, array(
                 "Region" => $value->region,
                 "Province" => $value->province,
@@ -1722,12 +1663,6 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                 "Undefined (eBinhi)" => $binhi_other,
             ));    
             
-
-
-            
-
-
-
                 // //FOR VIRTUAL
                 // try {
 
@@ -1897,11 +1832,8 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
                             
                         // ));
         
-    
-        
                 // } catch (\Throwable $th) {
                 //     //throw $th;
-                    
                     
                 // }
 
@@ -1927,8 +1859,6 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
     ->save('xlsx',$path);
     // ->download('xlsx');
     return "success";
-        
-
 
 }
 
