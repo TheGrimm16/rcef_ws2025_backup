@@ -1285,13 +1285,15 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
 }
 
  public function exportMunicipalStatistics($date_from, $date_to, $region){
-        
+
     $date_1 = explode("-",$date_from);
     $date_from = $date_1[0].'-'.$date_1[1].'-'.$date_1[2];
     $date_2 = explode("-",$date_to);
     $date_to = $date_2[0].'-'.$date_2[1].'-'.$date_2[2];
     $date_from = date("Y-m-d", strtotime($date_from));
     $date_to = date("Y-m-d", strtotime($date_to));
+    $date_from_fmt = $date_from . " 00:00:00";
+    $date_to_fmt   = $date_to . " 23:59:59";
     
     // //BUILD VIRTUAL RELEASE
     // $release_vs_tbl = DB::table("information_schema.TABLES")
