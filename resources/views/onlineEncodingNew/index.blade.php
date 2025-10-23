@@ -525,7 +525,7 @@
         "farmer_id_address": 0,
         "content_rsbsa": "",
         "new_rcef_id": "",
-        "server_date_received": null,
+        // "server_date_received": null,
         "category": "INBRED",
         "birthdate": "",
         "final_area": 0,

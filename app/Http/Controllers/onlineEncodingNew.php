@@ -181,6 +181,9 @@ class onlineEncodingNew extends Controller {
         $working_prv = str_replace("-", "", $working_prv);
         $working_prv = substr($working_prv, 0, 4);
         $release["released_by"] = Auth::user()->username;
+        if (empty($release["server_date_received"])) {
+            unset($release["server_date_received"]);
+        }
 
         //generate db_ref
         $max_dbref = DB::table($GLOBALS['season_prefix']."prv_".$working_prv.".farmer_information_final")
