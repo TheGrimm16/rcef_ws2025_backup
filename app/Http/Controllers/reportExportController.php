@@ -1505,12 +1505,12 @@ public function exportProvincialStatistics($date_from,$date_to,$region){
             ->sum("bags_claimed");
 
         $getHomeClaims = DB::table($prv_tbl)
-        // $getHomeClaims = DB::table('ds2024_prv_0517.new_released')
+            // $getHomeClaims = DB::table('ds2024_prv_0517.new_released')
             // ->where("municipality", 'TINAMBAC')
             ->where("municipality", $value->municipality)
-            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")     
+            ->whereRaw("STR_TO_DATE(server_date_received, '%Y-%m-%d %H:%i:%s') BETWEEN STR_TO_DATE('".$date_from_fmt."', '%Y-%m-%d %H:%i:%s') AND STR_TO_DATE('".$date_to_fmt."', '%Y-%m-%d %H:%i:%s')")
             ->where("category", "INBRED")
-            ->where("remarks",'LIKE','%intended%')      
+            ->whereRaw("(remarks IS NOT NULL AND remarks != '' AND id = 111111111 AND (remarks LIKE '%intended%' OR remarks LIKE '%claimed in home%'))")
             ->get();
         // dd($getHomeClaims);
 
