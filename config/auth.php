@@ -45,6 +45,10 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+        'replacement_seeds' => [
+            'driver' => 'session',
+            'provider' => 'replacement_users',
+        ],
     ],
 
     /*
@@ -74,6 +78,11 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        
+        'replacement_users' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\ReplacementSeedsUser::class,
+        ],
     ],
 
     /*

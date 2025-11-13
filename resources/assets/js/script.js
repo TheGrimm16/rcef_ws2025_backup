@@ -345,20 +345,20 @@ $(document).ready(function () {
     })
     // input by timothy
 
-    $.ajax({
-        url: location.protocol+"//dbmp2.philrice.gov.ph/rcef_ws2022/coop_summary_total",
-        method: 'GET',
-        dataType: 'json',
-        success: function (source) {
-            if (source) {
-                $("#coop_total").text(source['coopTotal']);
-                $("#sg_total").text(source['sgTotal']);
-                $("#ha_total").text(source['haTotal']);
-            } else {
-                alert("something went wrong");
-            }
-        }
-    });
+    // $.ajax({
+    //     url: location.protocol+"//dbmp2.philrice.gov.ph/rcef_ws2022/coop_summary_total",
+    //     method: 'GET',
+    //     dataType: 'json',
+    //     success: function (source) {
+    //         if (source) {
+    //             $("#coop_total").text(source['coopTotal']);
+    //             $("#sg_total").text(source['sgTotal']);
+    //             $("#ha_total").text(source['haTotal']);
+    //         } else {
+    //             alert("something went wrong");
+    //         }
+    //     }
+    // });
 
     $('#submit_iar_location').on('click', function () {
         let province = $('#distribution_province').val()

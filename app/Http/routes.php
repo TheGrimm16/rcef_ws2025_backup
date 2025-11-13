@@ -32,6 +32,8 @@ Route::get('clear_config', ['as' => 'utility.clear.cache', 'uses' => 'UtilityCon
     Route::get('station-server-monitoring', ['as' => 'station.monitoring', 'uses' => 'stationServerMonController@index']);
 
 
+
+
 /* start of middleware */
 
 /*WEBSITE API*/ 
@@ -272,8 +274,6 @@ Route::group(['middleware' => ['auth','logMw']], function() {
     Route::post('adjustment_logs/gen_table', ['as' => 'adjustment_logs.gen_table', 'uses'=>'CoopController@adjustment_gentable']);
 
     
-    
-
 	/**
      * SEED COOP DASHBOARD
      */ 
@@ -333,22 +333,20 @@ Route::group(['middleware' => ['auth','logMw']], function() {
     Route::get('farmer/profile/cross/check', ['as' => 'farmer_profile.cross.check', 'uses' => 'FarmerProfileController@farmer_benificiaries_cross_check']);
     Route::post('farmer/profile/cross/check/list', ['as' => 'farmer_profile.cross.check.list', 'uses' => 'FarmerProfileController@cross_check_list']);
     /** END  */
-  Route::get('farmer/profile/consolidate/{province}/{municipality}', ['as' => 'farmer_profile.consolidate.last_season', 'uses' => 'FarmerProfileController@consolidate_LS']);
+    Route::get('farmer/profile/consolidate/{province}/{municipality}', ['as' => 'farmer_profile.consolidate.last_season', 'uses' => 'FarmerProfileController@consolidate_LS']);
+        
+    Route::get('cross_match/lgu_data/{prv}/{process_type}', ['as' => 'cross_match.consolidate.lgu_data', 'uses' => 'UtilityController@cross_match_lgu_prv']);
+    Route::get('fix_claiming_brgy', ['as' => 'fix_claiming_brgy', 'uses' => 'UtilityController@fix_claiming_brgy']);
     
-  Route::get('cross_match/lgu_data/{prv}/{process_type}', ['as' => 'cross_match.consolidate.lgu_data', 'uses' => 'UtilityController@cross_match_lgu_prv']);
-  Route::get('fix_claiming_brgy', ['as' => 'fix_claiming_brgy', 'uses' => 'UtilityController@fix_claiming_brgy']);
-  
 
-/** Seed tag tracker routes */
-  Route::get('seedtag/tracker', ['as' => 'seed.tracker', 'uses' => 'SeedReportController@seedtags']);
-  Route::get('seed/tracking/get_muni/{province}', ['as' => 'seed_report.get_muni', 'uses' => 'SeedReportController@get_muni']);
-  Route::post('datatable/seedtag/tracker', ['as' => 'datatable.seedtag.tracker', 'uses' => 'SeedReportController@seed_tag_tracker']);
+    /** Seed tag tracker routes */
+    Route::get('seedtag/tracker', ['as' => 'seed.tracker', 'uses' => 'SeedReportController@seedtags']);
+    Route::get('seed/tracking/get_muni/{province}', ['as' => 'seed_report.get_muni', 'uses' => 'SeedReportController@get_muni']);
+    Route::post('datatable/seedtag/tracker', ['as' => 'datatable.seedtag.tracker', 'uses' => 'SeedReportController@seed_tag_tracker']);
 
+    /* create pre reg account */
 
-
-/* create pre reg account */
-
-  Route::get('create-pre-reg', ['as' => 'prereg', 'uses' => 'UtilityController@createPreRegAccount']);
+    Route::get('create-pre-reg', ['as' => 'prereg', 'uses' => 'UtilityController@createPreRegAccount']);
     
 
 
@@ -457,7 +455,7 @@ Route::group(['middleware' => ['auth','logMw']], function() {
     Route::post('farmerID/generate', ['as' => 'farmer.qr.generate', 'uses' => 'FarmerIDController@generateQR']);
     Route::get('farmerID/home', ['as' => 'farmer.id.home', 'uses' => 'FarmerIDController@Home']);
     Route::get('farmerID/generate/{id}', ['as' => 'area.qr.generate', 'uses' => 'FarmerIDController@areaGenerateQR']);
-	  Route::post('farmerID/logs', ['as' => 'farmer.qr.logs', 'uses' => 'FarmerIDController@get_QRlogs']);
+	Route::post('farmerID/logs', ['as' => 'farmer.qr.logs', 'uses' => 'FarmerIDController@get_QRlogs']);
     Route::post('farmerID/chart', ['as' => 'farmer.qr.chart', 'uses' => 'FarmerIDController@get_QRChart']);
 
 
@@ -1091,9 +1089,6 @@ Route::group(['middleware' => ['auth','logMw']], function() {
     Route::post('online/vs/search_farmer', ['as' => 'vs.online.select.farmer', 'uses' => 'onlineEncodingController@select_farmer_vs']);
     Route::post('online/vs/parcel', ['as' => 'vs.online.view.parcel', 'uses' => 'onlineEncodingController@view_parcelary']);
     Route::post('online/vs/get/all/parcel', ['as' => 'vs.get.all.parcel', 'uses' => 'onlineEncodingController@get_all_parcel']);
-
-    
-
 
     //ONLINE ENCODING V2
     Route::get('encoding_vs', ['as' => 'encoding_vs', 'uses' => 'virtual_encodingController@index']);
@@ -1765,27 +1760,27 @@ Route::group(['middleware' => ['logMw']], function() {
     Route::get("yield_ui/get_count/perDataTable/{season}/{level}/{name}", ['as' => 'yield.count.province', 'uses' => 'yieldController@yieldCounter_datatable']);
 
 
- // for paymaya fixing
-Route::get('fix/area', ['as' => 'fix.area', 'uses' => 'OfflineFixController@fix_area' ]);
-//  DOWNLOAD EXCEL NO CLAIM
- Route::get('export/paymaya/noclaim/{tag}/{province}/{municipality}', ['as' => 'export.no.data', 'uses' => 'PaymayaController@export_ebinhi_no_claim' ]);
- 
+    // for paymaya fixing
+    Route::get('fix/area', ['as' => 'fix.area', 'uses' => 'OfflineFixController@fix_area' ]);
+    //  DOWNLOAD EXCEL NO CLAIM
+    Route::get('export/paymaya/noclaim/{tag}/{province}/{municipality}', ['as' => 'export.no.data', 'uses' => 'PaymayaController@export_ebinhi_no_claim' ]);
+    
 
- //joe RCEF Buffer inventory replacement oct 10, 2021
-Route::get('bufferInventoryformview', ['as' => 'bufferInventoryformview', 'uses' => 'bufferInventoryController@index']);
-Route::post('provinceBufferData', ['as' => 'provinceBufferData', 'uses' => 'bufferInventoryController@provincelist']);
-Route::post('MunicipalitybufferData', ['as' => 'MunicipalitybufferData', 'uses' => 'bufferInventoryController@MunicipalitybufferData']);
-Route::post('bufferInventoryInspectionResult', ['as' => 'bufferInventoryInspectionResult', 'uses' => 'bufferInventoryController@bufferInventoryInspectionResult']);
-Route::post('BufferIRDatatable', ['as' => 'BufferIRDatatable', 'uses' => 'bufferInventoryController@BufferIRDatatable']);
-Route::get('bufferInventory/{region}/{provincebuffer}/{Municipalitybuffer}/{replacement}', ['as' => 'bufferInventory', 'uses' => 'bufferInventoryController@bufferInverntory']);
+    //joe RCEF Buffer inventory replacement oct 10, 2021
+    Route::get('bufferInventoryformview', ['as' => 'bufferInventoryformview', 'uses' => 'bufferInventoryController@index']);
+    Route::post('provinceBufferData', ['as' => 'provinceBufferData', 'uses' => 'bufferInventoryController@provincelist']);
+    Route::post('MunicipalitybufferData', ['as' => 'MunicipalitybufferData', 'uses' => 'bufferInventoryController@MunicipalitybufferData']);
+    Route::post('bufferInventoryInspectionResult', ['as' => 'bufferInventoryInspectionResult', 'uses' => 'bufferInventoryController@bufferInventoryInspectionResult']);
+    Route::post('BufferIRDatatable', ['as' => 'BufferIRDatatable', 'uses' => 'bufferInventoryController@BufferIRDatatable']);
+    Route::get('bufferInventory/{region}/{provincebuffer}/{Municipalitybuffer}/{replacement}', ['as' => 'bufferInventory', 'uses' => 'bufferInventoryController@bufferInverntory']);
 
 
-// RJ
+    // RJ
 
-Route::get('paymaya/manual_payment', ['as' => 'manual_payment', 'uses' => 'PaymayaPaymentController@manual_payment']);
-Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 'uses' => 'PaymayaPaymentController@manual_form']);
+    Route::get('paymaya/manual_payment', ['as' => 'manual_payment', 'uses' => 'PaymayaPaymentController@manual_payment']);
+    Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 'uses' => 'PaymayaPaymentController@manual_form']);
 
- /*encoder extension joe*/
+    /*encoder extension joe*/
     Route::get('Statistic', ['as' => 'Statistic', 'uses' => 'EncoderStatisticController@index']);
     Route::post('StatisticDatLoad', ['as' => 'StatisticDatLoad', 'uses' => 'EncoderStatisticController@StatisticDatLoad']);
 	Route::post('StatisticDatLoadChart', ['as' => 'StatisticDatLoadChart', 'uses' => 'EncoderStatisticController@StatisticDatLoadChart']);
@@ -2003,52 +1998,52 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::get('delete_me', ['as' => 'delete_me', 'uses' => 'utilityController@deleteme']);
     
 
-  //preregdashboard
-  Route::get('preregDashboard', ['as' => 'preregDashboard', 'uses' => 'preregDashboardController@index']);
-  Route::get('regChart', ['as' => 'regChart', 'uses' => 'preregDashboardController@loadChartDataDefault']);
-  Route::get('getCropEstab', ['as' => 'getCropEstab', 'uses' => 'preregDashboardController@getCropEstab']);
-  Route::get('getEcoSys', ['as' => 'getEcoSys', 'uses' => 'preregDashboardController@getEcoSys']);
-  Route::get('getAveYield', ['as' => 'getAveYield', 'uses' => 'preregDashboardController@getAveYield']);
-  Route::get('getPrv', ['as' => 'getPrv', 'uses' => 'preregDashboardController@getPrv']);
-  Route::get('getAgeRangeView', ['as' => 'getAgeRangeView', 'uses' => 'preregDashboardController@getAgeRangeView']);
-  Route::get('unlinking', ['as' => 'unlinking', 'uses' => 'preregDashboardController@unlinking']);
-  Route::post('toCSV', ['as' => 'toCSV', 'uses' => 'preregDashboardController@toCSV']);
-  Route::post('selRegChart', ['as' => 'selRegChart', 'uses' => 'preregDashboardController@getMuni']);
-  Route::post('selProvChart', ['as' => 'selProvChart', 'uses' => 'preregDashboardController@getMunicipalities']);
+    //preregdashboard
+    Route::get('preregDashboard', ['as' => 'preregDashboard', 'uses' => 'preregDashboardController@index']);
+    Route::get('regChart', ['as' => 'regChart', 'uses' => 'preregDashboardController@loadChartDataDefault']);
+    Route::get('getCropEstab', ['as' => 'getCropEstab', 'uses' => 'preregDashboardController@getCropEstab']);
+    Route::get('getEcoSys', ['as' => 'getEcoSys', 'uses' => 'preregDashboardController@getEcoSys']);
+    Route::get('getAveYield', ['as' => 'getAveYield', 'uses' => 'preregDashboardController@getAveYield']);
+    Route::get('getPrv', ['as' => 'getPrv', 'uses' => 'preregDashboardController@getPrv']);
+    Route::get('getAgeRangeView', ['as' => 'getAgeRangeView', 'uses' => 'preregDashboardController@getAgeRangeView']);
+    Route::get('unlinking', ['as' => 'unlinking', 'uses' => 'preregDashboardController@unlinking']);
+    Route::post('toCSV', ['as' => 'toCSV', 'uses' => 'preregDashboardController@toCSV']);
+    Route::post('selRegChart', ['as' => 'selRegChart', 'uses' => 'preregDashboardController@getMuni']);
+    Route::post('selProvChart', ['as' => 'selProvChart', 'uses' => 'preregDashboardController@getMunicipalities']);
 
 
-  //custom routes-rio
-  Route::get('customExportUI', ['as' => 'customExportUI', 'uses' => 'rio_custom_api@index']);
-  Route::get('perf/variety/nat/{season}', ['as' => 'customExportUI2', 'uses' => 'rio_custom_api@getVarietyPerformance']);
-  Route::get('getUnclaimedBenef/{prv}/{mun}', ['as' => 'getUnclaimedBenef', 'uses' => 'rio_custom_api@getUnclaimedBenef']);
-  Route::get('getMun/{prv}', ['as' => 'getMun', 'uses' => 'rio_custom_api@getMun']);
-  Route::get('getPrvUnsched', ['as' => 'getPrvUnsched', 'uses' => 'rio_custom_api@getPrvUnsched']);
-  Route::get('getMunUnsched/{prv}', ['as' => 'getMunUnsched', 'uses' => 'rio_custom_api@getMunUnsched']);
-  Route::get('getMunLevelUnsched/{reg}/{prv}', ['as' => 'getMunLevelUnsched', 'uses' => 'rio_custom_api@getMunLevelUnsched']);
-  Route::get('unschedExport/{reg}/{prv}/{mun}', ['as' => 'unschedExport', 'uses' => 'rio_custom_api@unschedExport']);
-  Route::get('getScheduledProvinces', ['as' => 'getScheduledProvinces', 'uses' => 'rio_custom_api@getScheduledProvinces']);
-  Route::get('getScheduledMunicipalities/{prv}', ['as' => 'getScheduledMunicipalities', 'uses' => 'rio_custom_api@getScheduledMunicipalities']);
-  Route::get('getScheduled/{prv}/{mun}', ['as' => 'getScheduled', 'uses' => 'rio_custom_api@getScheduled']);
-  Route::get('secureLogin/{user}/{pass}/{season}', ['as' => 'custom.secureLogin', 'uses' => 'rio_custom_api@secureLogin']);
-  Route::get('processors/custom/parsePrv/{prv}', ['as' => 'custom.parsePrv', 'uses' => 'rio_custom_api@parsePrv']);
+    //custom routes-rio
+    Route::get('customExportUI', ['as' => 'customExportUI', 'uses' => 'rio_custom_api@index']);
+    Route::get('perf/variety/nat/{season}', ['as' => 'customExportUI2', 'uses' => 'rio_custom_api@getVarietyPerformance']);
+    Route::get('getUnclaimedBenef/{prv}/{mun}', ['as' => 'getUnclaimedBenef', 'uses' => 'rio_custom_api@getUnclaimedBenef']);
+    Route::get('getMun/{prv}', ['as' => 'getMun', 'uses' => 'rio_custom_api@getMun']);
+    Route::get('getPrvUnsched', ['as' => 'getPrvUnsched', 'uses' => 'rio_custom_api@getPrvUnsched']);
+    Route::get('getMunUnsched/{prv}', ['as' => 'getMunUnsched', 'uses' => 'rio_custom_api@getMunUnsched']);
+    Route::get('getMunLevelUnsched/{reg}/{prv}', ['as' => 'getMunLevelUnsched', 'uses' => 'rio_custom_api@getMunLevelUnsched']);
+    Route::get('unschedExport/{reg}/{prv}/{mun}', ['as' => 'unschedExport', 'uses' => 'rio_custom_api@unschedExport']);
+    Route::get('getScheduledProvinces', ['as' => 'getScheduledProvinces', 'uses' => 'rio_custom_api@getScheduledProvinces']);
+    Route::get('getScheduledMunicipalities/{prv}', ['as' => 'getScheduledMunicipalities', 'uses' => 'rio_custom_api@getScheduledMunicipalities']);
+    Route::get('getScheduled/{prv}/{mun}', ['as' => 'getScheduled', 'uses' => 'rio_custom_api@getScheduled']);
+    Route::get('secureLogin/{user}/{pass}/{season}', ['as' => 'custom.secureLogin', 'uses' => 'rio_custom_api@secureLogin']);
+    Route::get('processors/custom/parsePrv/{prv}', ['as' => 'custom.parsePrv', 'uses' => 'rio_custom_api@parsePrv']);
 
 
-  //CSS survey dashboard controller
-  Route::get('cssDashboard', ['as' => 'cssDashboard', 'uses' => 'cssDashboardController@index']);
-  Route::get('cssDashboard2', ['as' => 'cssDashboard2', 'uses' => 'cssDashboardController@index2']);
-  Route::get('getBdays', ['as' => 'getBdays', 'uses' => 'cssDashboardController@getBdays']);
-  Route::get('getGender/{default}', ['as' => 'getGender', 'uses' => 'cssDashboardController@getGender']);
-  Route::get('getBepQuestionResults', ['as' => 'getBepQuestionResults', 'uses' => 'cssDashboardController@getBepQuestionResults']);
-  Route::post('getIndivQuestion', ['as' => 'getIndivQuestion', 'uses' => 'cssDashboardController@getIndivQuestion']);
-  Route::post('getIndivQuestionConv', ['as' => 'getIndivQuestionConv', 'uses' => 'cssDashboardController@getIndivQuestionConv']);
-  Route::get('exportStats/{prv}/{mun}', ['as' => 'exportStats', 'uses' => 'cssDashboardController@exportStats']);
-  Route::get('exportStatsCon/{prv}/{mun}', ['as' => 'exportStatsCon', 'uses' => 'cssDashboardController@exportStatsCon']);
-  Route::get('getIncludedProvinces', ['as' => 'getIncludedProvinces', 'uses' => 'cssDashboardController@getIncludedProvinces']);
-  Route::get('getIncludedProvincesConv', ['as' => 'getIncludedProvincesConv', 'uses' => 'cssDashboardController@getIncludedProvincesConv']);
-  Route::get('getIncludedMunicipality/{prv}', ['as' => 'getIncludedMunicipality', 'uses' => 'cssDashboardController@getIncludedMunicipality']);
-  Route::get('getIncludedMunicipalityConv/{prv}', ['as' => 'getIncludedMunicipalityConv', 'uses' => 'cssDashboardController@getIncludedMunicipalityConv']);
-  Route::post('filterLocation', ['as' => 'filterLocation', 'uses' => 'cssDashboardController@filterLocation']);
-  Route::post('filterLocationConv', ['as' => 'filterLocationConv', 'uses' => 'cssDashboardController@filterLocationConv']);
+    //CSS survey dashboard controller
+    Route::get('cssDashboard', ['as' => 'cssDashboard', 'uses' => 'cssDashboardController@index']);
+    Route::get('cssDashboard2', ['as' => 'cssDashboard2', 'uses' => 'cssDashboardController@index2']);
+    Route::get('getBdays', ['as' => 'getBdays', 'uses' => 'cssDashboardController@getBdays']);
+    Route::get('getGender/{default}', ['as' => 'getGender', 'uses' => 'cssDashboardController@getGender']);
+    Route::get('getBepQuestionResults', ['as' => 'getBepQuestionResults', 'uses' => 'cssDashboardController@getBepQuestionResults']);
+    Route::post('getIndivQuestion', ['as' => 'getIndivQuestion', 'uses' => 'cssDashboardController@getIndivQuestion']);
+    Route::post('getIndivQuestionConv', ['as' => 'getIndivQuestionConv', 'uses' => 'cssDashboardController@getIndivQuestionConv']);
+    Route::get('exportStats/{prv}/{mun}', ['as' => 'exportStats', 'uses' => 'cssDashboardController@exportStats']);
+    Route::get('exportStatsCon/{prv}/{mun}', ['as' => 'exportStatsCon', 'uses' => 'cssDashboardController@exportStatsCon']);
+    Route::get('getIncludedProvinces', ['as' => 'getIncludedProvinces', 'uses' => 'cssDashboardController@getIncludedProvinces']);
+    Route::get('getIncludedProvincesConv', ['as' => 'getIncludedProvincesConv', 'uses' => 'cssDashboardController@getIncludedProvincesConv']);
+    Route::get('getIncludedMunicipality/{prv}', ['as' => 'getIncludedMunicipality', 'uses' => 'cssDashboardController@getIncludedMunicipality']);
+    Route::get('getIncludedMunicipalityConv/{prv}', ['as' => 'getIncludedMunicipalityConv', 'uses' => 'cssDashboardController@getIncludedMunicipalityConv']);
+    Route::post('filterLocation', ['as' => 'filterLocation', 'uses' => 'cssDashboardController@filterLocation']);
+    Route::post('filterLocationConv', ['as' => 'filterLocationConv', 'uses' => 'cssDashboardController@filterLocationConv']);
   
 
     //RCEF-IMS-Standalone API
@@ -2340,4 +2335,53 @@ Route::get('paymaya/manual_form/{type}/{data}/{date3}', ['as' => 'manual_form', 
     Route::post('online/encoding/new/saveDistribution', ['as' => 'onlineEncodingNew.saveDistribution', 'uses' => 'onlineEncodingNew@saveDistribution']);
 
 });
+
+// Replacement Seeds Routes
+Route::group(['prefix' => 'replacement-seeds'], function () {
+
+    // Public login routes
+    Route::get('login', 'ReplacementSeeds\RSAuthController@showLoginForm')
+        ->name('replacement.login')
+        ->middleware('web');
+
+    Route::post('login', 'ReplacementSeeds\RSAuthController@login')
+        ->name('replacement.login.submit')
+        ->middleware('web');
+
+    // Protected routes
+    Route::group(['middleware' => ['web', 'replacement.auth']], function () {
+        Route::get('dashboard', 'ReplacementSeeds\RSDashboardController@index')
+            ->name('replacement.dashboard');
+
+        Route::post('logout', 'ReplacementSeeds\RSAuthController@logout')
+            ->name('replacement.logout');
+
+        Route::get('users', 'ReplacementSeeds\RSUserController@index')
+            ->name('replacement.users');
+
+        Route::get('/users/datatable', 'ReplacementSeeds\RSUserController@datatable')
+            ->name('replacement.datatable');
+    });
+
+});
+
+    // /* USER MANAGEMENT ROUTES */
+    // Route::get('users', ['as' => 'users.index', 'uses' => 'UserController@index', 'middleware' => ['permission:user-list|user-create|user-edit|user-delete']]);
+    // Route::get('/users/datatable', ['as' => 'users.datatable', 'uses' => 'UserController@datatable', 'middleware' => ['permission:user-list']]);
+    // Route::get('users/create', ['as' => 'users.create', 'uses' => 'UserController@create', 'middleware' => ['permission:user-create']]);
+    // Route::post('users/create', ['as' => 'users.store', 'uses' => 'UserController@store', 'middleware' => ['permission:user-create']]);
+    // Route::get('users/{id}', ['as' => 'users.show', 'uses' => 'UserController@show', 'middleware' => ['permission:user-list']]);
+    // Route::get('users/edit/{id}', ['as' => 'users.edit', 'uses' => 'UserController@edit', 'middleware' => ['permission:user-edit']]);
+    // Route::patch('users/{id}', ['as' => 'users.update', 'uses' => 'UserController@update', 'middleware' => ['permission:user-edit']]);
+    // Route::delete('users/{id}', ['as' => 'users.destroy', 'uses' => 'UserController@destroy']);
+    // Route::post('users/province', ['as' => 'users.province', 'uses' => 'UserController@province']);
+    // Route::post('users/region', ['as' => 'users.region', 'uses' => 'UserController@region']);
+    // Route::post('users/edit/province', ['as' => 'users.province', 'uses' => 'UserController@province']);
+    // Route::post('users/edit/region', ['as' => 'users.region', 'uses' => 'UserController@region']);
+
+ //END Replacement Seeds Routes
+
+
+
+
 

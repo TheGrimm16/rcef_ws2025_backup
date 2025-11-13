@@ -584,8 +584,8 @@ class DashboardController extends Controller {
                 'week_end' => date("Y-m-d", strtotime($current_week['end'])),
             ));
             if(count($confirmed_delivery_regions) > 0){ $region_list = $confirmed_delivery_regions; }else{ $region_list = "no_deliveries"; };
-            // $pythonPath = 'C://Python312//python.exe';
-            $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
+            $pythonPath = 'C://Python312//python.exe';
+            // $pythonPath = 'C://Users//Administrator//AppData//Local//Programs//Python//Python312//python.exe';
             // $pythonPath = 'C://Users//bmsdelossantos//AppData//Local//Programs//Python//Python311//python.exe';
 
             $scriptPath = base_path('app/Http/PyScript/home-dashboard.scripts/index.py');
