@@ -31,6 +31,6 @@ class RSDashboardController extends Controller
         }
 
         // Pass user + roles to view
-        return view('replacement_seeds.dashboard', compact('user'));
+        return view('replacement_seeds.dashboard.index', compact('user'));
     }
 }

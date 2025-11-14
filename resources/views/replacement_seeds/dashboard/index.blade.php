@@ -10,7 +10,7 @@
     @if(count($user->roles))
         <ul>
             @foreach($user->roles as $role)
-                <li>{{ $role->display_name ? $role->display_name : $role->name }}</li>
+                <li>{{ $role->display_name ? $role->display_name : $role->name }}<p> </p></li>
             @endforeach
         </ul>
     @else
@@ -26,5 +26,7 @@
         {{ csrf_field() }}
         <button type="submit">Logout</button>
     </form>
+
+    <button></button>
 </body>
 </html>

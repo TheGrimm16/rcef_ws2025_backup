@@ -9,7 +9,7 @@ class ReplacementSeedsRoles extends Model
     protected $connection = 'local';
     protected $table = 'roles';
     protected $primaryKey = 'roleId';
-    public $timestamps = true; // because created_at/updated_at exist
+    public $timestamps = true;
 
     protected $fillable = [
         'name', 'display_name', 'description', 'isDeleted'
@@ -21,10 +21,19 @@ class ReplacementSeedsRoles extends Model
     public function users()
     {
         return $this->belongsToMany(
-            'App\Models\ReplacementSeedsUser', // related model
-            'role_user',                       // pivot table
-            'roleId',                          // pivot column for this model
-            'userId'                           // pivot column for related model
+            'App\Models\ReplacementSeedsUser',
+            'role_user',
+            'roleId',
+            'userId'
         );
+    }
+
+    /**
+     * Get all active roles as key-value (name => display_name)
+     */
+    public static function getAllRoles()
+    {
+        return self::where('isDeleted', 0)
+                   ->pluck('display_name', 'name');
     }
 }

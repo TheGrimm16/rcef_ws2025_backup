@@ -6,38 +6,20 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class ReplacementSeedsUser extends Authenticatable
 {
-    /**
-     * Use the local database connection instead of default.
-     *
-     * @var string
-     */
     protected $connection = 'local';
-
-    /**
-     * Table name in the local database.
-     *
-     * @var string
-     */
     protected $table = 'users';
-
     protected $primaryKey = 'userId';
 
-    /**
-     * Fillable fields (adjust as needed).
-     *
-     * @var array
-     */
     protected $fillable = [
-        'firstName', 'email', 'password',
+        'firstName', 'middleName', 'lastName', 'extName', 'username',
+        'email', 'province', 'municipality', 'stationId'
     ];
 
     protected $hidden = [
         'password', 'remember_token',
     ];
 
-    /**
-     * A user may have many roles.
-     */
+    // Roles relationship
     public function roles()
     {
         return $this->belongsToMany(
@@ -45,15 +27,38 @@ class ReplacementSeedsUser extends Authenticatable
             'role_user',
             'userId',
             'roleId'
-        )->where('roles.isDeleted', 0); // only active roles
+        )->where('roles.isDeleted', 0);
     }
 
-    /**
-     * Quick role checker (by internal name column).
-     */
-    public function hasRole($roleName)
+    // Quick role checker
+    public function hasRole($roleNames)
     {
-        return $this->roles()->where('roles.name', $roleName)->exists();
+        $query = $this->roles();
+
+        if (is_array($roleNames)) {
+            return $query->whereIn('roles.name', $roleNames)->exists();
+        }
+
+        return $query->where('roles.name', $roleNames)->exists();
     }
 
+    // Full name accessor
+    public function getFullNameAttribute()
+    {
+        return trim("{$this->firstName} {$this->middleName} {$this->lastName} {$this->extName}");
+    }
+
+    // Search scope (optimized for indexed columns)
+    public function scopeSearch($query, $term)
+    {
+        $term = "%{$term}%";
+
+        return $query->where(function ($q) use ($term) {
+            $q->whereRaw("CONCAT_WS(' ', firstName, middleName, lastName, extName) LIKE ?", [$term])
+              ->orWhere('username', 'LIKE', $term)
+              ->orWhere('email', 'LIKE', $term)
+              ->orWhere('province', 'LIKE', $term)
+              ->orWhere('municipality', 'LIKE', $term);
+        });
+    }
 }

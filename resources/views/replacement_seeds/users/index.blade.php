@@ -1,432 +1,184 @@
-@extends('layouts.index')
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>User Management</title>
 
-@section('content')
-	<div>
-		<div class="page-title">
-            <div class="title_left">
-              <h3>User Management</h3>
-            </div>
+    {{-- Bootstrap CSS --}}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    {{-- FontAwesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    {{-- DataTables CSS --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
+
+    <style>
+        .addBtn { margin-bottom: 10px; }
+        .label { margin-right: 3px; }
+    </style>
+</head>
+
+<body>
+
+<div class="container" style="margin-top:20px">
+
+    @php
+        $passableRoles = ['rcef-programmer', 'branch-it'];
+    @endphp
+
+    <h3>User Management</h3>
+
+    {{-- Messages --}}
+    @include('layouts.message')
+
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Users</strong></div>
+        <div class="panel-body">
+
+            {{-- Add Buttons --}}
+            @if(!empty(array_intersect($passableRoles, $currentUserRoles)))
+                @permission('user-create')
+                    <a href="{{ route('users.create') }}" class="btn btn-success addBtn">
+                        <i class="fa fa-plus"></i> Add New User
+                    </a>
+                @endpermission
+            @endif
+
+            @if(in_array('branch-it', $currentUserRoles))
+                <a href="{{ route('users.create.request') }}" class="btn btn-success addBtn">
+                    <i class="fa fa-plus"></i> Add New Branch User
+                </a>
+            @endif
+
+                <table class="table table-striped table-bordered" id="usersTbl">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Province</th>
+                            <th>Municipality</th>
+                            <th>Roles</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                </table>
+
         </div>
+    </div>
 
-        <div class="clearfix"></div>
+    {{-- MODALS --}}
+    @include('replacement_seeds.users.modals.reset_password_modal')
+    @include('replacement_seeds.users.modals.assign_province_modal')
+    @include('replacement_seeds.users.modals.change_info_modal')
+    @include('replacement_seeds.users.modals.change_role_modal', ['roles' => $roles])
+    @include('replacement_seeds.users.modals.assign_coop_modal')
+    @include('replacement_seeds.users.modals.update_accre_modal')
 
-		<div class="row">
-			<div class="col-md-12">
-				@include('layouts.message')
-				<div class="x_panel">
-					<div class="x_title">
-						<h2>Users</h2>
-						<div class="clearfix"></div>
-					</div>
-					<div class="x_content">
-						@if(Auth::user()->roles->first()->name == "rcef-programmer" || Auth::user()->roles->first()->name == "branch-it")
-							@permission('user-create')
-							<a href="{{ route('users.create') }}" class="btn btn-success addBtn" style="margin-bottom: 20px;"><i class="fa fa-plus"></i> Add New User</a>
-							@endpermission
-
-						{{-- <a href="{{ route('users.create.request') }}" class="btn btn-success addBtn" style="margin-bottom: 20px;"><i class="fa fa-plus"></i> Request New User</a> --}}
-						@endif
-
-						@if(Auth::user()->roles->first()->name == "branch-it")
-
-						<a href="{{ route('users.create.request') }}" class="btn btn-success addBtn" style="margin-bottom: 20px;"><i class="fa fa-plus"></i> Add New Branch User</a>
-						@endif
-					
-						<table class="table table-striped table-bordered" id="usersTbl">
-							<thead>
-								<tr>
-									<th style="width: 20%;">Name</th>
-									<th style="width: 15%;">Username</th>
-									<th style="width: 20%;">Email</th>
-									<th style="width: 15%;">Province</th>
-									<th style="width: 15%;">Municipality</th>
-									<th style="width: 15%;">Roles</th>
-									<th style="width: 10%;">Status</th>
-									<th style="width: 20%;">Actions</th>
-								</tr>
-							</thead>
-						</table>
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<div id="reset_password_modal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<form action="{{ route('users.reset') }}" method="POST" data-parsley-validate>
-				{!! csrf_field() !!}
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title">Reset Password</h4>
-						</div>
-						<div class="modal-body">
-							<input type="text" class="form-control" name="reset_pass" id="reset_pass" value="P@ssw0rd" required>
-							<button class="btn btn-info" style="margin-top:5px;" onclick="generateRandomPass(event)"><i class="fa fa-power-off"></i> GENERATE RANDOM PASSWORD (6-CHARACTERS)</button>
-										
-							</select>
-							<input type="hidden" id="userID_reset" name="userID_reset" value="">
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<input type="submit" role="submit" class="btn btn-success" value="RESET PASSWORD">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<div id="assignProvince" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<form action="{{ route('users.update.province') }}" method="POST" data-parsley-validate>
-				{!! csrf_field() !!}
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title" id="">Change Tagged Address</h4>
-						</div>
-						<div class="modal-body">
-							Select Province:
-							<select name="changeProvince" id="changeProvince" class="form-control" style="width:100%;" required>
-								
-							</select>
-							<input type="hidden" id="prv_userID" name="prv_userID" value="">
-
-							Select Municipaliy:
-							<select name="changeMunicipality" id="changeMunicipality" class="form-control" style="width:100%;" required>
-								<option value="0">Select a Municipality</option>
-							</select>
-						</div>
-						
+</div>
 
 
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<input type="submit" role="submit" class="btn btn-success" value="Update Location">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
+{{-- jQuery --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+{{-- Bootstrap JS --}}
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+{{-- DataTables JS --}}
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap.min.js"></script>
 
 
-		<div id="changeInfo" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<form action="{{ route('users.update.info') }}" method="POST" data-parsley-validate>
-					{!! csrf_field() !!}
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title" id="">Information Update</h4>
-						</div>
-						<div class="modal-body">
-							<div class="row">
-								<div class="col-md-3">First Name</div>
-								<div class="col-md-9">
-									<input type="text" name="firstName" id="firstName" class="form-control" placeholder="First Name">
-								</div>
-							</div>
+<script>
+window.Laravel = {!! json_encode([
+    'api_token' => $currentUser['api_token'],
+    'csrf_token' => csrf_token(),
+    'tableRoute' => route('replacement.datatable')
+]) !!};
 
-							<div class="row">
-								<div class="col-md-3">Middle Name</div>
-								<div class="col-md-9">
-									<input type="text" name="midName" id="midName" class="form-control" placeholder="Middle Name">
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-md-3">Last Name</div>
-								<div class="col-md-9">
-									<input type="text" name="lastName" id="lastName" class="form-control" placeholder="Last Name">
-								</div>
-							</div>
-
-							<div class="row">
-								<div class="col-md-3">Extension Name</div>
-								<div class="col-md-9">
-									<input type="text" name="extName" id="extName" class="form-control" placeholder="Ext Name">
-								</div>
-							</div>
-
-							
-							
-							
-							<input type="hidden" id="info_userID" name="info_userID" value="">
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<input type="submit" role="submit" class="btn btn-success" value="Update Information">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
+$(document).ready(function () {
+    $('#usersTbl').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: window.Laravel.tableRoute,
+        columns: [
+            { data: 'name' },
+            { data: 'username' },
+            { data: 'email' },
+            { data: 'province' },
+            { data: 'municipality' },
+            { data: 'roles', orderable: false, searchable: false },
+            { data: 'status', orderable: false, searchable: false },
+            { data: 'actions', orderable: false, searchable: false }
+        ]
+    });
+});
 
 
+function generateRandomPass(e) {
+    e.preventDefault();
+    const chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let result = '';
+    for (let i = 0; i < 6; i++) result += chars[Math.floor(Math.random() * chars.length)];
+    $("#reset_pass").val(result.toUpperCase());
+}
 
 
+// ------------------------------
+// Modal Events
+// ------------------------------
 
+$('#reset_password_modal').on('show.bs.modal', function(e){
+    $("#userID_reset").val($(e.relatedTarget).data('id'));
+});
 
-
-
-
-
-		<div id="changeRole" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<form action="{{ route('users.update.role') }}" method="POST" data-parsley-validate>
-					{!! csrf_field() !!}
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title" id="">Change Role</h4>
-						</div>
-						<div class="modal-body">
-							
-							<b>Current Role: </b><span id="currentRole"></span><br>
-							Select Role:
-							<select name="changeRoleSelect" id="changeRoleSelect" class="form-control" style="width:100%;" required>
-								<option value="">Select Role</option>
-								@foreach ($roles as $k => $r)
-									<option value="{{$k}}">{{$r}}</option>
-								@endforeach
-							</select>
-							
-							<input type="hidden" id="role_userID" name="role_userID" value="">
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<input type="submit" role="submit" class="btn btn-success" value="Change Role">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<div id="assignModal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<form action="{{ route('users.assign.coopID') }}" method="POST" data-parsley-validate>
-				{!! csrf_field() !!}
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title" id="SG_name"></h4>
-						</div>
-						<div class="modal-body">
-							<select name="seed_coop" id="seed_coop" class="form-control" style="width:100%;" required>
-								
-							</select>
-							<input type="hidden" id="userID" name="userID" value="">
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-							<input type="submit" role="submit" class="btn btn-success" value="Save Accreditation Number">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-
-		<div id="update_accre_modal" class="modal fade" role="dialog">
-			<div class="modal-dialog">
-				<!-- Modal content-->
-				<form action="{{ route('users.update.coopID') }}" method="POST" data-parsley-validate>
-				{!! csrf_field() !!}
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal">&times;</button>
-							<h4 class="modal-title" id="SG_name_update"></h4>
-						</div>
-						<div class="modal-body">
-							<select name="seed_coop_update" id="seed_coop_update" class="form-control" style="width:100%;">
-								
-							</select>
-							<input type="hidden" id="userID_update" name="userID_update" value="">
-						</div>
-						<div class="modal-footer">
-							<input type="submit" role="submit" class="btn btn-default" value="Edit tagged Seed Cooperative">
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-
-	</div>
-@endsection
-
-@push('scripts')
-	<script>
-		window.Laravel = {!! json_encode([
-			'api_token' => $data['api_token'],
-			'csrf_token' => csrf_token(),
-			'tableRoute' => route('users.datatable')
-		]) !!};
-		
-
-		function generateRandomPass(e) {
-			e.preventDefault();
-			chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-			length = 6;
-
-			var result = '';
-			for (var i = length; i > 0; --i) result += chars[Math.floor(Math.random() * chars.length)];
-			//return result.toUpperCase();
-
-			$("#reset_pass").empty().val(result.toUpperCase());
-		}
-
-		$('#reset_password_modal').on('show.bs.modal', function (e) {
-			var userID = $(e.relatedTarget).data('id');
-			$("#userID_reset").empty().val(userID);
-		});
-
-
-		$('#assignProvince').on('show.bs.modal', function (e) {
-			var userID = $(e.relatedTarget).data('id');
-			
-			$("#prv_userID").val(userID);
-			
-			$("#changeProvince").empty().append("<option value='0'>Loading library please wait...</option>");
-			$.ajax({
-				type: 'POST',
-				url: "{{ route('user.province.list') }}",
-				data: {
-					_token: "{{ csrf_token() }}",
-					userID: userID
-				},
-				success: function(data){
-					$("#changeProvince").empty().append("<option value='0'>Please select a Province</option>");
-
-					$("#changeProvince").append(data);
-
-
-					$.ajax({
-							type: 'POST',
-							url: "{{ route('user.municipality.list') }}",
-							data: {
-								_token: "{{ csrf_token() }}",
-								userID: userID,
-								province: $("#changeProvince").val()
-							},
-							success: function(data){
-								$("#changeMunicipality").empty();
-
-								$("#changeMunicipality").append(data);
-							}
-						});
-
-				}
-			});
-		});
-
-		$("#changeProvince").on("change", function(){
-			var province = $(this).val();
-
-			$.ajax({
-				type: 'POST',
-				url: "{{ route('user.municipality.list') }}",
-				data: {
-					_token: "{{ csrf_token() }}",
-					province: province,
-					userID: $("#prv_userID").val()
-				},
-				success: function(data){
-					$("#changeMunicipality").empty();
-
-					$("#changeMunicipality").append(data);
-				}
-			});
-
-
-
-		});
-
-
-		$('#changeRole').on('show.bs.modal', function (e) {
-			var userID = $(e.relatedTarget).data('id');
-			
-			$("#role_userID").val(userID);
-			console.log(userID);
-			
-			$("#currentRole").empty().append($(e.relatedTarget).parent().siblings('td').find('span.label-primary').html());
-			$("#changeProvince").empty().append("<option value='0'>Loading library please wait...</option>");
-			$.ajax({
-				type: 'POST',
-				url: "{{ route('user.province.list') }}",
-				data: {
-					_token: "{{ csrf_token() }}",
-					userID: userID
-				},
-				success: function(data){
-					$("#changeProvince").empty().append("<option value='0'>Please select a Province</option>");
-					$("#changeProvince").append(data);
-				}
-			});
-		});
-
-
-		$('#changeInfo').on('show.bs.modal', function (e) {
-			var userID = $(e.relatedTarget).data('id');
-			var lastName = $(e.relatedTarget).data('last_name');
-			var firstName = $(e.relatedTarget).data('first_name');
-			var midName = $(e.relatedTarget).data('mid_name');
-			var extName = $(e.relatedTarget).data('ext_name');
-			
-			$("#info_userID").val(userID);
-			$("#lastName").val(lastName);
-			$("#firstName").val(firstName);
-			$("#midName").val(midName);
-			$("#extName").val(extName);
-			
-		});
-		
-		$('#assignModal').on('show.bs.modal', function (e) {
-			var userID = $(e.relatedTarget).data('id');
-			var name = $(e.relatedTarget).data('name');
-
-			$("#userID").val(userID);
-			$("#SG_name").html(name);
-
-			$("#seed_coop").empty().append("<option value='0'>Loading library please wait...</option>");
-			$.ajax({
-				type: 'POST',
-				url: "{{ route('coop.list') }}",
-				data: {
-					_token: "{{ csrf_token() }}",
-					coop: 0
-				},
-				success: function(data){
-					$("#seed_coop").empty().append("<option value='0'>Please select a seed cooperative</option>");
-					$("#seed_coop").append(data);
-				}
-			});
-		});
-		
-		$('#update_accre_modal').on('show.bs.modal', function (e) {
-			var userID = $(e.relatedTarget).data('id');
-			var name = $(e.relatedTarget).data('name');
-			var coop = $(e.relatedTarget).data('coop');
-
-			$("#userID_update").val(userID);
-			$("#SG_name_update").html(name);
-			$("#coopAccreditation_update").val(coop);
-
-			$("#seed_coop_update").empty().append("<option value='0'>Loading library please wait...</option>");
-			$.ajax({
-				type: 'POST',
-				url: "{{ route('coop.list') }}",
-				data: {
-					_token: "{{ csrf_token() }}",
-					coop: coop
-				},
-				success: function(data){
-					$("#seed_coop_update").empty().append(data);
-				}
-			});
+$('#assignProvince').on('show.bs.modal', function(e){
+    const userID = $(e.relatedTarget).data('id');
+    $("#prv_userID").val(userID);
+    $("#changeProvince").html("<option>Loading...</option>");
+    $.post("{{ route('user.province.list') }}", {_token: "{{ csrf_token() }}", userID}, function(data){
+        $("#changeProvince").html("<option value='0'>Select Province</option>" + data);
+        $.post("{{ route('user.municipality.list') }}", {_token: "{{ csrf_token() }}", userID, province: $("#changeProvince").val()}, function(mdata){
+            $("#changeMunicipality").html(mdata);
         });
-	</script>
-@endpush
+    });
+});
+
+$("#changeProvince").on("change", function(){
+    $.post("{{ route('user.municipality.list') }}", {
+        _token: "{{ csrf_token() }}",
+        province: $(this).val(),
+        userID: $("#prv_userID").val()
+    }, function(data){ $("#changeMunicipality").html(data); });
+});
+
+$('#changeInfo').on('show.bs.modal', function(e){
+    const btn = $(e.relatedTarget);
+    $("#info_userID").val(btn.data('id'));
+    $("#firstName").val(btn.data('first_name'));
+    $("#midName").val(btn.data('mid_name'));
+    $("#lastName").val(btn.data('last_name'));
+    $("#extName").val(btn.data('ext_name'));
+});
+
+$('#changeRole').on('show.bs.modal', function(e){
+    $("#role_userID").val($(e.relatedTarget).data('id'));
+    $("#currentRole").text($(e.relatedTarget).closest('tr').find('.label-primary').text());
+});
+
+$('#assignModal, #update_accre_modal').on('show.bs.modal', function(e){
+    const modal = $(this), btn = $(e.relatedTarget);
+    modal.find('input[name*="userID"]').val(btn.data('id'));
+    modal.find('.modal-title').html(btn.data('name'));
+    const coop = btn.data('coop') || 0;
+    modal.find('select').html("<option>Loading...</option>");
+    $.post("{{ route('coop.list') }}", {_token: "{{ csrf_token() }}", coop}, function(data){
+        modal.find('select').html("<option value='0'>Please select a seed cooperative</option>" + data);
+    });
+});
+</script>
+
+</body>
+</html>
