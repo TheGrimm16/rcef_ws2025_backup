@@ -22,7 +22,7 @@ class RSDashboardController extends Controller
 
         // Example: show roles in view
         foreach ($user->roles as $role) {
-            echo $role->display_name ?: $role->name;
+            // echo $role->display_name ?: $role->name;
         }
 
         // Example: check a specific role

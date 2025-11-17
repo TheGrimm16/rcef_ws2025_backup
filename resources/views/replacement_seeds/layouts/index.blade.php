@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Seed Replacement App')</title>
+
+    {{-- Bootstrap CSS --}}
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    {{-- FontAwesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    {{-- DataTables CSS --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
+
+    {{-- App CSS --}}
+    <link rel="stylesheet" href="/css/app.css">
+
+    {{-- Page-specific styles --}}
+    @stack('styles')
+
+    <style>
+        .addBtn { margin-bottom: 10px; }
+        .label { margin-right: 3px; }
+
+        /* Dynamic layout */
+        :root {
+            --header-height: 60px;
+            --sidebar-width: 240px;
+        }
+
+        #app-header { height: var(--header-height); }
+        #app-sidebar { width: var(--sidebar-width); top: var(--header-height); }
+        .content-wrapper {
+            margin-left: var(--sidebar-width);
+            padding: calc(var(--header-height) + 20px) 20px 20px;
+            background: #f4f6f9;
+            min-height: 100vh;
+        }
+    </style>
+</head>
+
+<body>
+
+    @include('replacement_seeds.layouts.header')
+    @include('replacement_seeds.layouts.sidebar')
+
+    <div class="content-wrapper">
+        @yield('content')
+    </div>
+
+    @include('replacement_seeds.layouts.footer')
+
+    {{-- jQuery --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    {{-- Bootstrap JS --}}
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    {{-- DataTables JS --}}
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap.min.js"></script>
+
+    {{-- Page-specific scripts --}}
+    @stack('scripts')
+
+</body>
+</html>

@@ -82,33 +82,50 @@ class RSUserController extends Controller
 
 public function datatable()
 {
-    $usersQuery = \DB::table('users')
-        ->select(
-            'userId',
+    $usersQuery = ReplacementSeedsUser::select(
+            'users.userId',
             \DB::raw("CONCAT_WS(' ', firstName, middleName, lastName, extName) AS name"),
-            'firstName',
-            'middleName',
-            'lastName',
-            'extName',
-            'username',
-            'email',
-            'province',
-            'municipality',
-            'isDeleted'
+            'users.firstName',
+            'users.middleName',
+            'users.lastName',
+            'users.extName',
+            'users.username',
+            'users.email',
+            'users.province',
+            'users.municipality',
+            'users.isDeleted',
+            \DB::raw("GROUP_CONCAT(roles.display_name SEPARATOR '|') AS role_list")
         )
-        ->where('isDeleted', 0);
+        ->leftJoin('role_user', 'users.userId', '=', 'role_user.userId')
+        ->leftJoin('roles', function ($join) {
+            $join->on('role_user.roleId', '=', 'roles.roleId')
+                ->where('roles.isDeleted', '=', 0);   // FIXED
+        })
+        ->where('users.isDeleted', 0)
+        ->groupBy('users.userId');
 
     return \Datatables::of($usersQuery)
         ->filter(function($query) {
             if (request()->has('search') && $search = request('search')['value']) {
+
                 $search = strtolower($search);
 
                 $query->where(function($q) use ($search) {
-                    $q->whereRaw("LOWER(CONCAT(firstName, ' ', middleName, ' ', lastName, ' ', extName)) LIKE ?", ["%{$search}%"])
-                      ->orWhereRaw("LOWER(username) LIKE ?", ["%{$search}%"])
-                      ->orWhereRaw("LOWER(email) LIKE ?", ["%{$search}%"])
-                      ->orWhereRaw("LOWER(province) LIKE ?", ["%{$search}%"])
-                      ->orWhereRaw("LOWER(municipality) LIKE ?", ["%{$search}%"]);
+
+                    // Name search: multiple combinations
+                    $q->where(function ($x) use ($search) {
+                        $x->whereRaw("LOWER(CONCAT_WS(' ', firstName, middleName, lastName, extName)) LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("LOWER(CONCAT_WS(' ', firstName, lastName)) LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("LOWER(CONCAT_WS(' ', lastName, firstName)) LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("LOWER(firstName) LIKE ?", ["%{$search}%"])
+                        ->orWhereRaw("LOWER(lastName) LIKE ?", ["%{$search}%"]);
+                    });
+
+                    // Other fields
+                    $q->orWhereRaw("LOWER(username) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("LOWER(email) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("LOWER(province) LIKE ?", ["%{$search}%"])
+                    ->orWhereRaw("LOWER(municipality) LIKE ?", ["%{$search}%"]);
                 });
             }
         })
@@ -121,8 +138,16 @@ public function datatable()
             return $fullName;
         })
         ->addColumn('roles', function($user) {
-            // return roles HTML if needed
-            return ''; 
+            if (empty($user->role_list)) return '<span class="label label-default">No roles</span>';
+
+            $roles = explode('|', $user->role_list);
+            $html = '';
+
+            foreach ($roles as $r) {
+                $html .= '<span class="label label-primary">'.$r.'</span> ';
+            }
+
+            return $html;
         })
         ->addColumn('status', function($user) {
             return $user->isDeleted ? 'Inactive' : 'Active';

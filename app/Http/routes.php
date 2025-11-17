@@ -2339,6 +2339,16 @@ Route::group(['middleware' => ['logMw']], function() {
 // Replacement Seeds Routes
 Route::group(['prefix' => 'replacement-seeds'], function () {
 
+    // Redirect root → check login then dashboard or login
+    Route::get('/', function () {
+
+        if (Auth::guard('replacement_seeds')->check()) {
+            return redirect()->route('replacement.dashboard');
+        }
+
+        return redirect()->route('replacement.login');
+    })->middleware('web');
+
     // Public login routes
     Route::get('login', 'ReplacementSeeds\RSAuthController@showLoginForm')
         ->name('replacement.login')
@@ -2350,6 +2360,7 @@ Route::group(['prefix' => 'replacement-seeds'], function () {
 
     // Protected routes
     Route::group(['middleware' => ['web', 'replacement.auth']], function () {
+
         Route::get('dashboard', 'ReplacementSeeds\RSDashboardController@index')
             ->name('replacement.dashboard');
 
@@ -2361,9 +2372,13 @@ Route::group(['prefix' => 'replacement-seeds'], function () {
 
         Route::get('/users/datatable', 'ReplacementSeeds\RSUserController@datatable')
             ->name('replacement.datatable');
+
+        Route::get('request', 'ReplacementSeeds\RSRequestController@index')
+            ->name('replacement.request');
     });
 
 });
+
 
     // /* USER MANAGEMENT ROUTES */
     // Route::get('users', ['as' => 'users.index', 'uses' => 'UserController@index', 'middleware' => ['permission:user-list|user-create|user-edit|user-delete']]);

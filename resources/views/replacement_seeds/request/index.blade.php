@@ -1,6 +1,6 @@
 @extends('replacement_seeds.layouts.index')
 
-@section('title', 'User Management')
+@section('title', 'Request Management')
 
 @section('content')
 <div class="container" style="margin-top:20px">
@@ -9,13 +9,13 @@
         $passableRoles = ['rcef-programmer', 'branch-it'];
     @endphp
 
-    <h3>User Management</h3>
+    <h3>Request Management</h3>
 
     {{-- Messages --}}
     @include('layouts.message')
 
     <div class="panel panel-default">
-        <div class="panel-heading"><strong>Users</strong></div>
+        <div class="panel-heading"><strong>Requests</strong></div>
         <div class="panel-body">
 
             {{-- Add Buttons --}}
