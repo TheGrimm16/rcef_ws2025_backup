@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ReplacementSeedsRoles extends Model
+class SeedReplacementRoles extends Model
 {
     protected $connection = 'local';
     protected $table = 'roles';
@@ -21,7 +21,7 @@ class ReplacementSeedsRoles extends Model
     public function users()
     {
         return $this->belongsToMany(
-            'App\Models\ReplacementSeedsUser',
+            'App\Models\SeedReplacementUser',
             'role_user',
             'roleId',
             'userId'

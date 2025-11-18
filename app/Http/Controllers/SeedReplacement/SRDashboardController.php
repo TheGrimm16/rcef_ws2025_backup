@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\ReplacementSeeds;
+namespace App\Http\Controllers\SeedReplacement;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
-class RSDashboardController extends Controller
+class SRDashboardController extends Controller
 {
     public function index()
     {
         // Detect which guard is active
-        if (Auth::guard('replacement_seeds')->check()) {
-            $guard = 'replacement_seeds';
+        if (Auth::guard('seed_replacement')->check()) {
+            $guard = 'seed_replacement';
         } elseif (Auth::guard('web')->check()) {
             $guard = 'web';
         } else {
             return redirect()->route('login');
         }
 
-        $user = Auth::guard('replacement_seeds')->user()->load('roles');
+        $user = Auth::guard('seed_replacement')->user()->load('roles');
 
         // Example: show roles in view
         foreach ($user->roles as $role) {
@@ -31,6 +31,6 @@ class RSDashboardController extends Controller
         }
 
         // Pass user + roles to view
-        return view('replacement_seeds.dashboard.index', compact('user'));
+        return view('seed_replacement.dashboard.index', compact('user'));
     }
 }

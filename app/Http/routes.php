@@ -2337,47 +2337,68 @@ Route::group(['middleware' => ['logMw']], function() {
 });
 
 // Replacement Seeds Routes
-Route::group(['prefix' => 'replacement-seeds'], function () {
+Route::group(['prefix' => 'seed-replacement'], function () {
 
     // Redirect root → check login then dashboard or login
     Route::get('/', function () {
-
-        if (Auth::guard('replacement_seeds')->check()) {
+        if (Auth::guard('seed_replacement')->check()) {
             return redirect()->route('replacement.dashboard');
         }
-
         return redirect()->route('replacement.login');
     })->middleware('web');
 
     // Public login routes
-    Route::get('login', 'ReplacementSeeds\RSAuthController@showLoginForm')
+    Route::get('login', 'SeedReplacement\SRAuthController@showLoginForm')
         ->name('replacement.login')
         ->middleware('web');
 
-    Route::post('login', 'ReplacementSeeds\RSAuthController@login')
+    Route::post('login', 'SeedReplacement\SRAuthController@login')
         ->name('replacement.login.submit')
         ->middleware('web');
 
     // Protected routes
     Route::group(['middleware' => ['web', 'replacement.auth']], function () {
 
-        Route::get('dashboard', 'ReplacementSeeds\RSDashboardController@index')
+        Route::get('dashboard', 'SeedReplacement\SRDashboardController@index')
             ->name('replacement.dashboard');
 
-        Route::post('logout', 'ReplacementSeeds\RSAuthController@logout')
+        Route::post('logout', 'SeedReplacement\SRAuthController@logout')
             ->name('replacement.logout');
 
-        Route::get('users', 'ReplacementSeeds\RSUserController@index')
+        // Users
+        Route::get('users', 'SeedReplacement\SRUserController@index')
             ->name('replacement.users');
+        Route::get('users/datatable', 'SeedReplacement\SRUserController@datatable')
+            ->name('replacement.users.datatable');
 
-        Route::get('/users/datatable', 'ReplacementSeeds\RSUserController@datatable')
-            ->name('replacement.datatable');
+        // Requests (CRUD)
+        Route::get('request', 'SeedReplacement\SRRequestController@index')
+            ->name('replacement.request.index');
 
-        Route::get('request', 'ReplacementSeeds\RSRequestController@index')
-            ->name('replacement.request');
+        Route::get('request/create', 'SeedReplacement\SRRequestController@create')
+            ->name('replacement.request.create');
+        Route::post('request/store', 'SeedReplacement\SRRequestController@store')
+            ->name('replacement.request.store');
+
+        Route::get('request/{id}/edit', 'SeedReplacement\SRRequestController@edit')
+            ->name('replacement.request.edit');
+        Route::post('request/{id}/update', 'SeedReplacement\SRRequestController@update')
+            ->name('replacement.request.update');
+
+        Route::delete('request/{id}/delete', 'SeedReplacement\SRRequestController@destroy')
+            ->name('replacement.request.delete');
+
+        Route::get('request/datatable', 'SeedReplacement\SRRequestController@datatable')
+            ->name('replacement.request.datatable');
+
+        Route::post('request/{id}/approve', 'SeedReplacement\SRRequestController@approve')
+        ->name('replacement.request.approve');
+        Route::post('request/{id}/decline', 'SeedReplacement\SRRequestController@decline')
+        ->name('replacement.request.decline');
     });
 
 });
+
 
 
     // /* USER MANAGEMENT ROUTES */

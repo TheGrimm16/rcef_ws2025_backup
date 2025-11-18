@@ -5,11 +5,11 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class ReplacementSeedsAuth
+class SeedReplacementAuth
 {
     public function handle($request, Closure $next)
     {
-        $guard = Auth::guard('replacement_seeds');
+        $guard = Auth::guard('seed_replacement');
 
         if (!$guard->check()) {
             // Preserve intended URL and flash warning

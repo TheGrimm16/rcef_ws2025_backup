@@ -45,9 +45,9 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
-        'replacement_seeds' => [
+        'seed_replacement' => [
             'driver' => 'session',
-            'provider' => 'replacement_users',
+            'provider' => 'seed_replacement_users',
         ],
     ],
 
@@ -79,9 +79,9 @@ return [
         //     'table' => 'users',
         // ],
         
-        'replacement_users' => [
+        'seed_replacement_users' => [
             'driver' => 'eloquent',
-            'model' => App\Models\ReplacementSeedsUser::class,
+            'model' => App\Models\SeedReplacementUser::class,
         ],
     ],
 

@@ -13,7 +13,7 @@ use Auth;
 
 use Yajra\Datatables\Facades\Datatables;
 
-class ReplacementSeedController extends Controller
+class SeedReplacementController extends Controller
 {
 
  	public function home(){

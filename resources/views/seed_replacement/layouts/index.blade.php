@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
 
     {{-- App CSS --}}
-    <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     {{-- Page-specific styles --}}
     @stack('styles')
@@ -43,14 +43,14 @@
 
 <body>
 
-    @include('replacement_seeds.layouts.header')
-    @include('replacement_seeds.layouts.sidebar')
+    @include('seed_replacement.layouts.header')
+    @include('seed_replacement.layouts.sidebar')
 
     <div class="content-wrapper">
         @yield('content')
     </div>
 
-    @include('replacement_seeds.layouts.footer')
+    @include('seed_replacement.layouts.footer')
 
     {{-- jQuery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

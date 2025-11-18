@@ -1,20 +1,20 @@
 <?php
 
-namespace App\Http\Controllers\ReplacementSeeds;
+namespace App\Http\Controllers\SeedReplacement;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use DB;
 use Auth;
 use Yajra\Datatables\Datatables;
-use App\Models\ReplacementSeedsRoles;
-use App\Models\ReplacementSeedsUser;
+use App\Models\SeedReplacementRoles;
+use App\Models\SeedReplacementUser;
 
-class RSUserController extends Controller
+class SRUserController extends Controller
 {
     protected function getCurrentUser()
     {
-        $user = Auth::guard('replacement_seeds')->user();
+        $user = Auth::guard('seed_replacement')->user();
 
         if (!$user) {
             abort(403, 'Unauthorized access');
@@ -58,7 +58,7 @@ class RSUserController extends Controller
         $user = $this->getCurrentUser();
 
         // Use the new model helper to get all active roles
-        $roles = ReplacementSeedsRoles::getAllRoles(); // key => value collection
+        $roles = SeedReplacementRoles::getAllRoles(); // key => value collection
 
         $roles_filtered = [
             "branch-it", "buffer-inspector", "dro", "delivery-manager",
@@ -72,7 +72,7 @@ class RSUserController extends Controller
             return view('utility.pageClosed', compact('mss'));
         }
 
-        return view('replacement_seeds.users.index', [
+        return view('seed_replacement.users.index', [
             'currentUser' => $user,
             'currentUserRoles' => $user['roles'],
             'roles' => $roles,
@@ -82,7 +82,7 @@ class RSUserController extends Controller
 
 public function datatable()
 {
-    $usersQuery = ReplacementSeedsUser::select(
+    $usersQuery = SeedReplacementUser::select(
             'users.userId',
             \DB::raw("CONCAT_WS(' ', firstName, middleName, lastName, extName) AS name"),
             'users.firstName',
@@ -154,7 +154,7 @@ public function datatable()
         })
         ->addColumn('actions', function($user) {
             // put your buttons HTML here
-            return view('replacement_seeds.users.partials.actions', compact('user'))->render();
+            return view('seed_replacement.users.partials.actions', compact('user'))->render();
         })
         ->escapeColumns([])
         ->make(true);

@@ -63,6 +63,6 @@ class Kernel extends HttpKernel
         'nrp' => \App\Http\Middleware\nprMiddleware::class, 
         'logMw' => \App\Http\Middleware\logsMiddleware::class, 
         'loginMw' => \App\Http\Middleware\loginMw::class,
-        'replacement.auth' => \App\Http\Middleware\ReplacementSeedsAuth::class, 
+        'replacement.auth' => \App\Http\Middleware\SeedReplacementAuth::class, 
     ];
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class ReplacementSeedsUser extends Authenticatable
+class SeedReplacementUser extends Authenticatable
 {
     protected $connection = 'local';
     protected $table = 'users';
@@ -23,7 +23,7 @@ class ReplacementSeedsUser extends Authenticatable
     public function roles()
     {
         return $this->belongsToMany(
-            'App\Models\ReplacementSeedsRoles',
+            'App\Models\SeedReplacementRoles',
             'role_user',
             'userId',
             'roleId'

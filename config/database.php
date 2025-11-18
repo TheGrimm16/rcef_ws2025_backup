@@ -69,10 +69,23 @@ return [
             ]
         ],
         
+        'local_request' => [
+            'driver' => 'mysql',
+            'host' => env('LOCAL_DB_HOST', '127.0.0.1'),
+            'database' => 'ws2025_rcep_seed_replacement',
+            'username' => env('LOCAL_DB_USERNAME', 'root'),
+            'password' => env('LOCAL_DB_PASSWORD', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+        ],
+
         'local' => [
             'driver' => 'mysql',
             'host' => env('LOCAL_DB_HOST', '127.0.0.1'),
-            'database' => env('LOCAL_DB_DATABASE', 'replacement_seeds'),
+            'database' => env('LOCAL_DB_DATABASE', 'seed_replacement'),
             'username' => env('LOCAL_DB_USERNAME', 'root'),
             'password' => env('LOCAL_DB_PASSWORD', ''),
             'charset' => 'utf8',

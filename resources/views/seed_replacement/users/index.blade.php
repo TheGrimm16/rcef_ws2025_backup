@@ -1,6 +1,6 @@
-@extends('replacement_seeds.layouts.index')
+@extends('seed_replacement.layouts.index')
 
-@section('title', 'Request Management')
+@section('title', 'User Management')
 
 @section('content')
 <div class="container" style="margin-top:20px">
@@ -9,13 +9,13 @@
         $passableRoles = ['rcef-programmer', 'branch-it'];
     @endphp
 
-    <h3>Request Management</h3>
+    <h3>User Management</h3>
 
     {{-- Messages --}}
     @include('layouts.message')
 
     <div class="panel panel-default">
-        <div class="panel-heading"><strong>Requests</strong></div>
+        <div class="panel-heading"><strong>Users</strong></div>
         <div class="panel-body">
 
             {{-- Add Buttons --}}
@@ -52,12 +52,12 @@
     </div>
 
     {{-- MODALS --}}
-    @include('replacement_seeds.users.modals.reset_password_modal')
-    @include('replacement_seeds.users.modals.assign_province_modal')
-    @include('replacement_seeds.users.modals.change_info_modal')
-    @include('replacement_seeds.users.modals.change_role_modal', ['roles' => $roles])
-    @include('replacement_seeds.users.modals.assign_coop_modal')
-    @include('replacement_seeds.users.modals.update_accre_modal')
+    @include('seed_replacement.users.modals.reset_password_modal')
+    @include('seed_replacement.users.modals.assign_province_modal')
+    @include('seed_replacement.users.modals.change_info_modal')
+    @include('seed_replacement.users.modals.change_role_modal', ['roles' => $roles])
+    @include('seed_replacement.users.modals.assign_coop_modal')
+    @include('seed_replacement.users.modals.update_accre_modal')
 
 </div>
 @endsection
@@ -67,7 +67,7 @@
 window.Laravel = {!! json_encode([
     'api_token' => $currentUser['api_token'],
     'csrf_token' => csrf_token(),
-    'tableRoute' => route('replacement.datatable')
+    'tableRoute' => route('replacement.users.datatable')
 ]) !!};
 
 $(document).ready(function () {

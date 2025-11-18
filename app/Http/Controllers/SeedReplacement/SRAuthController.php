@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Controllers\ReplacementSeeds;
+namespace App\Http\Controllers\SeedReplacement;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Models\ReplacementSeedsUser;
+use App\Models\SeedReplacementUser;
 
-class RSAuthController extends Controller
+class SRAuthController extends Controller
 {
     public function showLoginForm(Request $request)
     {
         // Pass old input (email) back to view
-        return view('replacement_seeds.login', [
+        return view('seed_replacement.login', [
             'email' => old('email', $request->session()->get('email', ''))
         ]);
     }
@@ -26,7 +26,7 @@ class RSAuthController extends Controller
         $request->session()->flash('email', $credentials['email']);
 
         // Fetch user by email
-        $user = ReplacementSeedsUser::where('email', $credentials['email'])->first();
+        $user = SeedReplacementUser::where('email', $credentials['email'])->first();
 
         if (!$user) {
             return redirect()->back()->withErrors(['email' => 'User not found']);
@@ -38,7 +38,7 @@ class RSAuthController extends Controller
         }
 
         // Login using custom guard
-        Auth::guard('replacement_seeds')->login($user);
+        Auth::guard('seed_replacement')->login($user);
 
         return redirect()->intended(route('replacement.dashboard'));
 
@@ -46,7 +46,7 @@ class RSAuthController extends Controller
 
     public function logout()
     {
-        Auth::guard('replacement_seeds')->logout();
+        Auth::guard('seed_replacement')->logout();
         return redirect()->route('replacement.login');
     }
 }

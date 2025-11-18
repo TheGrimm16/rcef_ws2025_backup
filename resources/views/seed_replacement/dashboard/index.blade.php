@@ -1,5 +1,5 @@
-{{-- resources/views/replacement_seeds/dashboard.blade.php --}}
-@extends('replacement_seeds.layouts.index')
+{{-- resources/views/seed_replacement/dashboard.blade.php --}}
+@extends('seed_replacement.layouts.index')
 
 @section('content')
 <div class="page-title">

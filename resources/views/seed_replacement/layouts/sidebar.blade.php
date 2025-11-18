@@ -11,17 +11,17 @@
 <div class="sidebar">
     <ul>
         {{-- Dashboard --}}
-        <li class="{{ Request::is('replacement-seeds/dashboard') ? 'active' : '' }}">
+        <li class="{{ Request::is('seed-replacement/dashboard') ? 'active' : '' }}">
             <a href="{{ route('replacement.dashboard') }}">Dashboard</a>
         </li>
 
         {{-- Request --}}
-        <li class="{{ Request::is('replacement-seeds/request*') ? 'active' : '' }}">
-            <a href="{{ route('replacement.request') }}">Request</a>
+        <li class="{{ Request::is('seed-replacement/request*') ? 'active' : '' }}">
+            <a href="{{ route('replacement.request.index') }}">Request</a>
         </li>
         
         {{-- Users --}}
-        <li class="{{ Request::is('replacement-seeds/users*') ? 'active' : '' }}">
+        <li class="{{ Request::is('seed-replacement/users*') ? 'active' : '' }}">
             <a href="{{ route('replacement.users') }}">Users</a>
         </li>
 
