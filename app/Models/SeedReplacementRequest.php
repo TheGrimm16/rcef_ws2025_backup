@@ -10,9 +10,15 @@ class SeedReplacementRequest extends Model
     protected $connection = 'local_request';
     protected $table = 'tbl_requests';
     protected $primaryKey = 'id';
+
+    // Important for string PK
+    public $incrementing = false;       // Disable auto-increment
+    protected $keyType = 'string';      // Tell Eloquent it's a string
+
     public $timestamps = true;
 
     protected $fillable = [
+        'id',                 // add this so we can mass-assign SRID
         'user_id',
         'new_released_id',
         'geo_code',

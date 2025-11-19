@@ -9,28 +9,17 @@ class SRDashboardController extends Controller
 {
     public function index()
     {
-        // Detect which guard is active
+        // Prefer seed_replacement user if available
         if (Auth::guard('seed_replacement')->check()) {
-            $guard = 'seed_replacement';
-        } elseif (Auth::guard('web')->check()) {
-            $guard = 'web';
+            $user = Auth::guard('seed_replacement')->user()->load('roles');
+        } elseif (request()->has('logMw_user')) {
+            $user = request()->get('logMw_user'); // from session injected by middleware
         } else {
-            return redirect()->route('login');
+            // This should never happen, middleware already blocks
+            abort(403, 'Unauthorized access');
         }
 
-        $user = Auth::guard('seed_replacement')->user()->load('roles');
-
-        // Example: show roles in view
-        foreach ($user->roles as $role) {
-            // echo $role->display_name ?: $role->name;
-        }
-
-        // Example: check a specific role
-        if ($user->hasRole('admin')) {
-            // grant admin features
-        }
-
-        // Pass user + roles to view
         return view('seed_replacement.dashboard.index', compact('user'));
     }
+
 }

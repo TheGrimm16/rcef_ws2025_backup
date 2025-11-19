@@ -251,10 +251,7 @@ class rcefIctsController extends Controller
         if($firstname == ""){$firstname = "%";}
         if($lastname == ""){$lastname = "%";}
 
-
-     
         $lib_prv =  json_decode(json_encode(DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')->get()),true);
-
 
         $farmer_list = DB::table($GLOBALS['season_prefix'].'prv_'.$prv.'.farmer_information_final')  
             ->where("firstName", "LIKE", $firstname."%")

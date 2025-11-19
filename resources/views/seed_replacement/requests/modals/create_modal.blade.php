@@ -12,11 +12,26 @@
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
 
                 <div class="modal-body">
+
+                    <div class="form-group">
+                        <label>Province</label>
+                        <select name="province_code" id="provinceSelect" class="form-control" style="width:100%" required>
+                            <option value="">Select Province</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Municipality</label>
+                        <select name="municipality_code" id="municipalitySelect" class="form-control" style="width:100%" required disabled>
+                            <option value="">Select Municipality</option>
+                        </select>
+                    </div>
+
                     <div id="modal-errors" class="alert alert-danger" style="display: none;"></div>
 
                     <div class="form-group">
-                        <label>User ID</label>
-                        <input type="number" name="user_id" class="form-control" required>
+                        <label>RSBSA</label>
+                        <input type="text" name="rsbsa" class="form-control" required>
                     </div>
 
                     <div class="form-group">

@@ -2337,15 +2337,13 @@ Route::group(['middleware' => ['logMw']], function() {
 });
 
 // Replacement Seeds Routes
+// Replacement Seeds Routes
 Route::group(['prefix' => 'seed-replacement'], function () {
 
     // Redirect root → check login then dashboard or login
     Route::get('/', function () {
-        if (Auth::guard('seed_replacement')->check()) {
-            return redirect()->route('replacement.dashboard');
-        }
-        return redirect()->route('replacement.login');
-    })->middleware('web');
+        return redirect()->route('replacement.dashboard');
+    })->middleware(['web', 'logOrReplacement']);
 
     // Public login routes
     Route::get('login', 'SeedReplacement\SRAuthController@showLoginForm')
@@ -2356,12 +2354,14 @@ Route::group(['prefix' => 'seed-replacement'], function () {
         ->name('replacement.login.submit')
         ->middleware('web');
 
-    // Protected routes
-    Route::group(['middleware' => ['web', 'replacement.auth']], function () {
+    // All protected routes go through logOrReplacement
+    Route::group(['middleware' => ['web', 'logOrReplacement']], function () {
 
+        // Dashboard
         Route::get('dashboard', 'SeedReplacement\SRDashboardController@index')
             ->name('replacement.dashboard');
 
+        // Logout
         Route::post('logout', 'SeedReplacement\SRAuthController@logout')
             ->name('replacement.logout');
 
@@ -2392,28 +2392,15 @@ Route::group(['prefix' => 'seed-replacement'], function () {
             ->name('replacement.request.datatable');
 
         Route::post('request/{id}/approve', 'SeedReplacement\SRRequestController@approve')
-        ->name('replacement.request.approve');
+            ->name('replacement.request.approve');
         Route::post('request/{id}/decline', 'SeedReplacement\SRRequestController@decline')
-        ->name('replacement.request.decline');
+            ->name('replacement.request.decline');
     });
 
 });
 
 
 
-    // /* USER MANAGEMENT ROUTES */
-    // Route::get('users', ['as' => 'users.index', 'uses' => 'UserController@index', 'middleware' => ['permission:user-list|user-create|user-edit|user-delete']]);
-    // Route::get('/users/datatable', ['as' => 'users.datatable', 'uses' => 'UserController@datatable', 'middleware' => ['permission:user-list']]);
-    // Route::get('users/create', ['as' => 'users.create', 'uses' => 'UserController@create', 'middleware' => ['permission:user-create']]);
-    // Route::post('users/create', ['as' => 'users.store', 'uses' => 'UserController@store', 'middleware' => ['permission:user-create']]);
-    // Route::get('users/{id}', ['as' => 'users.show', 'uses' => 'UserController@show', 'middleware' => ['permission:user-list']]);
-    // Route::get('users/edit/{id}', ['as' => 'users.edit', 'uses' => 'UserController@edit', 'middleware' => ['permission:user-edit']]);
-    // Route::patch('users/{id}', ['as' => 'users.update', 'uses' => 'UserController@update', 'middleware' => ['permission:user-edit']]);
-    // Route::delete('users/{id}', ['as' => 'users.destroy', 'uses' => 'UserController@destroy']);
-    // Route::post('users/province', ['as' => 'users.province', 'uses' => 'UserController@province']);
-    // Route::post('users/region', ['as' => 'users.region', 'uses' => 'UserController@region']);
-    // Route::post('users/edit/province', ['as' => 'users.province', 'uses' => 'UserController@province']);
-    // Route::post('users/edit/region', ['as' => 'users.region', 'uses' => 'UserController@region']);
 
  //END Replacement Seeds Routes
 

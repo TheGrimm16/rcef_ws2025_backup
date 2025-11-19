@@ -75,7 +75,7 @@ $(document).ready(function () {
         var formData = $(this).serialize();
 
         $.ajax({
-            url: "{{ route('replacement.request.create') }}",
+            url: "{{ route('replacement.request.store') }}",
             type: "POST",
             data: formData,
             success: function(response) {

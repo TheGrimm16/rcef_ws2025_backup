@@ -12,10 +12,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
     {{-- DataTables CSS --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css"  />
 
     {{-- App CSS --}}
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <!-- <link rel="stylesheet" href="{{ asset('public/css/all.css') }}">
+    <link rel="stylesheet" href="{{ asset('public/css/app.css') }}"> -->
+
+    <link rel="stylesheet" href="{{ asset('public/css/select2.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('public/css/dialog/jquery-confirm.min.css') }}">
 
     {{-- Page-specific styles --}}
     @stack('styles')

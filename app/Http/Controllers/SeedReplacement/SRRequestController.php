@@ -39,6 +39,45 @@ class SRRequestController extends Controller
         ];
     }
 
+    protected function generateSRID()
+    {
+        // Date parts
+        $year = date('Y');
+        $monthDay = date('md');
+        $minSec = date('is'); // minute + second: mmss
+
+        // Final prefix: SRYYYY-MMDD-mmss-
+        $prefix = 'SR' . $year . '-' . $monthDay . '-' . $minSec . '-';
+
+        $counter = 1;
+
+        while (true) {
+            // Create ID with 2-digit counter
+            $id = $prefix . sprintf('%02d', $counter);
+
+            // Check via your Model instead of DB::table()
+            $exists = SeedReplacementRequest::where('id', $id)->exists();
+
+            if (!$exists) {
+                return $id;
+            }
+
+            $counter++;
+        }
+    }
+
+    // $srId = $this->generateSRID();
+
+    // DB::table('tbl_requests')->insert([
+    //     'sr_id'         => $srId,
+    //     'user_id'       => $request->user_id,
+    //     'geo_code'      => $request->geo_code,
+    //     'purpose_id'    => $request->purpose_id,
+    //     'attachment_dir'=> $request->attachment_dir,
+    //     'created_at'    => now(),
+    //     'updated_at'    => now(),
+    // ]);
+
     public function index()
     {
         $user = $this->getCurrentUser();
@@ -65,7 +104,7 @@ class SRRequestController extends Controller
 
     public function datatable()
     {
-        $currentUser = $this->getCurrentUser(); // get logged-in user
+        $currentUser = $this->getCurrentUser(); // get logged-in users
 
         // Roles allowed to approve requests
         $roles_filtered = [
@@ -173,34 +212,43 @@ class SRRequestController extends Controller
     }
 
 
-    public function create()
-    {
-        return view('seed_replacement.requests.create');
-    }
+    // public function create()
+    // {
+    //     return view('seed_replacement.requests.create');
+    // }
 
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'user_id'          => 'required|integer',
-            'geo_code'         => 'required|string',
-            'purpose_id'       => 'required|integer',
-            'new_released_id'  => 'required|integer',
-            'attachment_dir'   => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-        ]);
+        $rules = [
+            'geo_code'        => 'required|string',
+            'purpose_id'      => 'required|integer',
+            'new_released_id' => 'required|integer',
+        ];
 
+        if ($request->hasFile('attachment_dir')) {
+            $rules['attachment_dir'] = 'file|mimes:jpg,jpeg,png,pdf|max:2048';
+        }
+
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
+        $currentUser = $this->getCurrentUser();
         $data = $request->all();
+        $data['id'] = $this->generateSRID();
+        $data['user_id'] = $currentUser['userId'];
 
-        // Assign file to model and it will auto-store
         if ($request->hasFile('attachment_dir')) {
             $data['attachment_dir'] = $request->file('attachment_dir');
         }
 
         SeedReplacementRequest::create($data);
-        return response()->json(['success' => true]);
+
+        return response()->json([
+            'success' => true,
+            'id' => $data['id']
+        ]);
     }
 
     public function edit($id)
