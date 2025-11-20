@@ -13,6 +13,8 @@
 
                 <div class="modal-body">
 
+                    <div id="modal-errors" class="alert alert-danger" style="display: none;"></div>
+
                     <div class="form-group">
                         <label>Province</label>
                         <select name="province_code" id="provinceSelect" class="form-control" style="width:100%" required>
@@ -22,12 +24,10 @@
 
                     <div class="form-group">
                         <label>Municipality</label>
-                        <select name="municipality_code" id="municipalitySelect" class="form-control" style="width:100%" required disabled>
+                        <select name="municipality_code" id="municipalitySelect" class="form-control" style="width:100%" required>
                             <option value="">Select Municipality</option>
                         </select>
                     </div>
-
-                    <div id="modal-errors" class="alert alert-danger" style="display: none;"></div>
 
                     <div class="form-group">
                         <label>RSBSA</label>

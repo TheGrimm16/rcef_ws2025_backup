@@ -3,23 +3,14 @@
 namespace App\Http\Controllers\SeedReplacement;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 
-class SRDashboardController extends Controller
+class SRDashboardController extends SRBaseController
 {
     public function index()
     {
-        // Prefer seed_replacement user if available
-        if (Auth::guard('seed_replacement')->check()) {
-            $user = Auth::guard('seed_replacement')->user()->load('roles');
-        } elseif (request()->has('logMw_user')) {
-            $user = request()->get('logMw_user'); // from session injected by middleware
-        } else {
-            // This should never happen, middleware already blocks
-            abort(403, 'Unauthorized access');
-        }
+        // Use the standardized user array from SRBaseController
+        $user = $this->userObject();
 
         return view('seed_replacement.dashboard.index', compact('user'));
     }
-
 }

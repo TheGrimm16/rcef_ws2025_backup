@@ -3,80 +3,48 @@
 namespace App\Http\Controllers\SeedReplacement;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Auth;
 use Yajra\Datatables\Datatables;
 use App\Models\SeedReplacementRoles;
-use App\Models\SeedReplacementUser;
 use App\Models\SeedReplacementRequest;
 use Validator;
 use Storage;
 
-class SRRequestController extends Controller
+class SRRequestController extends SRBaseController
 {
+    /**
+     * Return the actual user model
+     */
     protected function getCurrentUser()
     {
-        $user = Auth::guard('seed_replacement')->user();
-        if (!$user) abort(403, 'Unauthorized access');
-
-        return [
-            'userId' => $user->userId,
-            'firstName' => $user->firstName,
-            'middleName' => $user->middleName,
-            'lastName' => $user->lastName,
-            'extName' => $user->extName,
-            'email' => $user->email,
-            'username' => $user->username,
-            'stationId' => $user->stationId,
-            'api_token' => $user->api_token,
-            'roles' => $user->roles->pluck('name')->toArray(),
-            'can' => function($permission) use ($user) { return $user->can($permission); },
-            'hasRole' => function($roles) use ($user) {
-                $roles = is_array($roles) ? $roles : [$roles];
-                foreach ($roles as $r) if ($user->hasRole($r)) return true;
-                return false;
-            }
-        ];
+        return $this->userObject(); // returns Eloquent model
     }
 
     protected function generateSRID()
     {
-        // Date parts
         $year = date('Y');
         $monthDay = date('md');
         $minSec = date('is'); // minute + second: mmss
-
-        // Final prefix: SRYYYY-MMDD-mmss-
         $prefix = 'SR' . $year . '-' . $monthDay . '-' . $minSec . '-';
-
         $counter = 1;
 
         while (true) {
-            // Create ID with 2-digit counter
             $id = $prefix . sprintf('%02d', $counter);
-
-            // Check via your Model instead of DB::table()
-            $exists = SeedReplacementRequest::where('id', $id)->exists();
-
-            if (!$exists) {
+            if (!SeedReplacementRequest::where('id', $id)->exists()) {
                 return $id;
             }
-
             $counter++;
         }
     }
 
-    // $srId = $this->generateSRID();
-
-    // DB::table('tbl_requests')->insert([
-    //     'sr_id'         => $srId,
-    //     'user_id'       => $request->user_id,
-    //     'geo_code'      => $request->geo_code,
-    //     'purpose_id'    => $request->purpose_id,
-    //     'attachment_dir'=> $request->attachment_dir,
-    //     'created_at'    => now(),
-    //     'updated_at'    => now(),
-    // ]);
+    protected function userHasAnyRole($user, $roles)
+    {
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public function index()
     {
@@ -89,24 +57,22 @@ class SRRequestController extends Controller
             "rcef-programmer"
         ];
 
-        if (!$user['hasRole']($roles_filtered)) {
+        if (!$this->userHasAnyRole($user, $roles_filtered)) {
             $mss = "No Access Privilege";
             return view('utility.pageClosed', compact('mss'));
         }
 
         return view('seed_replacement.requests.index', [
             'currentUser' => $user,
-            'currentUserRoles' => $user['roles'],
+            'currentUserRoles' => $user->roles,
             'roles' => $roles,
-            'apiToken' => $user['api_token'],
+            'apiToken' => $user->api_token,
         ]);
     }
 
     public function datatable()
     {
-        $currentUser = $this->getCurrentUser(); // get logged-in users
-
-        // Roles allowed to approve requests
+        $currentUser = $this->getCurrentUser();
         $roles_filtered = [
             "branch-it","buffer-inspector","dro","delivery-manager",
             "ebinhi-implementor","rcef-pmo","system-encoder",
@@ -122,20 +88,15 @@ class SRRequestController extends Controller
             })
             ->addColumn('action', function($request) use ($currentUser, $roles_filtered) {
                 $actionBtn = '';
-
-                // Check if user can approve/decline
-                $canApprove = $currentUser['hasRole']($roles_filtered);
+                $canApprove = $this->userHasAnyRole($currentUser, $roles_filtered);
 
                 if (is_null($request->is_approved)) {
-                    // Only allow Edit/Delete for pending requests
                     $editUrl = route('replacement.request.edit', $request->id);
                     $deleteUrl = route('replacement.request.delete', $request->id);
-
                     $actionBtn .= '<a href="'.$editUrl.'" class="btn btn-sm btn-primary">Edit</a> '.
-                                '<a href="'.$deleteUrl.'" class="btn btn-sm btn-danger">Delete</a> ';
+                                  '<a href="'.$deleteUrl.'" class="btn btn-sm btn-danger">Delete</a> ';
                 }
 
-                // Show approve/decline or status buttons
                 if ($canApprove) {
                     if (is_null($request->is_approved)) {
                         $approveBtn = '<button class="btn btn-sm btn-info approve-btn" data-id="'.$request->id.'" data-url="'.route('replacement.request.approve', $request->id).'">Approve</button>';
@@ -150,15 +111,13 @@ class SRRequestController extends Controller
 
                 return $actionBtn;
             })
-            ->escapeColumns([]) // allow HTML
+            ->escapeColumns([])
             ->make(true);
     }
 
     public function approve($id)
     {
         $request = SeedReplacementRequest::findOrFail($id);
-
-        // Only users with allowed roles can approve
         $currentUser = $this->getCurrentUser();
         $allowedRoles = [
             "branch-it","buffer-inspector","dro","delivery-manager",
@@ -167,16 +126,7 @@ class SRRequestController extends Controller
             "rcef-programmer"
         ];
 
-        $canApprove = false;
-        foreach ($allowedRoles as $role) {
-            if ($currentUser['hasRole']($role)) {
-                $canApprove = true;
-                break;
-            }
-        }
-
-
-        if (!$canApprove) {
+        if (!$this->userHasAnyRole($currentUser, $allowedRoles)) {
             return response()->json(['success' => false, 'message' => 'No access.'], 403);
         }
 
@@ -189,8 +139,6 @@ class SRRequestController extends Controller
     public function decline($id)
     {
         $request = SeedReplacementRequest::findOrFail($id);
-
-        // Only users with allowed roles can approve or decline
         $currentUser = $this->getCurrentUser();
         $allowedRoles = [
             "branch-it","buffer-inspector","dro","delivery-manager",
@@ -199,23 +147,15 @@ class SRRequestController extends Controller
             "rcef-programmer"
         ];
 
-        $canApprove = $currentUser['hasRole']($allowedRoles);
-
-        if (!$canApprove) {
+        if (!$this->userHasAnyRole($currentUser, $allowedRoles)) {
             return response()->json(['success' => false, 'message' => 'No access.'], 403);
         }
 
-        $request->is_approved = 0; // Declined
+        $request->is_approved = 0;
         $request->save();
 
         return response()->json(['success' => true, 'message' => 'Request declined.']);
     }
-
-
-    // public function create()
-    // {
-    //     return view('seed_replacement.requests.create');
-    // }
 
     public function store(Request $request)
     {
@@ -237,7 +177,7 @@ class SRRequestController extends Controller
         $currentUser = $this->getCurrentUser();
         $data = $request->all();
         $data['id'] = $this->generateSRID();
-        $data['user_id'] = $currentUser['userId'];
+        $data['user_id'] = $currentUser->userId;
 
         if ($request->hasFile('attachment_dir')) {
             $data['attachment_dir'] = $request->file('attachment_dir');
@@ -245,10 +185,7 @@ class SRRequestController extends Controller
 
         SeedReplacementRequest::create($data);
 
-        return response()->json([
-            'success' => true,
-            'id' => $data['id']
-        ]);
+        return response()->json(['success' => true, 'id' => $data['id']]);
     }
 
     public function edit($id)
@@ -275,7 +212,6 @@ class SRRequestController extends Controller
         $data = $request->all();
 
         if ($request->hasFile('attachment_dir')) {
-            // Delete old file
             if ($req->attachment_dir) Storage::disk('public')->delete($req->attachment_dir);
             $data['attachment_dir'] = $request->file('attachment_dir');
         }

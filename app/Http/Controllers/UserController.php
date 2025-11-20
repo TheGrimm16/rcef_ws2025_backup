@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+
+
+
+use Illuminate\Support\Collection;
 use Illuminate\Http\Request;
 
 use App\Http\Requests;
@@ -15,6 +19,7 @@ use Yajra\Datatables\Datatables;
 
 use Session;
 use App\User;
+
 
 class UserController extends Controller
 {
@@ -32,55 +37,59 @@ class UserController extends Controller
     // public function index(Request $request)
     public function index()
     {
-     
+        $data = [];
         $data['api_token'] = Auth::user()->api_token;
 
-    $userManagement = array();
-    
-    $roles_filtered = [
-        "branch-it", "buffer-inspector", "dro", "delivery-manager", "ebinhi-implementor", "rcef-pmo", "system-encoder", "techno_demo_officer", "seed-grower", "administrator"
-    ];
+        $roles_filtered = [
+            "branch-it", "buffer-inspector", "dro", "delivery-manager",
+            "ebinhi-implementor","rcef-pmo","system-encoder",
+            "techno_demo_officer","seed-grower","administrator"
+        ];
 
-     if(Auth::user()->roles->first()->name == "rcef-programmer"){
-        $roles = DB::table('roles')
-        // ->whereIn("name", $roles_filtered)
-        ->pluck('display_name', 'roleId');
-    }else{
-        $roles = DB::table('roles')
-        ->whereIn("name", $roles_filtered)
-        ->pluck('display_name', 'roleId');
-    }
+        // Get all user roles as array safely
+        $authRoles = Auth::user()->roles;
 
-    
-
-        if(isset($userManagement[Auth::user()->username]) || Auth::user()->roles->first()->name == "rcef-programmer"){
-            return view('users.index', compact('data', 'roles'));  
-        }elseif(Auth::user()->roles->first()->name == "branch-it"){
-            if(Auth::user()->stationId != "0"){
-                return view('users.index', compact('data', 'roles'));  
-            }else{
-                $mss = "No Station Tagged";
-                return view('utility.pageClosed',compact("mss"));
+        $userRoles = [];
+        if (is_array($authRoles)) {
+            foreach ($authRoles as $r) {
+                $userRoles[] = is_array($r) ? $r['name'] : $r->name;
             }
-        }
-        else{
-                $mss = "No Access Privilege";
-                return view('utility.pageClosed',compact("mss"));
-             
+        } elseif ($authRoles instanceof \Illuminate\Support\Collection) {
+            $userRoles = $authRoles->pluck('name')->toArray();
         }
 
+        // Determine first role safely
+        $firstRole = '';
+        if (!empty($authRoles)) {
+            $first = is_array($authRoles) ? reset($authRoles) : $authRoles->first();
+            $firstRole = is_array($first) ? $first['name'] : $first->name;
+        }
 
+        // Prepare roles list for dropdown
+        if ($firstRole === 'rcef-programmer') {
+            $rolesCollection = DB::table('roles')->get();
+        } else {
+            $rolesCollection = DB::table('roles')
+                ->whereIn('name', $roles_filtered)
+                ->get();
+        }
 
+        // Convert collection to simple array for Blade
+        $roles = [];
+        foreach ($rolesCollection as $r) {
+            $roles[$r->roleId] = $r->display_name;
+        }
 
-
-
-        
+        // Access control
+        if (in_array('rcef-programmer', $userRoles) || in_array('branch-it', $userRoles)) {
+            return view('users.index', compact('data', 'roles', 'firstRole'));
+        } elseif (in_array('branch-it', $userRoles) && Auth::user()->stationId != "0") {
+            return view('users.index', compact('data', 'roles', 'firstRole'));
+        } else {
+            $mss = "No Access Privilege";
+            return view('utility.pageClosed', compact('mss'));
+        }
     }
-
-
-
-
-
 
 
     /**
@@ -793,133 +802,113 @@ class UserController extends Controller
         echo json_encode($region);
     }
 
-    public function datatable()
-    {
-      
-        if(Auth::user()->roles->first()->name == "branch-it" && Auth::user()->username != "rs.jandoc-ces"){
-
-      
-                $users = DB::table('users')
-                ->select('userId', 'firstName', 'middleName', 'lastName', 'extName', 'email', 'username', 'municipality', 'isDeleted')
-                ->where('isDeleted', 0)
-                ->where("stationId",Auth::user()->stationId)
-                ->get();
-            
-         
-        }else{
-            $users = DB::table('users')
-            ->select('userId', 'firstName', 'middleName', 'lastName', 'extName', 'email', 'username', 'municipality', 'isDeleted')
-            ->where('isDeleted', 0)
-            ->get();
-         
-        }
-       
-        $data = array();
-
-
-        foreach ($users as $item) {
+            // $getPrvMun = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
+            // ->select('province', 'municipality')
+            // ->where('prv', 'LIKE', $item->municipality)
+            // ->first();
+public function datatable()
+{
+    $currentUser = Auth::user();
     
-            $roles = DB::table('roles')
-            ->leftJoin('role_user', 'role_user.roleId', '=', 'roles.roleId')
-            ->select('roles.display_name')
-            ->where('role_user.userId', $item->userId)
-            ->get();
+    // Base query
+    // Ensure the connection uses utf8_unicode_ci for this session
+    DB::statement("SET NAMES 'utf8' COLLATE 'utf8_unicode_ci'");
 
-            if ($item->extName == '') {
-                $name = $item->firstName . ' ' . $item->lastName;
-            } else {
-                $name = $item->firstName . ' ' . $item->lastName . ', ' . $item->extName;
-            }
-
-            $getPrvMun = DB::table($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv')
-            ->select('province', 'municipality')
-            ->where('prv', 'LIKE', $item->municipality)
-            ->first();
-
-            if($getPrvMun)
-            {
-                $province = $getPrvMun->province;
-                $municipality = $getPrvMun->municipality;
-            }
-            else
-            {
-                $province = 'N/A';
-                $municipality = 'N/A';
-            }
-
-            $data[] = array(
-                'userId' => $item->userId,
-                'name' => $name,
-                'email' => $item->email,
-                'province' => $province,
-                'municipality' => $municipality,
-                'username' => $item->username,
-                'lastName' => $item->lastName,
-                'firstName' => $item->firstName,
-                'middleName' => $item->middleName,
-                'extName' => $item->extName,
-                
-                'isDeleted' => $item->isDeleted,
-                'roles' => $roles
-            );
-        }
-
-        $data = collect($data);
-
-
-        return Datatables::of($data)
-        ->addColumn('roles', function($data) {
-            $roles = '';
-            foreach ($data['roles'] as $item) {
-                $roles .= '<span class="label label-primary">'.$item->display_name.'</span>&nbsp;';
-            }
-            return $roles;
+    $usersQuery = DB::table('users as u')
+        ->leftJoin('role_user as ru', 'ru.userId', '=', 'u.userId')
+        ->leftJoin('roles as r', function($join) {
+            $join->on('r.roleId', '=', 'ru.roleId')
+                ->where('r.isDeleted', '=', 0);
         })
-        ->addColumn('status', function($data) {
-            if ($data['isDeleted'] == 0) {
-                return '<button class="btn btn-success">Active</button>';
-            } else {
-                return '<button class="btn btn-danger">Inactive</button>';
+        ->leftJoin('users_coop as uc', 'uc.userId', '=', 'u.userId')
+        ->leftJoin($GLOBALS['season_prefix'].'rcep_delivery_inspection.lib_prv as p', function($join) {
+            $join->on(DB::raw("CONVERT(p.prv USING utf8) COLLATE utf8_general_ci"), '=', 'u.municipality');
+        })
+        ->select(
+            'u.userId',
+            DB::raw("CONCAT_WS(' ', u.firstName, u.middleName, u.lastName, u.extName) AS name"),
+            'u.firstName',
+            'u.middleName',
+            'u.lastName',
+            'u.extName',
+            'u.username',
+            'u.email',
+            'p.province',
+            'p.municipality',
+            'u.isDeleted',
+            DB::raw("GROUP_CONCAT(r.display_name SEPARATOR '|') AS role_list"),
+            'uc.coopAccreditation'
+        )
+        ->where('u.isDeleted', 0)
+        ->groupBy('u.userId');
+
+
+    // Branch-IT restriction
+    $userRoles = collect($currentUser->roles)->pluck('name')->toArray();
+    if (in_array('branch-it', $userRoles) && $currentUser->username != "rs.jandoc-ces") {
+        $usersQuery->where('u.stationId', $currentUser->stationId);
+    }
+
+    return Datatables::of($usersQuery)
+        ->filter(function($query) {
+            if (request()->has('search') && $search = request('search')['value']) {
+                $search = strtolower($search);
+                $query->where(function($q) use ($search) {
+                    // Name search
+                    $q->whereRaw("LOWER(CONCAT_WS(' ', u.firstName, u.middleName, u.lastName, u.extName)) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(CONCAT_WS(' ', u.firstName, u.lastName)) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(CONCAT_WS(' ', u.lastName, u.firstName)) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(u.firstName) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(u.lastName) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(u.username) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(u.email) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(u.province) LIKE ?", ["%{$search}%"])
+                      ->orWhereRaw("LOWER(u.municipality) LIKE ?", ["%{$search}%"]);
+                });
             }
         })
-        ->addColumn('actions', function($data) {
-            $button = '<a href="'.route('users.show', $data['userId']).'" class="btn btn-info actionBtn" title="View"><i class="fa fa-eye"></i> View</a>&nbsp;';
+        ->addColumn('roles', function($user) {
+            if (empty($user->role_list)) return '<span class="label label-default">No roles</span>';
+            $roles = explode('|', $user->role_list);
+            $html = '';
+            foreach ($roles as $r) {
+                $html .= '<span class="label label-primary">'.$r.'</span> ';
+            }
+            return $html;
+        })
+        ->addColumn('status', function($user) {
+            return $user->isDeleted ? '<button class="btn btn-danger">Inactive</button>' 
+                                    : '<button class="btn btn-success">Active</button>';
+        })
+        ->addColumn('actions', function($user) {
+            $fullName = trim($user->firstName.' '.$user->middleName.' '.$user->lastName.' '.$user->extName);
+
+            $button = '<a href="'.route('users.show', $user->userId).'" class="btn btn-info actionBtn" title="View"><i class="fa fa-eye"></i> View</a>&nbsp;';
 
             if (Auth::user()->can('user-edit')) {
-                $button .= '<a href="'.route('users.edit', $data['userId']).'" class="btn btn-warning actionBtn" title="Edit"><i class="fa fa-pencil"></i> Edit</a>&nbsp;';
+                $button .= '<a href="'.route('users.edit', $user->userId).'" class="btn btn-warning actionBtn" title="Edit"><i class="fa fa-pencil"></i> Edit</a>&nbsp;';
             }
 
             if (Auth::user()->can('user-delete')) {
-                if ($data['isDeleted'] == 0) {
-                    $button .= '<a href="#" class="btn btn-danger actionBtn" title="Deactivate"><i class="fa fa-times"></i> Deactivate</a>';
+                $button .= $user->isDeleted == 0
+                    ? '<a href="#" class="btn btn-danger actionBtn" title="Deactivate"><i class="fa fa-times"></i> Deactivate</a>'
+                    : '<a href="#" class="btn btn-success actionBtn" title="Activate"><i class="fa fa-check"></i> Activate</a>';
+            }
+
+            if (!empty($user->role_list) && preg_match('/Seed Grower|Delivery Manager/', $user->role_list)) {
+                if ($user->coopAccreditation) {
+                    $button .= '<a href="#" data-id="'.$user->userId.'" data-name="'.$fullName.'" data-coop="'.$user->coopAccreditation.'" class="btn btn-default actionBtn open-updateAcxreditation" data-toggle="modal" data-target="#update_accre_modal" title="'.$user->coopAccreditation.'">'.$user->coopAccreditation.'</a>&nbsp;';
                 } else {
-                    $button .= '<a href="#" class="btn btn-success actionBtn" title="Activate"><i class="fa fa-check"></i> Activate</a>';
+                    $button .= '<a href="#" data-id="'.$user->userId.'" data-name="'.$fullName.'" class="btn btn-success actionBtn open-assignModal" data-toggle="modal" data-target="#assignModal" title="Assign accreditation #"><i class="fa fa-tag"></i> Tag to seed coop</a>&nbsp;';
                 }
             }
-
-            foreach ($data['roles'] as $item) {
-                if($item->display_name == 'Seed Grower' || $item->display_name == 'Delivery Manager'){
-                    $coop_details = DB::connection('mysql')->table('users_coop')->where('userId', '=', $data['userId'])->first();
-                    if(count($coop_details) > 0){
-                        $button .= '<a href="#" data-id="'.$data['userId'].'" data-name="'.$data['name'].'" data-coop="'.$coop_details->coopAccreditation.'" class="btn btn-default actionBtn open-updateAcxreditation" data-toggle="modal" data-target="#update_accre_modal" title="'.$coop_details->coopAccreditation.'">'.$coop_details->coopAccreditation.'</a>&nbsp;';
-                    }else{
-                        $button .= '<a href="#" data-id="'.$data['userId'].'" data-name="'.$data['name'].'" class="btn btn-success actionBtn open-assignModal" data-toggle="modal" data-target="#assignModal" title="Assign accreditation #"><i class="fa fa-tag"></i> Tag to seed coop</a>&nbsp;';
-                    }
-                    
-                }
-            }
-
-            $button .= '<a href="#" data-id="'.$data['userId'].'" class="btn btn-danger actionBtn open-assignProvince" data-toggle="modal" data-target="#assignProvince" title="Assign accreditation #"><i class="fa fa-map-marker"></i> Change Tagged Address</a>&nbsp;';
-            $button .= '<a href="#" data-id="'.$data['userId'].'" data-last_name="'.$data['lastName'].'" data-first_name="'.$data['firstName'].'" data-mid_name="'.$data['middleName'].'" data-ext_name="'.$data['extName'].'" class="btn btn-warning actionBtn open-changeInfo" data-toggle="modal" data-target="#changeInfo"><i class="fa fa-user"></i> Update Information</a>&nbsp;';
-            $button .= '<a href="#" data-id="'.$data['userId'].'" class="btn btn-warning actionBtn open-changeRole" data-toggle="modal" data-target="#changeRole"><i class="fa fa-user-plus"></i> Change Role</a>&nbsp;';
-
-
-            $button .= '<a href="#" data-id="'.$data['userId'].'" class="btn btn-warning actionBtn open-resetPassword" data-toggle="modal" data-target="#reset_password_modal"><i class="fa fa-unlock-alt"></i> RESET PASSWORD</a>&nbsp;';
 
             return $button;
         })
+        ->escapeColumns([])
         ->make(true);
-    }
+}
+
 
     public function updateProvince(Request $request){
      

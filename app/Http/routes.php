@@ -2337,13 +2337,12 @@ Route::group(['middleware' => ['logMw']], function() {
 });
 
 // Replacement Seeds Routes
-// Replacement Seeds Routes
 Route::group(['prefix' => 'seed-replacement'], function () {
 
     // Redirect root → check login then dashboard or login
     Route::get('/', function () {
         return redirect()->route('replacement.dashboard');
-    })->middleware(['web', 'logOrReplacement']);
+    })->middleware(['web', 'multiguard']);
 
     // Public login routes
     Route::get('login', 'SeedReplacement\SRAuthController@showLoginForm')
@@ -2354,14 +2353,12 @@ Route::group(['prefix' => 'seed-replacement'], function () {
         ->name('replacement.login.submit')
         ->middleware('web');
 
-    // All protected routes go through logOrReplacement
-    Route::group(['middleware' => ['web', 'logOrReplacement']], function () {
+    // Protected routes
+    Route::group(['middleware' => ['web', 'multiguard']], function () {
 
-        // Dashboard
         Route::get('dashboard', 'SeedReplacement\SRDashboardController@index')
             ->name('replacement.dashboard');
 
-        // Logout
         Route::post('logout', 'SeedReplacement\SRAuthController@logout')
             ->name('replacement.logout');
 
@@ -2371,7 +2368,7 @@ Route::group(['prefix' => 'seed-replacement'], function () {
         Route::get('users/datatable', 'SeedReplacement\SRUserController@datatable')
             ->name('replacement.users.datatable');
 
-        // Requests (CRUD)
+        // Requests
         Route::get('request', 'SeedReplacement\SRRequestController@index')
             ->name('replacement.request.index');
 
@@ -2400,9 +2397,18 @@ Route::group(['prefix' => 'seed-replacement'], function () {
 });
 
 
-
-
  //END Replacement Seeds Routes
+
+//Select2 dynamic location picker routes
+// routes/web.php
+Route::group(['prefix' => 'geo'], function () {
+    Route::get('/regions', 'Select2\GeoController@getRegions')->name('geo.regions');
+    Route::get('/provinces/{regionCode?}', 'Select2\GeoController@getProvinces')
+        ->name('geo.provinces');
+    Route::get('/municipalities/{provinceCode?}', 'Select2\GeoController@getMunicipalities')
+        ->name('geo.municipalities');
+});
+
 
 
 

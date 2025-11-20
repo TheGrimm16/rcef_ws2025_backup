@@ -11,19 +11,18 @@
 
     <h3>Request Management</h3>
 
-    {{-- New Request Button --}}
-    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#createRequestModal">
-        <i class="fa fa-plus"></i> New Request
-    </button>
-
     {{-- Messages --}}
     @include('layouts.message')
 
-    <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <strong>Requests</strong>
-        </div>
-        <div class="card-body">
+    <div class="panel panel-default">
+        <div class="panel-heading"><strong>Requests</strong></div>
+        <div class="panel-body">
+
+            {{-- New Request Button --}}
+            <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#createRequestModal" style="margin-bottom:10px">
+                <i class="fa fa-plus"></i> New Request
+            </button>
+
             {{-- Requests Table --}}
             <table class="table table-bordered" id="requests-table">
                 <thead>
@@ -37,6 +36,7 @@
                     </tr>
                 </thead>
             </table>
+
         </div>
     </div>
 
@@ -47,8 +47,26 @@
 @endsection
 
 @push('scripts')
+<script src="{{ asset('public/js/geo_select2.js') }}"></script>
+
 <script>
-$(document).ready(function () {
+window.geoRoutes = {
+    regions: "{{ route('geo.regions') }}",
+    provinces: "{{ route('geo.provinces', ['regionCode' => '__REGION__']) }}",
+    municipalities: "{{ route('geo.municipalities', ['provinceCode' => '__PROVINCE__']) }}"
+};
+
+$(document).ready(function() {
+    // Initialize geo select2
+    initGeoSelect2({
+        region: '#regionSelect',
+        province: '#provinceSelect',
+        municipality: '#municipalitySelect'
+    });
+
+    // Debug: check if Select2 applied
+    console.log('Province select2 initialized?', $('#provinceSelect').hasClass('select2-hidden-accessible'));
+    console.log('Municipality select2 initialized?', $('#municipalitySelect').hasClass('select2-hidden-accessible'));
 
     // ---------------------------------------------------------
     // DATATABLE INITIALIZATION
@@ -102,7 +120,7 @@ $(document).ready(function () {
     });
 
     // ---------------------------------------------------------
-    // AJAX: APPROVE REQUEST
+    // AJAX: APPROVE/DECLINE REQUEST
     // ---------------------------------------------------------
     $(document).on('click', '.approve-btn', function() {
         var btn = $(this);
@@ -110,28 +128,17 @@ $(document).ready(function () {
 
         if (!confirm('Are you sure you want to approve this request?')) return;
 
-        $.ajax({
-            url: approveUrl,
-            type: 'POST',
-            data: { _token: '{{ csrf_token() }}' },
-            success: function(response) {
-                if(response.success){
-                    // Replace the entire action cell with "Approved" display
-                    btn.closest('td').html('<button class="btn btn-sm btn-success" disabled>Approved</button>');
-                } else {
-                    alert(response.message || 'Failed to approve request.');
-                }
-            },
-            error: function(xhr) {
-                if(xhr.status === 403) alert('You do not have permission to approve this request.');
-                else alert('An error occurred. Please try again.');
+        $.post(approveUrl, {_token: '{{ csrf_token() }}'}, function(response) {
+            if(response.success){
+                btn.closest('td').html('<button class="btn btn-sm btn-success" disabled>Approved</button>');
+            } else {
+                alert(response.message || 'Failed to approve request.');
             }
+        }).fail(function(xhr) {
+            if(xhr.status === 403) alert('You do not have permission to approve this request.');
+            else alert('An error occurred. Please try again.');
         });
     });
-
-    // ---------------------------------------------------------
-    // AJAX: DECLINE REQUEST
-    // ---------------------------------------------------------
 
     $(document).on('click', '.decline-btn', function() {
         var btn = $(this);
@@ -139,26 +146,17 @@ $(document).ready(function () {
 
         if (!confirm('Are you sure you want to decline this request?')) return;
 
-        $.ajax({
-            url: declineUrl,
-            type: 'POST',
-            data: { _token: '{{ csrf_token() }}' },
-            success: function(response) {
-                if(response.success){
-                    // Replace the entire action cell with "Declined" display
-                    btn.closest('td').html('<button class="btn btn-sm btn-danger" disabled>Declined</button>');
-                } else {
-                    alert(response.message || 'Failed to decline request.');
-                }
-            },
-            error: function(xhr) {
-                if(xhr.status === 403) alert('You do not have permission to decline this request.');
-                else alert('An error occurred. Please try again.');
+        $.post(declineUrl, {_token: '{{ csrf_token() }}'}, function(response) {
+            if(response.success){
+                btn.closest('td').html('<button class="btn btn-sm btn-danger" disabled>Declined</button>');
+            } else {
+                alert(response.message || 'Failed to decline request.');
             }
+        }).fail(function(xhr) {
+            if(xhr.status === 403) alert('You do not have permission to decline this request.');
+            else alert('An error occurred. Please try again.');
         });
     });
-
-
 });
 </script>
 @endpush
