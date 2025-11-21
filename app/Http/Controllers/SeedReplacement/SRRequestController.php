@@ -70,6 +70,30 @@ class SRRequestController extends SRBaseController
         ]);
     }
 
+    public function create()
+    {
+        $user = $this->getCurrentUser();
+        $roles = SeedReplacementRoles::getAllRoles();
+        $roles_filtered = [
+            "branch-it","buffer-inspector","dro","delivery-manager",
+            "ebinhi-implementor","rcef-pmo","system-encoder",
+            "techno_demo_officer","seed-grower","administrator",
+            "rcef-programmer"
+        ];
+
+        if (!$this->userHasAnyRole($user, $roles_filtered)) {
+            $mss = "No Access Privilege";
+            return view('utility.pageClosed', compact('mss'));
+        }
+
+        return view('seed_replacement.requests_create.index', [
+            'currentUser' => $user,
+            'currentUserRoles' => $user->roles,
+            'roles' => $roles,
+            'apiToken' => $user->api_token,
+        ]);
+    }
+
     public function datatable()
     {
         $currentUser = $this->getCurrentUser();

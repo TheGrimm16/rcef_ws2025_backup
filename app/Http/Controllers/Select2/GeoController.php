@@ -54,13 +54,13 @@ class GeoController extends Controller
     public function getMunicipalities($provinceCode = null)
     {
         $query = DB::table($this->tbl)
-            ->select('prv as id', 'municipality as text', 'prv_code AS provCode');
+            ->select('prv as id', 'municipality as text', 'prv_code AS provCode', 'regCode');
 
         if ($provinceCode) {
             $query->where('prv_code', $provinceCode);
         }
 
-        $rows = $query->groupBy('prv', 'municipality', 'prv_code')
+        $rows = $query->groupBy('prv', 'municipality', 'prv_code', 'regCode')
             ->orderBy('municipality')
             ->get();
 

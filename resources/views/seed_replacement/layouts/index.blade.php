@@ -32,24 +32,25 @@
         /* Dynamic layout */
         :root {
             --header-height: 60px;
-            --sidebar-width: 240px;
+            --sidebar-width: 0px; /* sidebar removed */
         }
 
         #app-header { height: var(--header-height); }
-        #app-sidebar { width: var(--sidebar-width); top: var(--header-height); }
+        #app-sidebar { display: none; } /* hide sidebar */
+        
         .content-wrapper {
-            margin-left: var(--sidebar-width);
+            margin-left: 0; /* remove left margin */
             padding: calc(var(--header-height) + 20px) 20px 20px;
             background: #f4f6f9;
             min-height: 100vh;
         }
     </style>
+
 </head>
 
 <body>
 
     @include('seed_replacement.layouts.header')
-    @include('seed_replacement.layouts.sidebar')
 
     <div class="content-wrapper">
         @yield('content')

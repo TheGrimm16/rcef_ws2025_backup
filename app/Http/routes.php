@@ -2369,11 +2369,12 @@ Route::group(['prefix' => 'seed-replacement'], function () {
             ->name('replacement.users.datatable');
 
         // Requests
-        Route::get('request', 'SeedReplacement\SRRequestController@index')
+        Route::get('request/view', 'SeedReplacement\SRRequestController@index')
             ->name('replacement.request.index');
 
         Route::get('request/create', 'SeedReplacement\SRRequestController@create')
             ->name('replacement.request.create');
+            
         Route::post('request/store', 'SeedReplacement\SRRequestController@store')
             ->name('replacement.request.store');
 
